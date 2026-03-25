@@ -10,15 +10,16 @@
   <header>
     <div class="container topbar">
       <div class="logo"><img src="Blue White Business ID Card.png" alt="Лого"></div>
-      <div class="nav-wrap">
-        <button class="menu-toggle" aria-label="Отвори меню" aria-expanded="false">☰</button>
-        <nav>
-          <a href="index.html">Програма</a>
-          <a href="premieres.html">Премиери в България</a>
-        </nav>
-      </div>
+          <div class="nav-wrap">
+      <input type="checkbox" id="mobile-menu" class="menu-checkbox">
+      <label for="mobile-menu" class="menu-toggle" aria-label="Отвори меню">☰</label>
+      <nav>
+        <a href="index.html">Програма</a>
+        <a href="premieres.html">Премиери в България</a>
+      </nav>
     </div>
-  </header>
+  </div>
+</header>
 
   <main class="container">
     <section class="hero">
@@ -111,62 +112,6 @@
       Страница с постери и премиерни дати за България. Ръчната редакция остава най-простото решение.
     </div>
   </footer>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const toggle = document.querySelector(".menu-toggle");
-  const nav = document.querySelector("nav");
-  if (!toggle || !nav) return;
-
-  toggle.addEventListener("click", function () {
-    nav.classList.toggle("open");
-    toggle.setAttribute("aria-expanded", nav.classList.contains("open") ? "true" : "false");
-  });
-
-  nav.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function () {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    }
-  });
-});
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const toggle = document.querySelector(".menu-toggle");
-  const nav = document.querySelector("nav");
-  if (!toggle || !nav) return;
-
-  toggle.addEventListener("click", function (e) {
-    e.stopPropagation();
-    nav.classList.toggle("open");
-    toggle.setAttribute("aria-expanded", nav.classList.contains("open") ? "true" : "false");
-  });
-
-  nav.querySelectorAll("a").forEach(function (link) {
-    link.addEventListener("click", function () {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    }
-  });
-});
-</script>
 
 </body>
 </html>
