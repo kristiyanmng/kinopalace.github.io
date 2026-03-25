@@ -413,3 +413,58 @@ nav a{
     padding:5px 8px;
   }
 }
+.times{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:14px;
+}
+
+.schedule-group{
+  display:grid;
+  grid-template-columns: 180px 1fr;
+  gap:10px;
+  align-items:start;
+}
+
+.schedule-label{
+  font-weight:700;
+  color:var(--text);
+  line-height:1.4;
+}
+
+.schedule-hours{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.time{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:72px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(251,113,133,.14);
+  border:1px solid rgba(251,113,133,.2);
+  color:#fecdd3;
+  font-weight:700;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+@media (max-width: 760px){
+  .schedule-group{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+
+  .schedule-label{
+    font-size:14px;
+  }
+
+  .schedule-hours{
+    gap:6px;
+  }
+}
