@@ -70,6 +70,14 @@ nav a:hover{color:var(--accent)}
   border:1px solid rgba(251,113,133,.2);
   color:#fecdd3;font-weight:700;font-size:14px
 }
+.time-row{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.time-row:first-child {
+  margin-bottom:6px
+}
 .badge{
   display:inline-block;margin-top:14px;
   padding:7px 10px;border-radius:999px;
