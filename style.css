@@ -55,17 +55,7 @@ header{
   align-items:center;
   min-width:0;
 }
-.tag-3d{
-  display:inline-block;
-  background:#ef4444;
-  color:white;
-  font-weight:800;
-  font-size:12px;
-  padding:4px 8px;
-  border-radius:6px;
-  margin-right:6px;
-  letter-spacing:0.5px;
-}
+
 .logo img{
   max-height:56px;
   width:auto;
@@ -274,7 +264,18 @@ nav a:hover{
   border:1px dashed rgba(255,255,255,.2);
   background:rgba(255,255,255,.04);
 }
-
+.tag-3d{
+  display:inline-block;
+  background:#ef4444;
+  color:white;
+  font-weight:800;
+  font-size:12px;
+  padding:4px 8px;
+  border-radius:6px;
+  margin-right:6px;
+  letter-spacing:0.5px;
+  box-shadow:0 0 10px rgba(239,68,68,0.6);
+}
 .edit-box code{
   color:#fde68a;
 }
