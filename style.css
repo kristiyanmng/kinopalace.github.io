@@ -16,10 +16,6 @@ body{
   color:var(--text);
   background:linear-gradient(180deg,var(--bg),var(--bg2));
 }
-.logo img {
-  height: 100px;
-  width: auto;
-}
 .container{width:min(1180px,92%);margin:0 auto}
 header{
   position:sticky;top:0;z-index:50;
@@ -79,11 +75,6 @@ nav a:hover{color:var(--accent)}
   padding:7px 10px;border-radius:999px;
   background:rgba(245,158,11,.16);color:#fdba74;font-size:13px;font-weight:700
 }
-.badge1{
-  display:inline-block;margin-top:14px;
-  padding:7px 10px;border-radius:999px;
-  background:rgba(235,148,11,.15);color:#red;font-size:14px;font-weight:700
-}
 .premiere-list{display:grid;gap:18px}
 .premiere{
   display:grid;grid-template-columns:220px 1fr;gap:18px;
@@ -114,4 +105,105 @@ footer{
   .hero h1{font-size:34px}
   .premiere{grid-template-columns:1fr}
   .premiere img{min-height:360px}
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:.5px;
+  min-width:0;
+}
+.logo img{
+  max-height:56px;
+  width:auto;
+  display:block;
+  object-fit:contain;
+}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
+nav a{
+  margin-left:0;
+}
+
+@media (max-width: 860px){
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:14px;
+  }
+  .hero{
+    padding:34px 0 20px;
+  }
+  .hero h1{
+    font-size:30px;
+    line-height:1.2;
+  }
+  .section-title{
+    font-size:24px;
+  }
+  .grid{
+    grid-template-columns:1fr;
+  }
+  .poster{
+    height:auto;
+    max-height:420px;
+    object-fit:cover;
+  }
+  .premiere{
+    grid-template-columns:1fr;
+  }
+  .premiere img{
+    min-height:auto;
+    max-height:420px;
+  }
+  .card h3,
+  .premiere h3{
+    font-size:22px;
+  }
+}
+
+@media (max-width: 520px){
+  .container{
+    width:min(100%,94%);
+  }
+  .logo{
+    font-size:22px;
+  }
+  .logo img{
+    max-height:40px;
+  }
+  nav{
+    width:100%;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  nav a{
+    display:block;
+    width:100%;
+    padding:8px 0;
+  }
+  .hero h1{
+    font-size:26px;
+  }
+  .hero p,
+  .meta,
+  .section-subtitle{
+    font-size:14px;
+  }
+  .card-body,
+  .premiere-body{
+    padding:14px;
+  }
+  .time{
+    font-size:13px;
+    padding:7px 10px;
+  }
+  .poster{
+    max-height:360px;
+  }
 }
