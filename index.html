@@ -10,15 +10,16 @@
   <header>
     <div class="container topbar">
       <div class="logo"><img src="Blue White Business ID Card.png" alt="Лого"></div>
-      <div class="nav-wrap">
-        <button class="menu-toggle" aria-label="Отвори меню" aria-expanded="false">☰</button>
-        <nav>
-          <a href="index.html">Програма</a>
-          <a href="premieres.html">Премиери в България</a>
-        </nav>
-      </div>
+          <div class="nav-wrap">
+      <input type="checkbox" id="mobile-menu" class="menu-checkbox">
+      <label for="mobile-menu" class="menu-toggle" aria-label="Отвори меню">☰</label>
+      <nav>
+        <a href="index.html">Програма</a>
+        <a href="premieres.html">Премиери в България</a>
+      </nav>
     </div>
-  </header>
+  </div>
+</header>
 
   <main class="container">
     <section class="hero">
@@ -34,7 +35,8 @@
 
     <h2 class="section-title">Програма за седмицата</h2>
     <p class="section-subtitle">Примерна подредба с 4 заглавия и часове под всеки филм.</p>
- <section class="grid">
+
+     <section class="grid">
       <article class="card">
         <img class="poster" src="https://image.tmdb.org/t/p/original/3b6qHW2paiD6w0Ze1LipF4gN5PJ.jpg" alt="Tafiti Across the Desert">
         <div class="card-body">
@@ -46,7 +48,7 @@
           </div>
           <div class="times">
 		    <span class="badge1">Събота и неделя <span class="time">10:45</span></span>
-            <span class="badge1"><span class="time">12:30</span></span>
+            <span class="time">12:30</span>
             <span class="time">14:15</span>
             <span class="time">16:00</span>
           </div>
@@ -264,62 +266,6 @@
       Опростен статичен сайт с начална страница за седмична програма и отделна страница за премиери в България.
     </div>
   </footer>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const toggle = document.querySelector(".menu-toggle");
-  const nav = document.querySelector("nav");
-  if (!toggle || !nav) return;
-
-  toggle.addEventListener("click", function () {
-    nav.classList.toggle("open");
-    toggle.setAttribute("aria-expanded", nav.classList.contains("open") ? "true" : "false");
-  });
-
-  nav.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function () {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    }
-  });
-});
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const toggle = document.querySelector(".menu-toggle");
-  const nav = document.querySelector("nav");
-  if (!toggle || !nav) return;
-
-  toggle.addEventListener("click", function (e) {
-    e.stopPropagation();
-    nav.classList.toggle("open");
-    toggle.setAttribute("aria-expanded", nav.classList.contains("open") ? "true" : "false");
-  });
-
-  nav.querySelectorAll("a").forEach(function (link) {
-    link.addEventListener("click", function () {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  document.addEventListener("click", function (e) {
-    if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-      nav.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
-    }
-  });
-});
-</script>
 
 </body>
 </html>
