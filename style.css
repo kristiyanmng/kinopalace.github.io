@@ -177,6 +177,12 @@ nav a:hover{
   margin-top: 14px;
 }
 
+.time-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .schedule-group{
   display:grid;
   grid-template-columns:170px 1fr;
