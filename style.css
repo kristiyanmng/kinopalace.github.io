@@ -363,6 +363,12 @@ footer a:hover{
   color:#fdba74;
 }
 
+@media (max-width: 600px){
+  .modal iframe {
+    height: 220px;
+  }
+}
+
 @media (min-width: 761px){
   nav{
     display:flex !important;
