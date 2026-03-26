@@ -363,6 +363,21 @@ footer a:hover{
   color:#fdba74;
 }
 
+@media (max-width: 760px) {
+  .card h3 {
+    min-height: unset;
+    margin-bottom: 12px;
+  }
+
+  .meta {
+    margin-top: 0;
+  }
+
+  .card-body {
+    gap: 0;
+  }
+}
+
 @media (max-width: 600px){
   .modal iframe {
     height: 220px;
