@@ -451,5 +451,23 @@
       <a href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">НАЧАЛО</a>
     </div>
   </footer>
+  <div id="trailerModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeTrailer()">×</span>
+    <iframe id="trailerFrame" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script>
+function openTrailer(url) {
+  document.getElementById("trailerModal").style.display = "flex";
+  document.getElementById("trailerFrame").src = url;
+}
+
+function closeTrailer() {
+  document.getElementById("trailerModal").style.display = "none";
+  document.getElementById("trailerFrame").src = "";
+}
+</script>
 </body>
 </html>
