@@ -173,9 +173,10 @@ nav a:hover{
 .times {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   margin-top: 14px;
-  min-height: 96px;
+  min-height: 120px;
+  flex-grow: 1;
 }
 
 .time-row {
@@ -184,12 +185,11 @@ nav a:hover{
   flex-wrap: wrap;
 }
 
-.schedule-group {
-  display: grid;
-  grid-template-columns: 170px 1fr;
-  gap: 12px;
-  align-items: start;
-  min-height: 40px;
+.schedule-group{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:flex-start;
 }
 
 .schedule-label{
