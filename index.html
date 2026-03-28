@@ -129,9 +129,10 @@
       (!hasMovies ? ' empty-day' : '');
 
     btn.innerHTML = `
-      <span class="day-label">${day.label}</span>
-      <span class="day-date">${day.date}</span>
-    `;
+  <span class="day-label">${day.label}</span>
+  <span class="day-date">${day.date}</span>
+  ${!hasMovies ? '<span class="day-empty-text">Няма налична програма</span>' : ''}
+`;
 
     if (!hasMovies) {
       btn.disabled = true;
