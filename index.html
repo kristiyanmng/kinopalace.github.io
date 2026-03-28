@@ -114,28 +114,38 @@
   }
 
   function renderDays() {
-    const strip = document.getElementById('days-strip');
-    const visibleDays = getVisibleDays();
+  const strip = document.getElementById('days-strip');
+  const visibleDays = getVisibleDays();
 
-    strip.innerHTML = '';
+  strip.innerHTML = '';
 
-    visibleDays.forEach((day, index) => {
-      const btn = document.createElement('button');
-      btn.className = 'day-tab' + (index === activeDayIndex ? ' active' : '');
-      btn.innerHTML = `
-        <span class="day-label">${day.label}</span>
-        <span class="day-date">${day.date}</span>
-      `;
+  visibleDays.forEach((day, index) => {
+    const hasMovies = day.movies && day.movies.length > 0;
 
+    const btn = document.createElement('button');
+    btn.className =
+      'day-tab' +
+      (index === activeDayIndex ? ' active' : '') +
+      (!hasMovies ? ' empty-day' : '');
+
+    btn.innerHTML = `
+      <span class="day-label">${day.label}</span>
+      <span class="day-date">${day.date}</span>
+    `;
+
+    if (!hasMovies) {
+      btn.disabled = true;
+    } else {
       btn.addEventListener('click', () => {
         activeDayIndex = index;
         renderDays();
         renderMovies();
       });
+    }
 
-      strip.appendChild(btn);
-    });
-  }
+    strip.appendChild(btn);
+  });
+}
 
   function parseTimeToDate(dayDate, timeString) {
     const [day, month] = dayDate.split('.');
