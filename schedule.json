@@ -652,6 +652,306 @@
           "times": ["19:45"]
         }
       ]
-    }
+    },
+	  {
+      "date": "03.04",
+      "label": "Петък",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "04.04",
+      "label": "Събота",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "05.04",
+      "label": "Неделя",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "06.04",
+      "label": "Понеделник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "07.04",
+      "label": "Вторник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "08.04",
+      "label": "Сряда",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "09.04",
+      "label": "Четвъртък",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "10.04",
+      "label": "Петък",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "11.04",
+      "label": "Събота",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "12.04",
+      "label": "Неделя",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "13.04",
+      "label": "Понеделник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "14.04",
+      "label": "Вторник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "15.04",
+      "label": "Сряда",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "16.04",
+      "label": "Четвъртък",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "17.04",
+      "label": "Петък",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "18.04",
+      "label": "Събота",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "19.04",
+      "label": "Неделя",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "20.04",
+      "label": "Понеделник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "21.04",
+      "label": "Вторник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "22.04",
+      "label": "Сряда",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "23.04",
+      "label": "Четвъртък",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "24.04",
+      "label": "Петък",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "25.04",
+      "label": "Събота",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "26.04",
+      "label": "Неделя",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "27.04",
+      "label": "Понеделник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "28.04",
+      "label": "Вторник",
+      "movies": [
+      ]
+    },
+	  {
+      "date": "29.04",
+      "label": "Сряда",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "30.04",
+      "label": "Четвъртък",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "01.05",
+      "label": "Петък",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "20:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "02.05",
+      "label": "Събота",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "20:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "03.05",
+      "label": "Неделя",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "20:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "04.05",
+      "label": "Понеделник",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "20:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "05.05",
+      "label": "Вторник",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "20:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "06.05",
+      "label": "Сряда",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "20:00", "21:30"]
+        }
+      ]
+    },
+	  {
+      "date": "07.05",
+      "label": "Четвъртък",
+      "movies": [
+		  {
+          "title": "Дяволът носи Прада 2",
+          "genre": "Комедия",
+          "duration": "120 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/y3fQa7pytlysovXzovpXc1OQlTW.jpg",
+          "trailer": "https://www.youtube.com/embed/LkRnD6EXmvs",
+          "category": "С - Не се препоръчва за деца под 12",
+          "times": ["16:30", "19:00", "20:00", "21:30"]
+        }
+      ]
+    },
   ]
 }
