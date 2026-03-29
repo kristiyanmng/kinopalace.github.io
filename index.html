@@ -157,7 +157,7 @@
         btn.innerHTML = `
           <span class="day-label">${mobileLabel}</span>
           <span class="day-date">${day.date}</span>
-        `;
+          `;
 
         if (!hasMovies) {
           btn.disabled = true;
@@ -277,151 +277,151 @@
     }
 
     function renderMovies() {
-  const container = document.getElementById('movies-container');
-  const visibleDays = getVisibleDays();
-  const day = visibleDays[activeDayIndex];
+      const container = document.getElementById('movies-container');
+      const visibleDays = getVisibleDays();
+      const day = visibleDays[activeDayIndex];
 
-  container.innerHTML = '';
+      container.innerHTML = '';
 
-  if (!day) {
-    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
-    return;
-  }
-
-  const now = new Date();
-
-  const preparedMovies = day.movies
-    .map(movie => {
-      const visibleTimes = movie.times
-        .filter(time => isTimeStillVisible(day.date, time))
-        .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
-
-      const activeProgress = movie.times
-        .map(time => ({
-          time,
-          progress: getScreeningProgress(day.date, time, movie.duration)
-        }))
-        .find(item => item.progress !== null);
-
-      const upcomingTimes = movie.times
-        .map(time => ({
-          time,
-          dateObj: parseTimeToDate(day.date, time)
-        }))
-        .filter(item => item.dateObj > now)
-        .sort((a, b) => a.dateObj - b.dateObj);
-
-      let sortTime = null;
-      let nextCountdown = null;
-
-      if (upcomingTimes.length > 0) {
-        sortTime = upcomingTimes[0].dateObj;
-
-        const diffMs = upcomingTimes[0].dateObj - now;
-        const totalMinutes = Math.max(0, Math.floor(diffMs / 60000));
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-
-        nextCountdown = {
-          time: upcomingTimes[0].time,
-          text: hours > 0 ? `${hours} ч ${minutes} мин` : `${minutes} мин`
-        };
-      } else if (activeProgress) {
-        sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+      if (!day) {
+        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
+        return;
       }
 
-      if (visibleTimes.length === 0 && !activeProgress) {
-        return null;
+      const now = new Date();
+
+      const preparedMovies = day.movies
+        .map(movie => {
+          const visibleTimes = movie.times
+            .filter(time => isTimeStillVisible(day.date, time))
+            .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
+
+          const activeProgress = movie.times
+            .map(time => ({
+              time,
+              progress: getScreeningProgress(day.date, time, movie.duration)
+            }))
+            .find(item => item.progress !== null);
+
+          const upcomingTimes = movie.times
+            .map(time => ({
+              time,
+              dateObj: parseTimeToDate(day.date, time)
+            }))
+            .filter(item => item.dateObj > now)
+            .sort((a, b) => a.dateObj - b.dateObj);
+
+          let sortTime = null;
+          let nextCountdown = null;
+
+          if (upcomingTimes.length > 0) {
+            sortTime = upcomingTimes[0].dateObj;
+
+            const diffMs = upcomingTimes[0].dateObj - now;
+            const totalMinutes = Math.max(0, Math.floor(diffMs / 60000));
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+
+            nextCountdown = {
+              time: upcomingTimes[0].time,
+              text: hours > 0 ? `${hours} ч ${minutes} мин` : `${minutes} мин`
+            };
+          } else if (activeProgress) {
+            sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+          }
+
+          if (visibleTimes.length === 0 && !activeProgress) {
+            return null;
+          }
+
+          return {
+            ...movie,
+            visibleTimes,
+            activeProgress,
+            sortTime,
+            nextCountdown
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.sortTime - b.sortTime);
+
+      if (preparedMovies.length === 0) {
+        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
+        return;
       }
 
-      return {
-        ...movie,
-        visibleTimes,
-        activeProgress,
-        sortTime,
-        nextCountdown
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.sortTime - b.sortTime);
+      preparedMovies.forEach(movie => {
+        const card = document.createElement('article');
+        card.className = 'card';
 
-  if (preparedMovies.length === 0) {
-    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
-    return;
-  }
+        const timesHtml = movie.visibleTimes.length
+          ? movie.visibleTimes.map(time => `<span class="time">${time}</span>`).join('')
+          : '<span class="time" style="opacity:.6;">Прожекцията вече тече</span>';
 
-  preparedMovies.forEach(movie => {
-    const card = document.createElement('article');
-    card.className = 'card';
-
-    const timesHtml = movie.visibleTimes.length
-      ? movie.visibleTimes.map(time => `<span class="time">${time}</span>`).join('')
-      : '<span class="time" style="opacity:.6;">Прожекцията вече тече</span>';
-
-    const progressHtml = movie.activeProgress
-      ? `
-        <div class="screening-progress ${movie.activeProgress.progress.phase === 'ads' ? 'ads-phase' : ''}">
-          <div class="screening-progress-header">
-            <span class="live-badge pulse">${movie.activeProgress.progress.phaseLabel}</span>
-            <span class="remaining-time">Остават ${movie.activeProgress.progress.remainingMinutes} мин</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-bar-fill" style="width:${movie.activeProgress.progress.percent}%"></div>
-          </div>
-        </div>
-      `
-      : '';
-
-    const countdownHtml = !movie.activeProgress && movie.nextCountdown
-      ? `
-        <div class="next-countdown">
-          <div class="next-countdown-header">
-            <span class="next-badge">Следваща прожекция</span>
-            <span class="next-time">${movie.nextCountdown.time}</span>
-          </div>
-          <div class="next-countdown-text">Започва след ${movie.nextCountdown.text}</div>
-        </div>
-      `
-      : '';
-
-    const versionFormatted = movie.version
-      .replace('3D', '<span class="tag-3d">3D</span>');
-
-    card.innerHTML = `
-      <img class="poster" src="${movie.poster}" alt="${movie.title}">
-      <div class="card-body">
-        <h3>${movie.title}</h3>
-
-        <div class="meta">
-          <div><strong>Жанр:</strong> ${movie.genre}</div>
-          <div><strong>Продължителност:</strong> ${movie.duration}</div>
-          <div><strong>Версия:</strong> ${versionFormatted}</div>
-        </div>
-
-        <div class="actions">
-          <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
-            ▶ Трейлър
-          </button>
-        </div>
-
-        <div class="times">
-          <div class="schedule-group">
-            <div class="schedule-hours">
-              ${timesHtml}
+        const progressHtml = movie.activeProgress
+          ? `
+            <div class="screening-progress ${movie.activeProgress.progress.phase === 'ads' ? 'ads-phase' : ''}">
+              <div class="screening-progress-header">
+                <span class="live-badge pulse">${movie.activeProgress.progress.phaseLabel}</span>
+                <span class="remaining-time">Остават ${movie.activeProgress.progress.remainingMinutes} мин</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar-fill" style="width:${movie.activeProgress.progress.percent}%"></div>
+              </div>
             </div>
+          `
+          : '';
+
+        const countdownHtml = !movie.activeProgress && movie.nextCountdown
+          ? `
+            <div class="next-countdown">
+              <div class="next-countdown-header">
+                <span class="next-badge">Следваща прожекция</span>
+                <span class="next-time">${movie.nextCountdown.time}</span>
+              </div>
+              <div class="next-countdown-text">Започва след ${movie.nextCountdown.text}</div>
+            </div>
+          `
+          : '';
+
+        const versionFormatted = movie.version
+          .replace('3D', '<span class="tag-3d">3D</span>');
+
+        card.innerHTML = `
+          <img class="poster" src="${movie.poster}" alt="${movie.title}">
+          <div class="card-body">
+            <h3>${movie.title}</h3>
+
+            <div class="meta">
+              <div><strong>Жанр:</strong> ${movie.genre}</div>
+              <div><strong>Продължителност:</strong> ${movie.duration}</div>
+              <div><strong>Версия:</strong> ${versionFormatted}</div>
+            </div>
+
+            <div class="actions">
+              <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
+                ▶ Трейлър
+              </button>
+            </div>
+
+            <div class="times">
+              <div class="schedule-group">
+                <div class="schedule-hours">
+                  ${timesHtml}
+                </div>
+              </div>
+            </div>
+
+            ${progressHtml}
+            ${countdownHtml}
+
+            <span class="badge">Категория: ${movie.category}</span>
           </div>
-        </div>
+        `;
 
-        ${progressHtml}
-        ${countdownHtml}
-
-        <span class="badge">Категория: ${movie.category}</span>
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-}
+        container.appendChild(card);
+      });
+    }
 
     function openTrailer(url) {
       const modal = document.getElementById('trailerModal');
@@ -444,7 +444,7 @@
       }
     }
 
-    setInterval(() => {
+    function refreshLiveUI() {
       if (!scheduleData) return;
 
       const now = new Date();
@@ -456,7 +456,21 @@
       }
 
       renderMovies();
-    }, 60000);
+    }
+
+    setInterval(() => {
+      refreshLiveUI();
+    }, 10000);
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        refreshLiveUI();
+      }
+    });
+
+    window.addEventListener('focus', () => {
+      refreshLiveUI();
+    });
   </script>
 </body>
 </html>
