@@ -146,7 +146,37 @@
         renderMovies();
       });
     }
+function updateDaysArrows() {
+  const strip = document.getElementById('days-strip');
+  const prev = document.getElementById('days-prev');
+  const next = document.getElementById('days-next');
 
+  if (!strip || !prev || !next) return;
+
+  prev.disabled = strip.scrollLeft <= 0;
+  next.disabled = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 2;
+}
+
+function setupDaysNavigation() {
+  const strip = document.getElementById('days-strip');
+  const prev = document.getElementById('days-prev');
+  const next = document.getElementById('days-next');
+
+  if (!strip || !prev || !next) return;
+
+  prev.addEventListener('click', () => {
+    strip.scrollBy({ left: -320, behavior: 'smooth' });
+  });
+
+  next.addEventListener('click', () => {
+    strip.scrollBy({ left: 320, behavior: 'smooth' });
+  });
+
+  strip.addEventListener('scroll', updateDaysArrows);
+  window.addEventListener('resize', updateDaysArrows);
+
+  updateDaysArrows();
+}
     strip.appendChild(btn);
   });
 }
