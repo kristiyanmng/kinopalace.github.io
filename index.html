@@ -140,10 +140,24 @@
           (index === activeDayIndex ? ' active' : '') +
           (!hasMovies ? ' empty-day' : '');
 
-        btn.innerHTML = `
-          <span class="day-label">${day.label}</span>
-          <span class="day-date">${day.date}</span>
-        `;
+       const shortDays = {
+  'Понеделник': 'Пон',
+  'Вторник': 'Вт',
+  'Сряда': 'Ср',
+  'Четвъртък': 'Чет',
+  'Петък': 'Пет',
+  'Събота': 'Съб',
+  'Неделя': 'Нед'
+};
+
+const mobileLabel = window.innerWidth <= 760
+  ? (shortDays[day.label] || day.label)
+  : day.label;
+
+btn.innerHTML = `
+  <span class="day-label">${mobileLabel}</span>
+  <span class="day-date">${day.date}</span>
+`;
 
         if (!hasMovies) {
           btn.disabled = true;
