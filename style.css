@@ -71,6 +71,63 @@ header{
   position:relative;
 }
 
+.days-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.days-strip {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 6px 0 20px;
+  flex: 1;
+}
+
+.days-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.days-arrow {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.days-arrow:hover {
+  border-color: rgba(245,158,11,.45);
+  color: #fde68a;
+}
+
+.days-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (max-width: 760px) {
+  .days-nav {
+    gap: 8px;
+  }
+
+  .days-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    border-radius: 12px;
+  }
+}
+
 .menu-checkbox{
   display:none;
 }
