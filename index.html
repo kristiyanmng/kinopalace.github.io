@@ -103,6 +103,15 @@
       return dateObj >= today;
     }
 
+    function isTodayDay(dayDate) {
+      const today = new Date();
+      const todayStr =
+        String(today.getDate()).padStart(2, '0') + '.' +
+        String(today.getMonth() + 1).padStart(2, '0');
+
+      return dayDate === todayStr;
+    }
+
     function getVisibleDays() {
       return scheduleData.days.filter(day => isFutureOrToday(day.date));
     }
@@ -287,6 +296,7 @@
       }
 
       const now = new Date();
+      const isTodaySelected = isTodayDay(day.date);
 
       let preparedMovies = day.movies
         .map((movie, index) => {
@@ -361,12 +371,14 @@
         return;
       }
 
-      const nextMovieIndex = preparedMovies.findIndex(
-        movie => !movie.activeProgress && movie.nextCountdown
-      );
+      if (isTodaySelected) {
+        const nextMovieIndex = preparedMovies.findIndex(
+          movie => !movie.activeProgress && movie.nextCountdown
+        );
 
-      if (nextMovieIndex !== -1) {
-        preparedMovies[nextMovieIndex].showNextCountdown = true;
+        if (nextMovieIndex !== -1) {
+          preparedMovies[nextMovieIndex].showNextCountdown = true;
+        }
       }
 
       preparedMovies.forEach(movie => {
