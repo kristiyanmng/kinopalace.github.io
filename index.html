@@ -89,8 +89,7 @@
 
     function parseDayDate(dayDate) {
       const [day, month] = dayDate.split('.');
-      const today = new Date();
-      const year = today.getFullYear();
+      const year = new Date().getFullYear();
       return new Date(year, Number(month) - 1, Number(day));
     }
 
@@ -157,7 +156,7 @@
         btn.innerHTML = `
           <span class="day-label">${mobileLabel}</span>
           <span class="day-date">${day.date}</span>
-          `;
+        `;
 
         if (!hasMovies) {
           btn.disabled = true;
@@ -213,8 +212,7 @@
     function parseTimeToDate(dayDate, timeString) {
       const [day, month] = dayDate.split('.');
       const [hours, minutes] = timeString.split(':');
-      const now = new Date();
-      const year = now.getFullYear();
+      const year = new Date().getFullYear();
 
       return new Date(
         year,
@@ -228,7 +226,7 @@
     }
 
     function parseDurationMinutes(durationText) {
-      const match = durationText.match(/\d+/);
+      const match = String(durationText || '').match(/\d+/);
       return match ? Number(match[0]) : 0;
     }
 
@@ -277,161 +275,172 @@
     }
 
     function renderMovies() {
-  const container = document.getElementById('movies-container');
-  const visibleDays = getVisibleDays();
-  const day = visibleDays[activeDayIndex];
+      const container = document.getElementById('movies-container');
+      const visibleDays = getVisibleDays();
+      const day = visibleDays[activeDayIndex];
 
-  container.innerHTML = '';
+      container.innerHTML = '';
 
-  if (!day) {
-    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
-    return;
-  }
-
-  const now = new Date();
-
-  const preparedMovies = day.movies
-    .map(movie => {
-      const visibleTimes = movie.times
-        .filter(time => isTimeStillVisible(day.date, time))
-        .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
-
-      const activeProgress = movie.times
-        .map(time => ({
-          time,
-          progress: getScreeningProgress(day.date, time, movie.duration)
-        }))
-        .find(item => item.progress !== null);
-
-      const upcomingTimes = movie.times
-        .map(time => ({
-          time,
-          dateObj: parseTimeToDate(day.date, time)
-        }))
-        .filter(item => item.dateObj > now)
-        .sort((a, b) => a.dateObj - b.dateObj);
-
-      let sortTime = null;
-      let nextCountdown = null;
-
-      if (upcomingTimes.length > 0) {
-        sortTime = upcomingTimes[0].dateObj;
-
-        const diffMs = upcomingTimes[0].dateObj - now;
-        const totalMinutes = Math.max(0, Math.floor(diffMs / 60000));
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-
-        nextCountdown = {
-          time: upcomingTimes[0].time,
-          text: hours > 0 ? `${hours} ч ${minutes} мин` : `${minutes} мин`,
-          dateObj: upcomingTimes[0].dateObj
-        };
-      } else if (activeProgress) {
-        sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+      if (!day) {
+        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
+        return;
       }
 
-      if (visibleTimes.length === 0 && !activeProgress) {
-        return null;
+      const now = new Date();
+
+      let preparedMovies = day.movies
+        .map((movie, index) => {
+          const visibleTimes = movie.times
+            .filter(time => isTimeStillVisible(day.date, time))
+            .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
+
+          const activeProgress = movie.times
+            .map(time => ({
+              time,
+              progress: getScreeningProgress(day.date, time, movie.duration)
+            }))
+            .find(item => item.progress !== null);
+
+          const upcomingTimes = movie.times
+            .map(time => ({
+              time,
+              dateObj: parseTimeToDate(day.date, time)
+            }))
+            .filter(item => item.dateObj > now)
+            .sort((a, b) => a.dateObj - b.dateObj);
+
+          let sortTime = null;
+          let nextCountdown = null;
+
+          if (upcomingTimes.length > 0) {
+            sortTime = upcomingTimes[0].dateObj;
+
+            const diffMs = upcomingTimes[0].dateObj - now;
+            const totalSeconds = Math.max(0, Math.floor(diffMs / 1000));
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            let text = '';
+            if (hours > 0) {
+              text = `${hours}ч ${minutes}м ${seconds}с`;
+            } else if (minutes > 0) {
+              text = `${minutes}м ${seconds}с`;
+            } else {
+              text = `${seconds}с`;
+            }
+
+            nextCountdown = {
+              time: upcomingTimes[0].time,
+              text,
+              dateObj: upcomingTimes[0].dateObj
+            };
+          } else if (activeProgress) {
+            sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+          }
+
+          if (visibleTimes.length === 0 && !activeProgress) {
+            return null;
+          }
+
+          return {
+            ...movie,
+            _id: index,
+            visibleTimes,
+            activeProgress,
+            sortTime,
+            nextCountdown,
+            showNextCountdown: false
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.sortTime - b.sortTime);
+
+      if (preparedMovies.length === 0) {
+        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
+        return;
       }
 
-      return {
-        ...movie,
-        visibleTimes,
-        activeProgress,
-        sortTime,
-        nextCountdown
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.sortTime - b.sortTime);
+      const nextMovieIndex = preparedMovies.findIndex(
+        movie => !movie.activeProgress && movie.nextCountdown
+      );
 
-  if (preparedMovies.length === 0) {
-    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
-    return;
-  }
+      if (nextMovieIndex !== -1) {
+        preparedMovies[nextMovieIndex].showNextCountdown = true;
+      }
 
-  const nextMovieWithCountdown = preparedMovies
-    .filter(movie => !movie.activeProgress && movie.nextCountdown)
-    .sort((a, b) => a.nextCountdown.dateObj - b.nextCountdown.dateObj)[0];
+      preparedMovies.forEach(movie => {
+        const card = document.createElement('article');
+        card.className = 'card';
 
-  preparedMovies.forEach(movie => {
-    const card = document.createElement('article');
-    card.className = 'card';
+        const timesHtml = movie.visibleTimes.length
+          ? movie.visibleTimes.map(time => `<span class="time">${time}</span>`).join('')
+          : '<span class="time" style="opacity:.6;">Прожекцията вече тече</span>';
 
-    const timesHtml = movie.visibleTimes.length
-      ? movie.visibleTimes.map(time => `<span class="time">${time}</span>`).join('')
-      : '<span class="time" style="opacity:.6;">Прожекцията вече тече</span>';
-
-    const progressHtml = movie.activeProgress
-      ? `
-        <div class="screening-progress ${movie.activeProgress.progress.phase === 'ads' ? 'ads-phase' : ''}">
-          <div class="screening-progress-header">
-            <span class="live-badge pulse">${movie.activeProgress.progress.phaseLabel}</span>
-            <span class="remaining-time">Остават ${movie.activeProgress.progress.remainingMinutes} мин</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-bar-fill" style="width:${movie.activeProgress.progress.percent}%"></div>
-          </div>
-        </div>
-      `
-      : '';
-
-    const countdownHtml =
-      !movie.activeProgress &&
-      movie.nextCountdown &&
-      nextMovieWithCountdown &&
-      movie.title === nextMovieWithCountdown.title &&
-      movie.nextCountdown.time === nextMovieWithCountdown.nextCountdown.time
-        ? `
-          <div class="next-countdown">
-            <div class="next-countdown-header">
-              <span class="next-badge">Следваща прожекция</span>
-              <span class="next-time">${movie.nextCountdown.time}</span>
+        const progressHtml = movie.activeProgress
+          ? `
+            <div class="screening-progress ${movie.activeProgress.progress.phase === 'ads' ? 'ads-phase' : ''}">
+              <div class="screening-progress-header">
+                <span class="live-badge pulse">${movie.activeProgress.progress.phaseLabel}</span>
+                <span class="remaining-time">Остават ${movie.activeProgress.progress.remainingMinutes} мин</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar-fill" style="width:${movie.activeProgress.progress.percent}%"></div>
+              </div>
             </div>
-            <div class="next-countdown-text">Започва след ${movie.nextCountdown.text}</div>
-          </div>
-        `
-        : '';
+          `
+          : '';
 
-    const versionFormatted = movie.version
-      .replace('3D', '<span class="tag-3d">3D</span>');
-
-    card.innerHTML = `
-      <img class="poster" src="${movie.poster}" alt="${movie.title}">
-      <div class="card-body">
-        <h3>${movie.title}</h3>
-
-        <div class="meta">
-          <div><strong>Жанр:</strong> ${movie.genre}</div>
-          <div><strong>Продължителност:</strong> ${movie.duration}</div>
-          <div><strong>Версия:</strong> ${versionFormatted}</div>
-        </div>
-
-        <div class="actions">
-          <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
-            ▶ Трейлър
-          </button>
-        </div>
-
-        <div class="times">
-          <div class="schedule-group">
-            <div class="schedule-hours">
-              ${timesHtml}
+        const countdownHtml = movie.showNextCountdown
+          ? `
+            <div class="next-countdown">
+              <div class="next-countdown-header">
+                <span class="next-badge">Следваща прожекция</span>
+                <span class="next-time">${movie.nextCountdown.time}</span>
+              </div>
+              <div class="next-countdown-text">Започва след ${movie.nextCountdown.text}</div>
             </div>
+          `
+          : '';
+
+        const versionFormatted = String(movie.version || '')
+          .replace('3D', '<span class="tag-3d">3D</span>');
+
+        card.innerHTML = `
+          <img class="poster" src="${movie.poster}" alt="${movie.title}">
+          <div class="card-body">
+            <h3>${movie.title}</h3>
+
+            <div class="meta">
+              <div><strong>Жанр:</strong> ${movie.genre}</div>
+              <div><strong>Продължителност:</strong> ${movie.duration}</div>
+              <div><strong>Версия:</strong> ${versionFormatted}</div>
+            </div>
+
+            <div class="actions">
+              <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
+                ▶ Трейлър
+              </button>
+            </div>
+
+            <div class="times">
+              <div class="schedule-group">
+                <div class="schedule-hours">
+                  ${timesHtml}
+                </div>
+              </div>
+            </div>
+
+            ${progressHtml}
+            ${countdownHtml}
+
+            <span class="badge">Категория: ${movie.category}</span>
           </div>
-        </div>
+        `;
 
-        ${progressHtml}
-        ${countdownHtml}
-
-        <span class="badge">Категория: ${movie.category}</span>
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-}
+        container.appendChild(card);
+      });
+    }
 
     function openTrailer(url) {
       const modal = document.getElementById('trailerModal');
@@ -470,7 +479,7 @@
 
     setInterval(() => {
       refreshLiveUI();
-    }, 10000);
+    }, 1000);
 
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
