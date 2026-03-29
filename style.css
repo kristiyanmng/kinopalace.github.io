@@ -71,89 +71,8 @@ header{
   position:relative;
 }
 
-.days-nav {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.days-strip {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 6px 0 20px;
-  flex: 1;
-}
-
-.days-strip::-webkit-scrollbar {
-  height: 6px;
-}
-
-.days-arrow {
-  flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.04);
-  color: var(--text);
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-  transition: .2s ease;
-}
-
-.days-arrow:hover {
-  border-color: rgba(245,158,11,.45);
-  color: #fde68a;
-}
-
-.days-arrow:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-@media (max-width: 760px) {
-  .days-nav {
-    gap: 8px;
-  }
-
-  .days-arrow {
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    border-radius: 12px;
-  }
-}
-
 .menu-checkbox{
   display:none;
-}
-.day-tab.empty-day {
-  background: rgba(255,255,255,.02);
-  border-color: rgba(255,255,255,.05);
-  color: rgba(248,250,252,.45);
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.day-tab.empty-day:hover {
-  border-color: rgba(255,255,255,.05);
-  transform: none;
-}
-
-.day-tab.empty-day .day-date,
-.day-tab.empty-day .day-label {
-  color: rgba(248,250,252,.45);
-}
-
-.day-empty-text {
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(248,250,252,.4);
-  margin-top: 2px;
 }
 
 .menu-toggle{
@@ -199,19 +118,52 @@ nav a:hover{
   line-height:1.15;
 }
 
-/* ДАТИ ОТГОРЕ */
+/* Лента с дни + стрелки */
+.days-nav{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:10px;
+}
+
 .days-strip{
   display:flex;
   gap:12px;
   overflow-x:auto;
+  scroll-behavior:smooth;
   padding:6px 0 20px;
-  margin-bottom:10px;
+  flex:1;
 }
 
 .days-strip::-webkit-scrollbar{
   height:6px;
 }
 
+.days-arrow{
+  flex:0 0 auto;
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font-size:28px;
+  line-height:1;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.days-arrow:hover{
+  border-color:rgba(245,158,11,.45);
+  color:#fde68a;
+}
+
+.days-arrow:disabled{
+  opacity:0.35;
+  cursor:default;
+}
+
+/* Квадрати за дните */
 .day-tab{
   border:1px solid rgba(255,255,255,.12);
   background:rgba(255,255,255,.04);
@@ -244,6 +196,31 @@ nav a:hover{
 
 .day-date{
   font-size:20px;
+}
+
+.day-tab.empty-day{
+  background:rgba(255,255,255,.02);
+  border-color:rgba(255,255,255,.05);
+  color:rgba(248,250,252,.45);
+  opacity:0.65;
+  cursor:not-allowed;
+}
+
+.day-tab.empty-day:hover{
+  border-color:rgba(255,255,255,.05);
+  transform:none;
+}
+
+.day-tab.empty-day .day-date,
+.day-tab.empty-day .day-label{
+  color:rgba(248,250,252,.45);
+}
+
+.day-empty-text{
+  font-size:11px;
+  font-weight:700;
+  color:rgba(248,250,252,.4);
+  margin-top:2px;
 }
 
 .grid{
@@ -307,6 +284,10 @@ nav a:hover{
   font-weight:700;
   cursor:pointer;
   transition:0.2s;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .trailer-btn:hover{
@@ -556,6 +537,17 @@ footer a:hover{
     line-height:1.25;
   }
 
+  .days-nav{
+    gap:8px;
+  }
+
+  .days-arrow{
+    width:40px;
+    height:40px;
+    font-size:24px;
+    border-radius:12px;
+  }
+
   .grid{
     grid-template-columns:1fr;
     gap:16px;
@@ -672,5 +664,48 @@ footer a:hover{
     font-size:11px;
     padding:5px 8px;
     min-width:60px;
+  }
+}
+
+@media (max-width: 760px){
+  .day-tab{
+    min-width: 74px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    gap: 2px;
+  }
+
+  .day-label{
+    font-size: 11px;
+    line-height: 1.1;
+  }
+
+  .day-date{
+    font-size: 16px;
+    line-height: 1.1;
+  }
+
+  .day-empty-text{
+    font-size: 9px;
+  }
+
+  .days-strip{
+    gap: 8px;
+    padding: 4px 0 14px;
+  }
+}
+
+@media (max-width: 420px){
+  .day-tab{
+    min-width: 68px;
+    padding: 7px 8px;
+  }
+
+  .day-label{
+    font-size: 10px;
+  }
+
+  .day-date{
+    font-size: 15px;
   }
 }
