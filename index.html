@@ -274,6 +274,8 @@
     return;
   }
 
+  const now = new Date();
+
   const preparedMovies = day.movies
     .map(movie => {
       const visibleTimes = movie.times
@@ -287,16 +289,25 @@
         }))
         .find(item => item.progress !== null);
 
-      const futureOrRunningTimes = movie.times
+      const upcomingTimes = movie.times
         .map(time => ({
           time,
           dateObj: parseTimeToDate(day.date, time)
         }))
-        .filter(item => {
-          const progress = getScreeningProgress(day.date, item.time, movie.duration);
-          return item.dateObj >= new Date() || progress !== null;
-        })
+        .filter(item => item.dateObj > now)
         .sort((a, b) => a.dateObj - b.dateObj);
+
+      // Ако има бъдещ час, сортираме по него.
+      // Ако няма, но филмът в момента върви, бутаме го след бъдещите прожекции.
+      // Ако няма нищо, махаме го.
+      let sortTime = null;
+
+      if (upcomingTimes.length > 0) {
+        sortTime = upcomingTimes[0].dateObj;
+      } else if (activeProgress) {
+        // Бутаме текущо вървящ филм след всички бъдещи прожекции
+        sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+      }
 
       if (visibleTimes.length === 0 && !activeProgress) {
         return null;
@@ -306,13 +317,11 @@
         ...movie,
         visibleTimes,
         activeProgress,
-        nextScreening: futureOrRunningTimes.length
-          ? futureOrRunningTimes[0].dateObj
-          : new Date(8640000000000000)
+        sortTime
       };
     })
     .filter(Boolean)
-    .sort((a, b) => a.nextScreening - b.nextScreening);
+    .sort((a, b) => a.sortTime - b.sortTime);
 
   if (preparedMovies.length === 0) {
     container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
