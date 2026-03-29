@@ -64,6 +64,7 @@
     let scheduleData = null;
     let activeDayIndex = 0;
     let lastDate = new Date().getDate();
+    const ADS_MINUTES = 10;
 
     fetch('schedule.json')
       .then(response => {
@@ -156,7 +157,8 @@
         btn.innerHTML = `
           <span class="day-label">${mobileLabel}</span>
           <span class="day-date">${day.date}</span>
-         `;
+          ${!hasMovies ? '<span class="day-empty-text">Няма програма</span>' : ''}
+        `;
 
         if (!hasMovies) {
           btn.disabled = true;
@@ -226,6 +228,11 @@
       );
     }
 
+    function parseDurationMinutes(durationText) {
+      const match = durationText.match(/\d+/);
+      return match ? Number(match[0]) : 0;
+    }
+
     function isTimeStillVisible(dayDate, timeString) {
       const screeningTime = parseTimeToDate(dayDate, timeString);
       const hideAfter = new Date(screeningTime.getTime() + 10 * 60 * 1000);
@@ -234,15 +241,13 @@
       return now <= hideAfter;
     }
 
-    function parseDurationMinutes(durationText) {
-      const match = durationText.match(/\d+/);
-      return match ? Number(match[0]) : 0;
-    }
-
     function getScreeningProgress(dayDate, timeString, durationText) {
       const startTime = parseTimeToDate(dayDate, timeString);
-      const durationMinutes = parseDurationMinutes(durationText);
-      const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
+      const filmMinutes = parseDurationMinutes(durationText);
+      const totalMinutes = ADS_MINUTES + filmMinutes;
+
+      const adsEndTime = new Date(startTime.getTime() + ADS_MINUTES * 60 * 1000);
+      const endTime = new Date(startTime.getTime() + totalMinutes * 60 * 1000);
 
       const now = new Date();
       const total = endTime - startTime;
@@ -256,137 +261,144 @@
       const percent = Math.min(100, Math.max(0, (elapsed / total) * 100));
       const remainingMinutes = Math.max(0, Math.ceil(remaining / 60000));
 
+      let phase = 'movie';
+      let phaseLabel = 'В прожекция';
+
+      if (now < adsEndTime) {
+        phase = 'ads';
+        phaseLabel = 'Реклами';
+      }
+
       return {
         percent,
-        remainingMinutes
+        remainingMinutes,
+        phase,
+        phaseLabel
       };
     }
 
-  function renderMovies() {
-  const container = document.getElementById('movies-container');
-  const visibleDays = getVisibleDays();
-  const day = visibleDays[activeDayIndex];
+    function renderMovies() {
+      const container = document.getElementById('movies-container');
+      const visibleDays = getVisibleDays();
+      const day = visibleDays[activeDayIndex];
 
-  container.innerHTML = '';
+      container.innerHTML = '';
 
-  if (!day) {
-    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
-    return;
-  }
-
-  const now = new Date();
-
-  const preparedMovies = day.movies
-    .map(movie => {
-      const visibleTimes = movie.times
-        .filter(time => isTimeStillVisible(day.date, time))
-        .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
-
-      const activeProgress = movie.times
-        .map(time => ({
-          time,
-          progress: getScreeningProgress(day.date, time, movie.duration)
-        }))
-        .find(item => item.progress !== null);
-
-      const upcomingTimes = movie.times
-        .map(time => ({
-          time,
-          dateObj: parseTimeToDate(day.date, time)
-        }))
-        .filter(item => item.dateObj > now)
-        .sort((a, b) => a.dateObj - b.dateObj);
-
-      // Ако има бъдещ час, сортираме по него.
-      // Ако няма, но филмът в момента върви, бутаме го след бъдещите прожекции.
-      // Ако няма нищо, махаме го.
-      let sortTime = null;
-
-      if (upcomingTimes.length > 0) {
-        sortTime = upcomingTimes[0].dateObj;
-      } else if (activeProgress) {
-        // Бутаме текущо вървящ филм след всички бъдещи прожекции
-        sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+      if (!day) {
+        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
+        return;
       }
 
-      if (visibleTimes.length === 0 && !activeProgress) {
-        return null;
+      const now = new Date();
+
+      const preparedMovies = day.movies
+        .map(movie => {
+          const visibleTimes = movie.times
+            .filter(time => isTimeStillVisible(day.date, time))
+            .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
+
+          const activeProgress = movie.times
+            .map(time => ({
+              time,
+              progress: getScreeningProgress(day.date, time, movie.duration)
+            }))
+            .find(item => item.progress !== null);
+
+          const upcomingTimes = movie.times
+            .map(time => ({
+              time,
+              dateObj: parseTimeToDate(day.date, time)
+            }))
+            .filter(item => item.dateObj > now)
+            .sort((a, b) => a.dateObj - b.dateObj);
+
+          let sortTime = null;
+
+          if (upcomingTimes.length > 0) {
+            sortTime = upcomingTimes[0].dateObj;
+          } else if (activeProgress) {
+            sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+          }
+
+          if (visibleTimes.length === 0 && !activeProgress) {
+            return null;
+          }
+
+          return {
+            ...movie,
+            visibleTimes,
+            activeProgress,
+            sortTime
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.sortTime - b.sortTime);
+
+      if (preparedMovies.length === 0) {
+        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
+        return;
       }
 
-      return {
-        ...movie,
-        visibleTimes,
-        activeProgress,
-        sortTime
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.sortTime - b.sortTime);
+      preparedMovies.forEach(movie => {
+        const card = document.createElement('article');
+        card.className = 'card';
 
-  if (preparedMovies.length === 0) {
-    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
-    return;
-  }
+        const timesHtml = movie.visibleTimes.length
+          ? movie.visibleTimes.map(time => `<span class="time">${time}</span>`).join('')
+          : '<span class="time" style="opacity:.6;">Прожекцията вече тече</span>';
 
-  preparedMovies.forEach(movie => {
-    const card = document.createElement('article');
-    card.className = 'card';
-
-    const timesHtml = movie.visibleTimes.length
-      ? movie.visibleTimes.map(time => `<span class="time">${time}</span>`).join('')
-      : '<span class="time" style="opacity:.6;">Прожекцията вече тече</span>';
-
-    const progressHtml = movie.activeProgress
-      ? `
-        <div class="screening-progress">
-          <div class="screening-progress-header">
-            <span class="live-badge">В прожекция</span>
-            <span class="remaining-time">Остават ${movie.activeProgress.progress.remainingMinutes} мин</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-bar-fill" style="width:${movie.activeProgress.progress.percent}%"></div>
-          </div>
-        </div>
-      `
-      : '';
-
-    const versionFormatted = movie.version
-      .replace('3D', '<span class="tag-3d">3D</span>');
-
-    card.innerHTML = `
-      <img class="poster" src="${movie.poster}" alt="${movie.title}">
-      <div class="card-body">
-        <h3>${movie.title}</h3>
-
-        <div class="meta">
-          <div><strong>Жанр:</strong> ${movie.genre}</div>
-          <div><strong>Продължителност:</strong> ${movie.duration}</div>
-          <div><strong>Версия:</strong> ${versionFormatted}</div>
-        </div>
-
-        <div class="actions">
-          <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
-            ▶ Трейлър
-          </button>
-        </div>
-
-        <div class="times">
-          <div class="schedule-group">
-            <div class="schedule-hours">
-              ${timesHtml}
+        const progressHtml = movie.activeProgress
+          ? `
+            <div class="screening-progress ${movie.activeProgress.progress.phase === 'ads' ? 'ads-phase' : ''}">
+              <div class="screening-progress-header">
+                <span class="live-badge">${movie.activeProgress.progress.phaseLabel}</span>
+                <span class="remaining-time">Остават ${movie.activeProgress.progress.remainingMinutes} мин</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar-fill" style="width:${movie.activeProgress.progress.percent}%"></div>
+              </div>
             </div>
+          `
+          : '';
+
+        const versionFormatted = movie.version
+          .replace('3D', '<span class="tag-3d">3D</span>');
+
+        card.innerHTML = `
+          <img class="poster" src="${movie.poster}" alt="${movie.title}">
+          <div class="card-body">
+            <h3>${movie.title}</h3>
+
+            <div class="meta">
+              <div><strong>Жанр:</strong> ${movie.genre}</div>
+              <div><strong>Продължителност:</strong> ${movie.duration}</div>
+              <div><strong>Версия:</strong> ${versionFormatted}</div>
+            </div>
+
+            <div class="actions">
+              <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
+                ▶ Трейлър
+              </button>
+            </div>
+
+            <div class="times">
+              <div class="schedule-group">
+                <div class="schedule-hours">
+                  ${timesHtml}
+                </div>
+              </div>
+            </div>
+
+            ${progressHtml}
+
+            <span class="badge">Категория: ${movie.category}</span>
           </div>
-        </div>
+        `;
 
-        ${progressHtml}
+        container.appendChild(card);
+      });
+    }
 
-        <span class="badge">Категория: ${movie.category}</span>
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-}
     function openTrailer(url) {
       const modal = document.getElementById('trailerModal');
       const frame = document.getElementById('trailerFrame');
