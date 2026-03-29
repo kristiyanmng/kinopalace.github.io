@@ -143,7 +143,6 @@
         btn.innerHTML = `
           <span class="day-label">${day.label}</span>
           <span class="day-date">${day.date}</span>
-          ${!hasMovies ? '<span class="day-empty-text">Няма програма</span>' : ''}
         `;
 
         if (!hasMovies) {
@@ -269,7 +268,7 @@
 
             <div class="times">
               <div class="schedule-group">
-                <div class="schedule-label">${day.label} • ${day.date}</div>
+                <div class="schedule-label"></div>
                 <div class="schedule-hours">
                   ${timesHtml}
                 </div>
