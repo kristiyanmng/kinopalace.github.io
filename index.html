@@ -233,74 +233,84 @@ btn.innerHTML = `
     }
 
     function renderMovies() {
-      const container = document.getElementById('movies-container');
-      const visibleDays = getVisibleDays();
-      const day = visibleDays[activeDayIndex];
+  const container = document.getElementById('movies-container');
+  const visibleDays = getVisibleDays();
+  const day = visibleDays[activeDayIndex];
 
-      container.innerHTML = '';
+  container.innerHTML = '';
 
-      if (!day) {
-        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
-        return;
+  if (!day) {
+    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма налична програма за показване.</p>';
+    return;
+  }
+
+  const preparedMovies = day.movies
+    .map(movie => {
+      const visibleTimes = movie.times
+        .filter(time => isTimeStillVisible(day.date, time))
+        .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
+
+      if (visibleTimes.length === 0) {
+        return null;
       }
 
-      let visibleMoviesCount = 0;
+      return {
+        ...movie,
+        visibleTimes,
+        nextScreening: parseTimeToDate(day.date, visibleTimes[0])
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.nextScreening - b.nextScreening);
 
-      day.movies.forEach(movie => {
-        const visibleTimes = movie.times.filter(time => isTimeStillVisible(day.date, time));
+  if (preparedMovies.length === 0) {
+    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
+    return;
+  }
 
-        if (visibleTimes.length === 0) {
-          return;
-        }
+  preparedMovies.forEach(movie => {
+    const card = document.createElement('article');
+    card.className = 'card';
 
-        const card = document.createElement('article');
-        card.className = 'card';
+    const timesHtml = movie.visibleTimes
+      .map(time => `<span class="time">${time}</span>`)
+      .join('');
 
-        const timesHtml = visibleTimes
-          .map(time => `<span class="time">${time}</span>`)
-          .join('');
+    const versionFormatted = movie.version
+      .replace('3D', '<span class="tag-3d">3D</span>');
 
-        const versionFormatted = movie.version
-          .replace('3D', '<span class="tag-3d">3D</span>');
+    card.innerHTML = `
+      <img class="poster" src="${movie.poster}" alt="${movie.title}">
+      <div class="card-body">
+        <h3>${movie.title}</h3>
 
-        card.innerHTML = `
-          <img class="poster" src="${movie.poster}" alt="${movie.title}">
-          <div class="card-body">
-            <h3>${movie.title}</h3>
+        <div class="meta">
+          <div><strong>Жанр:</strong> ${movie.genre}</div>
+          <div><strong>Продължителност:</strong> ${movie.duration}</div>
+          <div><strong>Версия:</strong> ${versionFormatted}</div>
+        </div>
 
-            <div class="meta">
-              <div><strong>Жанр:</strong> ${movie.genre}</div>
-              <div><strong>Продължителност:</strong> ${movie.duration}</div>
-              <div><strong>Версия:</strong> ${versionFormatted}</div>
+        <div class="actions">
+          <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
+            ▶ Трейлър
+          </button>
+        </div>
+
+        <div class="times">
+          <div class="schedule-group">
+            <div class="schedule-hours">
+              ${timesHtml}
             </div>
-
-            <div class="actions">
-              <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
-                ▶ Трейлър
-              </button>
-            </div>
-
-            <div class="times">
-              <div class="schedule-group">
-                <div class="schedule-label"></div>
-                <div class="schedule-hours">
-                  ${timesHtml}
-                </div>
-              </div>
-            </div>
-
-            <span class="badge">Категория: ${movie.category}</span>
           </div>
-        `;
+        </div>
 
-        container.appendChild(card);
-        visibleMoviesCount++;
-      });
+        <span class="badge">Категория: ${movie.category}</span>
+      </div>
+    `;
 
-      if (visibleMoviesCount === 0) {
-        container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Все още няма налични прожекции за този ден.</p>';
-      }
-    }
+    container.appendChild(card);
+  });
+}
 
     function openTrailer(url) {
       const modal = document.getElementById('trailerModal');
