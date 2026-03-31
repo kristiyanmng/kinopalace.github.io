@@ -118,20 +118,18 @@ nav a:hover{
   line-height:1.15;
 }
 
-.dub-icon{
-  width:18px;
-  height:18px;
-  margin-left:6px;
-  vertical-align:middle;
-  object-fit:contain;
+.version-inline{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
 }
 
 .dub-icon{
   width:20px;
   height:20px;
-  margin-left:6px;
-  vertical-align:middle;
   object-fit:contain;
+  vertical-align:middle;
   filter: drop-shadow(0 0 4px rgba(255,255,255,.25));
 }
 
