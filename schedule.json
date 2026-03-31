@@ -302,8 +302,8 @@
       "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "12:30", "hall": "Зала 1", "type": "standard" },
-        { "time": "14:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "12:30", "hall": "VIP Зала", "type": "vip" },
+        { "time": "14:15", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -315,7 +315,7 @@
       "trailer": "https://www.youtube.com/embed/akzAjiuNsyI",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "12:00", "hall": "Зала 1", "type": "standard" }
+        { "time": "12:00", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -327,7 +327,7 @@
       "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
       "category": "A - Препоръчва се за деца",
       "times": [
-        { "time": "14:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "14:30", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -339,7 +339,7 @@
       "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "18:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "18:30", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -351,9 +351,9 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "13:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "15:15", "hall": "Зала 1", "type": "standard" },
-        { "time": "17:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "13:00", "hall": "Зала 3", "type": "standard" },
+        { "time": "15:15", "hall": "Зала 3", "type": "standard" },
+        { "time": "17:30", "hall": "Зала 3", "type": "standard" }
       ]
     },
     {
@@ -365,7 +365,7 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "19:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "19:30", "hall": "Зала 3", "type": "standard" }
       ]
     },
     {
@@ -377,7 +377,7 @@
       "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
       "category": "D - Забранен за лица под 16",
       "times": [
-        { "time": "21:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "21:30", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -389,9 +389,9 @@
       "trailer": "https://www.youtube.com/embed/3DDOCcyFlnw",
       "category": "C - Не се препоръчва за деца под 12",
       "times": [
-        { "time": "16:45", "hall": "Зала 1", "type": "standard" },
-        { "time": "19:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "21:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "16:45", "hall": "VIP Зала", "type": "vip" },
+        { "time": "19:00", "hall": "VIP Зала", "type": "vip" },
+        { "time": "21:15", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -403,7 +403,7 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "16:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "16:15", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -415,7 +415,7 @@
       "trailer": "https://youtube.com/embed/9XjvyhJB4o4",
       "category": "C - Не се препоръчва за деца под 12",
       "times": [
-        { "time": "21:45", "hall": "Зала 1", "type": "standard" }
+        { "time": "21:45", "hall": "Зала 3", "type": "standard" }
       ]
     }
   ]
@@ -433,9 +433,9 @@
       "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "10:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "12:30", "hall": "Зала 1", "type": "standard" },
-        { "time": "14:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "10:00", "hall": "Зала 2", "type": "standard" },
+        { "time": "12:30", "hall": "VIP Зала", "type": "vip" },
+        { "time": "14:15", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -447,7 +447,7 @@
       "trailer": "https://www.youtube.com/embed/akzAjiuNsyI",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "12:00", "hall": "Зала 1", "type": "standard" }
+        { "time": "12:00", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -459,8 +459,8 @@
       "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
       "category": "A - Препоръчва се за деца",
       "times": [
-        { "time": "10:30", "hall": "Зала 1", "type": "standard" },
-        { "time": "14:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "10:30", "hall": "VIP Зала", "type": "vip" },
+        { "time": "14:30", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -472,7 +472,7 @@
       "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "18:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "18:30", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -484,10 +484,10 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "11:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "13:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "15:15", "hall": "Зала 1", "type": "standard" },
-        { "time": "17:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "11:00", "hall": "Зала 3", "type": "standard" },
+        { "time": "13:00", "hall": "Зала 3", "type": "standard" },
+        { "time": "15:15", "hall": "Зала 3", "type": "standard" },
+        { "time": "17:30", "hall": "Зала 3", "type": "standard" }
       ]
     },
     {
@@ -499,7 +499,7 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "19:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "19:30", "hall": "Зала 3", "type": "standard" }
       ]
     },
     {
@@ -511,7 +511,7 @@
       "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
       "category": "D - Забранен за лица под 16",
       "times": [
-        { "time": "21:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "21:30", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -523,9 +523,9 @@
       "trailer": "https://www.youtube.com/embed/3DDOCcyFlnw",
       "category": "C - Не се препоръчва за деца под 12",
       "times": [
-        { "time": "16:45", "hall": "Зала 1", "type": "standard" },
-        { "time": "19:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "21:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "16:45", "hall": "VIP Зала", "type": "vip" },
+        { "time": "19:00", "hall": "VIP Зала", "type": "vip" },
+        { "time": "21:15", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -537,7 +537,7 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "16:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "16:15", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -549,7 +549,7 @@
       "trailer": "https://youtube.com/embed/9XjvyhJB4o4",
       "category": "C - Не се препоръчва за деца под 12",
       "times": [
-        { "time": "21:45", "hall": "Зала 1", "type": "standard" }
+        { "time": "21:45", "hall": "Зала 3", "type": "standard" }
       ]
     }
   ]
@@ -567,9 +567,9 @@
       "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "10:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "12:30", "hall": "Зала 1", "type": "standard" },
-        { "time": "14:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "10:00", "hall": "Зала 2", "type": "standard" },
+        { "time": "12:30", "hall": "VIP Зала", "type": "vip" },
+        { "time": "14:15", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -581,7 +581,7 @@
       "trailer": "https://www.youtube.com/embed/akzAjiuNsyI",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "12:00", "hall": "Зала 1", "type": "standard" }
+        { "time": "12:00", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -593,8 +593,8 @@
       "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
       "category": "A - Препоръчва се за деца",
       "times": [
-        { "time": "10:30", "hall": "Зала 1", "type": "standard" },
-        { "time": "14:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "10:30", "hall": "VIP Зала", "type": "vip" },
+        { "time": "14:30", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -606,7 +606,7 @@
       "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "18:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "18:30", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -618,10 +618,10 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "11:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "13:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "15:15", "hall": "Зала 1", "type": "standard" },
-        { "time": "17:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "11:00", "hall": "Зала 3", "type": "standard" },
+        { "time": "13:00", "hall": "Зала 3", "type": "standard" },
+        { "time": "15:15", "hall": "Зала 3", "type": "standard" },
+        { "time": "17:30", "hall": "Зала 3", "type": "standard" }
       ]
     },
     {
@@ -633,7 +633,7 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "19:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "19:30", "hall": "Зала 3", "type": "standard" }
       ]
     },
     {
@@ -645,7 +645,7 @@
       "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
       "category": "D - Забранен за лица под 16",
       "times": [
-        { "time": "21:30", "hall": "Зала 1", "type": "standard" }
+        { "time": "21:30", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -657,9 +657,9 @@
       "trailer": "https://www.youtube.com/embed/3DDOCcyFlnw",
       "category": "C - Не се препоръчва за деца под 12",
       "times": [
-        { "time": "16:45", "hall": "Зала 1", "type": "standard" },
-        { "time": "19:00", "hall": "Зала 1", "type": "standard" },
-        { "time": "21:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "16:45", "hall": "VIP Зала", "type": "vip" },
+        { "time": "19:00", "hall": "VIP Зала", "type": "vip" },
+        { "time": "21:15", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -671,7 +671,7 @@
       "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "16:15", "hall": "Зала 1", "type": "standard" }
+        { "time": "16:15", "hall": "Зала 2", "type": "standard" }
       ]
     },
     {
@@ -683,7 +683,7 @@
       "trailer": "https://youtube.com/embed/9XjvyhJB4o4",
       "category": "C - Не се препоръчва за деца под 12",
       "times": [
-        { "time": "21:45", "hall": "Зала 1", "type": "standard" }
+        { "time": "21:45", "hall": "Зала 3", "type": "standard" }
       ]
     }
   ]
