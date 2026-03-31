@@ -118,6 +118,23 @@ nav a:hover{
   line-height:1.15;
 }
 
+.dub-icon{
+  width:18px;
+  height:18px;
+  margin-left:6px;
+  vertical-align:middle;
+  object-fit:contain;
+}
+
+.dub-icon{
+  width:20px;
+  height:20px;
+  margin-left:6px;
+  vertical-align:middle;
+  object-fit:contain;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,.25));
+}
+
 /* Лента с дни + стрелки */
 .days-nav{
   display:flex;
