@@ -672,24 +672,524 @@
       "date": "06.04",
       "label": "Понеделник",
       "movies": [
+        {
+          "title": "Кърпена глава",
+          "genre": "Анимация",
+          "duration": "92 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/zIFFlcvilrrbUlveEbIsFAtUfGT.jpg",
+          "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:30",
+            "14:15"
+          ]
+        },
+        {
+          "title": "Хопъри",
+          "genre": "Анимация",
+          "duration": "106 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/i5i7xWRO70oGLM5AMR5jN0GL7EZ.jpg",
+          "trailer": "https://www.youtube.com/embed/akzAjiuNsyI",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:00"
+          ]
+        },
+        {
+          "title": "Тафити в сърцето на пустинята",
+          "genre": "Анимация",
+          "duration": "81 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/uSpnZfWdxfBiIJ3IcwzRrYiRMuP.jpg",
+          "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
+          "category": "A - Препоръчва се за деца",
+          "times": [
+            "14:30"
+          ]
+        },
+        {
+          "title": "Проектът “Аве Мария”",
+          "genre": "Фантастика",
+          "duration": "157 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/o2xLxY1LdwBMsrGD9hjIaOrIQm6.jpg",
+          "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "18:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/bxf46m16sFNufB3l00SdAPSRBdq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "13:00",
+            "15:15",
+            "17:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/9Z2uDYXqJrlmePznQQJhL6d92Rq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "19:30"
+          ]
+        },
+        {
+          "title": "Те ще те убият",
+          "genre": "Ужаси",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/qnTdOizsXBzYu3uIbfhHSfE29TE.jpg",
+          "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
+          "category": "D - Забранен за лица под 16",
+          "times": [
+            "21:30"
+          ]
+        },
+        {
+          "title": "Драмата",
+          "genre": "Драма",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/vc7TeZyKhBeVA4YI3z1KAeIXqGV.jpg",
+          "trailer": "https://youtu.be/embed/3DDOCcyFlnw",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "16:45",
+            "19:00",
+            "21:15"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/kxQiIJ4gVcD3K6o14MJ72p5yRcE.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "16:15"
+          ]
+        },
+        {
+          "title": "Пакет “Вечност”",
+          "genre": "Комедия",
+          "duration": "84 минути",
+          "version": "2D / БГ продукция",
+          "poster": "https://image.tmdb.org/t/p/original/rgsduEeYUwdA4GPKufyki0Nnbf4.jpg",
+          "trailer": "https://youtube.com/embed/9XjvyhJB4o4",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "21:45"
+          ]
+        }
       ]
     },
 	  {
       "date": "07.04",
       "label": "Вторник",
       "movies": [
+        {
+          "title": "Кърпена глава",
+          "genre": "Анимация",
+          "duration": "92 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/zIFFlcvilrrbUlveEbIsFAtUfGT.jpg",
+          "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:30",
+            "14:15"
+          ]
+        },
+        {
+          "title": "Хопъри",
+          "genre": "Анимация",
+          "duration": "106 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/i5i7xWRO70oGLM5AMR5jN0GL7EZ.jpg",
+          "trailer": "https://www.youtube.com/embed/akzAjiuNsyI",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:00"
+          ]
+        },
+        {
+          "title": "Тафити в сърцето на пустинята",
+          "genre": "Анимация",
+          "duration": "81 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/uSpnZfWdxfBiIJ3IcwzRrYiRMuP.jpg",
+          "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
+          "category": "A - Препоръчва се за деца",
+          "times": [
+            "14:30"
+          ]
+        },
+        {
+          "title": "Проектът “Аве Мария”",
+          "genre": "Фантастика",
+          "duration": "157 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/o2xLxY1LdwBMsrGD9hjIaOrIQm6.jpg",
+          "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "18:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/bxf46m16sFNufB3l00SdAPSRBdq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "13:00",
+            "15:15",
+            "17:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/9Z2uDYXqJrlmePznQQJhL6d92Rq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "19:30"
+          ]
+        },
+        {
+          "title": "Те ще те убият",
+          "genre": "Ужаси",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/qnTdOizsXBzYu3uIbfhHSfE29TE.jpg",
+          "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
+          "category": "D - Забранен за лица под 16",
+          "times": [
+            "21:30"
+          ]
+        },
+        {
+          "title": "Драмата",
+          "genre": "Драма",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/vc7TeZyKhBeVA4YI3z1KAeIXqGV.jpg",
+          "trailer": "https://youtu.be/embed/3DDOCcyFlnw",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "16:45",
+            "19:00",
+            "21:15"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/kxQiIJ4gVcD3K6o14MJ72p5yRcE.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "16:15"
+          ]
+        },
+        {
+          "title": "Пакет “Вечност”",
+          "genre": "Комедия",
+          "duration": "84 минути",
+          "version": "2D / БГ продукция",
+          "poster": "https://image.tmdb.org/t/p/original/rgsduEeYUwdA4GPKufyki0Nnbf4.jpg",
+          "trailer": "https://youtube.com/embed/9XjvyhJB4o4",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "21:45"
+          ]
+        }
       ]
     },
 	  {
       "date": "08.04",
       "label": "Сряда",
       "movies": [
+        {
+          "title": "Кърпена глава",
+          "genre": "Анимация",
+          "duration": "92 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/zIFFlcvilrrbUlveEbIsFAtUfGT.jpg",
+          "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:30",
+            "14:15"
+          ]
+        },
+        {
+          "title": "Хопъри",
+          "genre": "Анимация",
+          "duration": "106 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/i5i7xWRO70oGLM5AMR5jN0GL7EZ.jpg",
+          "trailer": "https://www.youtube.com/embed/akzAjiuNsyI",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:00"
+          ]
+        },
+        {
+          "title": "Тафити в сърцето на пустинята",
+          "genre": "Анимация",
+          "duration": "81 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/uSpnZfWdxfBiIJ3IcwzRrYiRMuP.jpg",
+          "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
+          "category": "A - Препоръчва се за деца",
+          "times": [
+            "14:30"
+          ]
+        },
+        {
+          "title": "Проектът “Аве Мария”",
+          "genre": "Фантастика",
+          "duration": "157 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/o2xLxY1LdwBMsrGD9hjIaOrIQm6.jpg",
+          "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "18:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/bxf46m16sFNufB3l00SdAPSRBdq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "13:00",
+            "15:15",
+            "17:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/9Z2uDYXqJrlmePznQQJhL6d92Rq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "19:30"
+          ]
+        },
+        {
+          "title": "Те ще те убият",
+          "genre": "Ужаси",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/qnTdOizsXBzYu3uIbfhHSfE29TE.jpg",
+          "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
+          "category": "D - Забранен за лица под 16",
+          "times": [
+            "21:30"
+          ]
+        },
+        {
+          "title": "Драмата",
+          "genre": "Драма",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/vc7TeZyKhBeVA4YI3z1KAeIXqGV.jpg",
+          "trailer": "https://youtu.be/embed/3DDOCcyFlnw",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "16:45",
+            "19:00",
+            "21:15"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/kxQiIJ4gVcD3K6o14MJ72p5yRcE.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "16:15"
+          ]
+        },
+        {
+          "title": "Пакет “Вечност”",
+          "genre": "Комедия",
+          "duration": "84 минути",
+          "version": "2D / БГ продукция",
+          "poster": "https://image.tmdb.org/t/p/original/rgsduEeYUwdA4GPKufyki0Nnbf4.jpg",
+          "trailer": "https://youtube.com/embed/9XjvyhJB4o4",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "21:45"
+          ]
+        }
       ]
     },
 	  {
       "date": "09.04",
       "label": "Четвъртък",
       "movies": [
+        {
+          "title": "Кърпена глава",
+          "genre": "Анимация",
+          "duration": "92 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/zIFFlcvilrrbUlveEbIsFAtUfGT.jpg",
+          "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:30",
+            "14:15"
+          ]
+        },
+        {
+          "title": "Хопъри",
+          "genre": "Анимация",
+          "duration": "106 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/i5i7xWRO70oGLM5AMR5jN0GL7EZ.jpg",
+          "trailer": "https://www.youtube.com/embed/akzAjiuNsyI",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "12:00"
+          ]
+        },
+        {
+          "title": "Тафити в сърцето на пустинята",
+          "genre": "Анимация",
+          "duration": "81 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/uSpnZfWdxfBiIJ3IcwzRrYiRMuP.jpg",
+          "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
+          "category": "A - Препоръчва се за деца",
+          "times": [
+            "14:30"
+          ]
+        },
+        {
+          "title": "Проектът “Аве Мария”",
+          "genre": "Фантастика",
+          "duration": "157 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/o2xLxY1LdwBMsrGD9hjIaOrIQm6.jpg",
+          "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "18:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "3D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/bxf46m16sFNufB3l00SdAPSRBdq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "13:00",
+            "15:15",
+            "17:30"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/9Z2uDYXqJrlmePznQQJhL6d92Rq.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "19:30"
+          ]
+        },
+        {
+          "title": "Те ще те убият",
+          "genre": "Ужаси",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/qnTdOizsXBzYu3uIbfhHSfE29TE.jpg",
+          "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
+          "category": "D - Забранен за лица под 16",
+          "times": [
+            "21:30"
+          ]
+        },
+        {
+          "title": "Драмата",
+          "genre": "Драма",
+          "duration": "95 минути",
+          "version": "2D / субтитриран",
+          "poster": "https://image.tmdb.org/t/p/original/vc7TeZyKhBeVA4YI3z1KAeIXqGV.jpg",
+          "trailer": "https://youtu.be/embed/3DDOCcyFlnw",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "16:45",
+            "19:00",
+            "21:15"
+          ]
+        },
+        {
+          "title": "Супер Марио Галактика: Филмът",
+          "genre": "Анимация",
+          "duration": "100 минути",
+          "version": "2D / дублиран",
+          "poster": "https://image.tmdb.org/t/p/original/kxQiIJ4gVcD3K6o14MJ72p5yRcE.jpg",
+          "trailer": "https://www.youtube.com/embed/izj3od7Mwks",
+          "category": "B - Без възрастови ограничения",
+          "times": [
+            "16:15"
+          ]
+        },
+        {
+          "title": "Пакет “Вечност”",
+          "genre": "Комедия",
+          "duration": "84 минути",
+          "version": "2D / БГ продукция",
+          "poster": "https://image.tmdb.org/t/p/original/rgsduEeYUwdA4GPKufyki0Nnbf4.jpg",
+          "trailer": "https://youtube.com/embed/9XjvyhJB4o4",
+          "category": "C - Не се препоръчва за деца под 12",
+          "times": [
+            "21:45"
+          ]
+        }
       ]
     },
 	  {
