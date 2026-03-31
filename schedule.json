@@ -13,7 +13,10 @@
           "poster": "https://image.tmdb.org/t/p/original/o2xLxY1LdwBMsrGD9hjIaOrIQm6.jpg",
           "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
           "category": "B - Без възрастови ограничения",
-          "times": ["19:00"]
+          "times": [
+  { "time": "16:30", "hall": "VIP Зала", "type": "vip" },
+  { "time": "19:00", "hall": "VIP Зала", "type": "vip" }
+]
         },
         {
           "title": "Mortuary Assistant: ФИЛМЪТ",
