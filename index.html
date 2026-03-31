@@ -20,6 +20,13 @@
         <nav>
           <a href="index.html">Програма</a>
           <a href="premieres.html">Премиери в България</a>
+
+          <div class="live-nav" id="live-nav" style="display:none;">
+            <button class="live-nav-btn pulse" id="live-nav-btn" type="button">
+              LIVE
+            </button>
+            <div class="live-nav-dropdown" id="live-nav-dropdown"></div>
+          </div>
         </nav>
       </div>
     </div>
@@ -79,7 +86,9 @@
         setTodayAsActive();
         renderDays();
         renderMovies();
+        renderLiveNav();
         setupDaysNavigation();
+        setupLiveNav();
       })
       .catch(error => {
         console.error(error);
@@ -276,10 +285,9 @@
 
     function isTimeStillVisible(dayDate, timeString) {
       const screeningTime = parseTimeToDate(dayDate, timeString);
-      const hideAfter = new Date(screeningTime.getTime() + 10 * 60 * 1000);
       const now = new Date();
 
-      return now <= hideAfter;
+      return now < screeningTime;
     }
 
     function getScreeningProgress(dayDate, timeString, durationText) {
@@ -316,6 +324,90 @@
         phase,
         phaseLabel
       };
+    }
+
+    function getTodayLiveScreenings() {
+      if (!scheduleData || !Array.isArray(scheduleData.days)) return [];
+
+      const today = new Date();
+      const todayStr =
+        String(today.getDate()).padStart(2, '0') + '.' +
+        String(today.getMonth() + 1).padStart(2, '0');
+
+      const todayDay = scheduleData.days.find(day => day.date === todayStr);
+      if (!todayDay || !Array.isArray(todayDay.movies)) return [];
+
+      const liveItems = [];
+
+      todayDay.movies.forEach(movie => {
+        (movie.times || []).forEach(item => {
+          const progress = getScreeningProgress(todayDay.date, item.time, movie.duration);
+
+          if (progress) {
+            liveItems.push({
+              title: movie.title,
+              time: item.time,
+              hall: item.hall || 'Зала 1',
+              type: item.type || 'standard',
+              phase: progress.phase,
+              phaseLabel: progress.phaseLabel,
+              remainingMinutes: progress.remainingMinutes
+            });
+          }
+        });
+      });
+
+      liveItems.sort((a, b) => a.time.localeCompare(b.time, 'bg'));
+      return liveItems;
+    }
+
+    function renderLiveNav() {
+      const liveNav = document.getElementById('live-nav');
+      const dropdown = document.getElementById('live-nav-dropdown');
+
+      if (!liveNav || !dropdown) return;
+
+      const liveItems = getTodayLiveScreenings();
+
+      if (!liveItems.length) {
+        liveNav.style.display = 'none';
+        liveNav.classList.remove('open');
+        dropdown.innerHTML = '';
+        return;
+      }
+
+      liveNav.style.display = 'flex';
+
+      dropdown.innerHTML = liveItems.map(item => `
+        <div class="live-live-item">
+          <div class="live-live-top">
+            <span class="live-live-time">${item.time}</span>
+            <span class="live-live-phase ${item.phase === 'ads' ? 'ads' : 'movie'}">
+              ${item.phaseLabel}
+            </span>
+          </div>
+          <div class="live-live-title">${item.title}</div>
+          <div class="live-live-hall">${item.hall} • остават ${item.remainingMinutes} мин</div>
+        </div>
+      `).join('');
+    }
+
+    function setupLiveNav() {
+      const liveNav = document.getElementById('live-nav');
+      const liveBtn = document.getElementById('live-nav-btn');
+
+      if (!liveNav || !liveBtn) return;
+
+      liveBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        liveNav.classList.toggle('open');
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!liveNav.contains(event.target)) {
+          liveNav.classList.remove('open');
+        }
+      });
     }
 
     function renderMovies() {
@@ -560,6 +652,7 @@
       }
 
       renderMovies();
+      renderLiveNav();
     }
 
     setInterval(() => {
