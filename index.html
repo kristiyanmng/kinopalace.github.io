@@ -301,20 +301,20 @@
       let preparedMovies = day.movies
         .map((movie, index) => {
           const visibleTimes = movie.times
-            .filter(time => isTimeStillVisible(day.date, time))
-            .sort((a, b) => parseTimeToDate(day.date, a) - parseTimeToDate(day.date, b));
+            .filter(item => isTimeStillVisible(day.date, item.time))
+            .sort((a, b) => parseTimeToDate(day.date, a.time) - parseTimeToDate(day.date, b.time));
 
           const activeProgress = movie.times
-            .map(time => ({
-              time,
-              progress: getScreeningProgress(day.date, time, movie.duration)
+            .map(item => ({
+              ...item,
+              progress: getScreeningProgress(day.date, item.time, movie.duration)
             }))
             .find(item => item.progress !== null);
 
           const upcomingTimes = movie.times
-            .map(time => ({
-              time,
-              dateObj: parseTimeToDate(day.date, time)
+            .map(item => ({
+              ...item,
+              dateObj: parseTimeToDate(day.date, item.time)
             }))
             .filter(item => item.dateObj > now)
             .sort((a, b) => a.dateObj - b.dateObj);
@@ -342,6 +342,8 @@
 
             nextCountdown = {
               time: upcomingTimes[0].time,
+              hall: upcomingTimes[0].hall,
+              type: upcomingTimes[0].type,
               text,
               dateObj: upcomingTimes[0].dateObj
             };
@@ -386,8 +388,13 @@
         card.className = 'card';
 
         const timesHtml = movie.visibleTimes.length
-          ? movie.visibleTimes.map(time => `<span class="time">${time}</span>`).join('')
-          : '<span class="time" style="opacity:.6;">Прожекцията вече тече</span>';
+          ? movie.visibleTimes.map(item => `
+              <span class="time ${item.type === 'vip' ? 'vip-time' : 'standard-time'}">
+                <span class="time-value">${item.time}</span>
+                <small class="hall-label">${item.hall || ''}</small>
+              </span>
+            `).join('')
+          : '<span class="time standard-time" style="opacity:.6;">Прожекцията вече тече</span>';
 
         const progressHtml = movie.activeProgress
           ? `
@@ -408,7 +415,7 @@
             <div class="next-countdown">
               <div class="next-countdown-header">
                 <span class="next-badge">Следваща прожекция</span>
-                <span class="next-time">${movie.nextCountdown.time}</span>
+                <span class="next-time">${movie.nextCountdown.time} • ${movie.nextCountdown.hall || ''}</span>
               </div>
               <div class="next-countdown-text">Започва след ${movie.nextCountdown.text}</div>
             </div>
@@ -475,7 +482,7 @@
       }
     }
 
-    function refreshLiveUI() {
+    function refreshUI() {
       if (!scheduleData) return;
 
       const now = new Date();
@@ -490,17 +497,17 @@
     }
 
     setInterval(() => {
-      refreshLiveUI();
+      refreshUI();
     }, 1000);
 
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
-        refreshLiveUI();
+        refreshUI();
       }
     });
 
     window.addEventListener('focus', () => {
-      refreshLiveUI();
+      refreshUI();
     });
   </script>
 </body>
