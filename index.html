@@ -407,14 +407,22 @@
       }
 
       if (isTodaySelected) {
-        const nextMovieIndex = preparedMovies.findIndex(
-          movie => !movie.activeProgress && movie.nextCountdown
-        );
+  const liveMovieIndex = preparedMovies.findIndex(
+    movie => movie.activeProgress && movie.nextCountdown
+  );
 
-        if (nextMovieIndex !== -1) {
-          preparedMovies[nextMovieIndex].showNextCountdown = true;
-        }
-      }
+  if (liveMovieIndex !== -1) {
+    preparedMovies[liveMovieIndex].showNextCountdown = true;
+  } else {
+    const nextMovieIndex = preparedMovies.findIndex(
+      movie => movie.nextCountdown
+    );
+
+    if (nextMovieIndex !== -1) {
+      preparedMovies[nextMovieIndex].showNextCountdown = true;
+    }
+  }
+}
 
       preparedMovies.forEach(movie => {
         const card = document.createElement('article');
