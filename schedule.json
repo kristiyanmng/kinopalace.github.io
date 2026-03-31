@@ -66,15 +66,14 @@
           "poster": "https://image.tmdb.org/t/p/original/waUDWpsm3oCrzU9P4XnsBAh2cso.jpg",
           "trailer": "https://www.youtube.com/embed/0SQJ8vBQ1XQ",
           "category": "D - Забранен за лица под 16",
-          "times": "times": [
+          "times": [
   {
     "time": "20:30",
     "hall": "Зала 3",
     "type": "standard"
   }
 ]
-        }
-      ]
+    
     },
     {
       "date": "01.04",
