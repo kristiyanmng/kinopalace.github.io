@@ -29,12 +29,13 @@
           "poster": "https://image.tmdb.org/t/p/original/gM1kQRPwOVW1Eos5tVWqcYmHR5S.jpg",
           "trailer": "https://www.youtube.com/embed/hkND-kMEbao",
           "category": "D - Забранен за лица под 16",
-          "times": ["times": [
+          "times": [
   {
     "time": "22:10",
     "hall": "VIP Зала",
     "type": "vip"
-  }]
+  }
+          ]
         },
         {
           "title": "Те ще те убият",
