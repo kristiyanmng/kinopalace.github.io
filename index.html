@@ -74,8 +74,8 @@
         return response.json();
       })
       .then(data => {
-        scheduleData = data;
-        document.getElementById('week-title').textContent = data.weekTitle;
+        scheduleData = normalizeScheduleData(data);
+        document.getElementById('week-title').textContent = scheduleData.weekTitle || 'Програма';
         setTodayAsActive();
         renderDays();
         renderMovies();
@@ -86,6 +86,39 @@
         document.getElementById('movies-container').innerHTML =
           '<p style="color:#fca5a5;font-weight:700;">Грешка при зареждане на schedule.json</p>';
       });
+
+    function normalizeScheduleData(data) {
+      return {
+        ...data,
+        days: (data.days || []).map(day => ({
+          ...day,
+          movies: (day.movies || []).map(movie => ({
+            ...movie,
+            times: normalizeMovieTimes(movie.times)
+          }))
+        }))
+      };
+    }
+
+    function normalizeMovieTimes(times) {
+      if (!Array.isArray(times)) return [];
+
+      return times.map(item => {
+        if (typeof item === 'string') {
+          return {
+            time: item,
+            hall: 'Зала 1',
+            type: 'standard'
+          };
+        }
+
+        return {
+          time: item.time || '',
+          hall: item.hall || 'Зала 1',
+          type: item.type || (item.hall === 'VIP Зала' ? 'vip' : 'standard')
+        };
+      }).filter(item => item.time);
+    }
 
     function parseDayDate(dayDate) {
       const [day, month] = dayDate.split('.');
@@ -113,7 +146,7 @@
     }
 
     function getVisibleDays() {
-      return scheduleData.days.filter(day => isFutureOrToday(day.date));
+      return (scheduleData.days || []).filter(day => isFutureOrToday(day.date));
     }
 
     function setTodayAsActive() {
@@ -220,7 +253,7 @@
 
     function parseTimeToDate(dayDate, timeString) {
       const [day, month] = dayDate.split('.');
-      const [hours, minutes] = timeString.split(':');
+      const [hours, minutes] = String(timeString).split(':');
       const year = new Date().getFullYear();
 
       return new Date(
@@ -298,7 +331,7 @@
       const now = new Date();
       const isTodaySelected = isTodayDay(day.date);
 
-      let preparedMovies = day.movies
+      let preparedMovies = (day.movies || [])
         .map((movie, index) => {
           const visibleTimes = movie.times
             .filter(item => isTimeStillVisible(day.date, item.time))
