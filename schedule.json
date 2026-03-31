@@ -84,8 +84,8 @@
       "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
       "category": "A - Препоръчва се за деца",
       "times": [
-        { "time": "12:30", "hall": "VIP зала", "type": "vip" },
-        { "time": "14:15", "hall": "VIP зала", "type": "vip" }
+        { "time": "12:30", "hall": "VIP Зала", "type": "vip" },
+        { "time": "14:15", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -97,8 +97,8 @@
       "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "16:00", "hall": "VIP зала", "type": "vip" },
-        { "time": "19:00", "hall": "VIP зала", "type": "vip" }
+        { "time": "16:00", "hall": "VIP Зала", "type": "vip" },
+        { "time": "19:00", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -110,7 +110,7 @@
       "trailer": "https://www.youtube.com/embed/hkND-kMEbao",
       "category": "D - Забранен за лица под 16",
       "times": [
-        { "time": "22:10", "hall": "VIP зала", "type": "vip" }
+        { "time": "22:10", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -193,8 +193,8 @@
       "trailer": "https://www.youtube.com/embed/8JlwCMpmdts",
       "category": "A - Препоръчва се за деца",
       "times": [
-        { "time": "12:30", "hall": "VIP зала", "type": "vip" },
-        { "time": "14:15", "hall": "VIP зала", "type": "vip" }
+        { "time": "12:30", "hall": "VIP Зала", "type": "vip" },
+        { "time": "14:15", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -206,8 +206,8 @@
       "trailer": "https://www.youtube.com/embed/kNR6GagJq38",
       "category": "B - Без възрастови ограничения",
       "times": [
-        { "time": "16:00", "hall": "VIP зала", "type": "vip" },
-        { "time": "19:00", "hall": "VIP зала", "type": "vip" }
+        { "time": "16:00", "hall": "VIP Зала", "type": "vip" },
+        { "time": "19:00", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
@@ -219,7 +219,7 @@
       "trailer": "https://www.youtube.com/embed/hkND-kMEbao",
       "category": "D - Забранен за лица под 16",
       "times": [
-        { "time": "22:10", "hall": "VIP зала", "type": "vip" }
+        { "time": "22:10", "hall": "VIP Зала", "type": "vip" }
       ]
     },
     {
