@@ -45,7 +45,7 @@
           "poster": "https://image.tmdb.org/t/p/original/qnTdOizsXBzYu3uIbfhHSfE29TE.jpg",
           "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
           "category": "D - Забранен за лица под 16",
-          "times": ["times": [
+          "times": [
   {
     "time": "20:00",
     "hall": "Зала 2",
@@ -56,7 +56,7 @@
     "hall": "Зала 2",
     "type": "standard"
   }
-]]
+]
         },
         {
           "title": "Докато смъртта ни раздели 2",
