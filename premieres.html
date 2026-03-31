@@ -14,15 +14,15 @@
       <img src="Blue White Business ID Card.png" alt="Palace Кино" />
     </a>
 
-        <div class="nav-wrap">
-        <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
-        <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">☰</label>
+    <div class="nav-wrap">
+      <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+      <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">☰</label>
 
-        <nav>
-          <a href="index.html">Начало / Програма</a>
-          <a href="premieres.html">Премиери в България</a>
-        </nav>
-      </div>
+      <nav>
+        <a href="index.html">Начало / Програма</a>
+        <a href="premieres.html">Премиери в България</a>
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -39,7 +39,7 @@
 <footer>
   <div class="container">
     Официалният сайт на кино Palace:
-    <a href="https://kinopalace.bg/" target="_blank">НАЧАЛО</a>
+    <a href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">НАЧАЛО</a>
   </div>
 </footer>
 
@@ -55,36 +55,42 @@ fetch('premieres.json')
     premieresData = data;
     renderPremieres();
   })
-  .catch(() => {
+  .catch(error => {
+    console.error(error);
     document.getElementById('premieres-container').innerHTML =
       '<p style="color:#fca5a5;font-weight:700;">Грешка при зареждане на premieres.json</p>';
   });
 
 function parseDate(dateStr) {
-  const [day, month] = dateStr.split('.');
+  const [day, month] = String(dateStr).split('.');
   const year = new Date().getFullYear();
-  return new Date(year, month - 1, day);
+  return new Date(year, Number(month) - 1, Number(day), 0, 0, 0, 0);
 }
 
 function isFuture(dateStr) {
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
 
   const d = parseDate(dateStr);
-  d.setHours(0,0,0,0);
+  d.setHours(0, 0, 0, 0);
 
-  return d >= today;
+  return d > today;
 }
 
 function renderPremieres() {
   const container = document.getElementById('premieres-container');
 
+  if (!premieresData || !Array.isArray(premieresData.premieres)) {
+    container.innerHTML = '<p style="color:#fca5a5;font-weight:700;">Невалиден формат на premieres.json</p>';
+    return;
+  }
+
   const movies = premieresData.premieres
-    .filter(m => isFuture(m.date))
-    .sort((a,b) => parseDate(a.date) - parseDate(b.date));
+    .filter(movie => movie && movie.date && isFuture(movie.date))
+    .sort((a, b) => parseDate(a.date) - parseDate(b.date));
 
   if (movies.length === 0) {
-    container.innerHTML = '<p style="color:#fde68a;">Няма предстоящи премиери.</p>';
+    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма предстоящи премиери.</p>';
     return;
   }
 
@@ -95,9 +101,9 @@ function renderPremieres() {
     el.className = 'premiere';
 
     el.innerHTML = `
-      <img src="${movie.poster}" alt="${movie.title}">
+      <img src="${movie.poster || ''}" alt="${movie.title || 'Премиера'}">
       <div class="premiere-body">
-        <h3>${movie.title}</h3>
+        <h3>${movie.title || 'Без заглавие'}</h3>
 
         <div class="date">Премиера: ${movie.date}</div>
 
@@ -108,9 +114,11 @@ function renderPremieres() {
 
         <p>${movie.description || ''}</p>
 
-        <button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">
-          ▶ Трейлър
-        </button>
+        ${
+          movie.trailer
+            ? `<button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">▶ Трейлър</button>`
+            : ''
+        }
       </div>
     `;
 
@@ -118,8 +126,8 @@ function renderPremieres() {
   });
 }
 
-function openTrailer(url){
-  window.open(url, '_blank');
+function openTrailer(url) {
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
 </script>
 
