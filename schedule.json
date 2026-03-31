@@ -33,17 +33,7 @@
           "poster": "https://image.tmdb.org/t/p/original/qnTdOizsXBzYu3uIbfhHSfE29TE.jpg",
           "trailer": "https://www.youtube.com/embed/N-_VTaweoNc",
           "category": "D - Забранен за лица под 16",
-          "times": ["18:00", "20:00", "22:00"]
-        },
-        {
-          "title": "Кърпена глава",
-          "genre": "Анимация",
-          "duration": "92 минути",
-          "version": "2D / дублиран",
-          "poster": "https://image.tmdb.org/t/p/original/zIFFlcvilrrbUlveEbIsFAtUfGT.jpg",
-          "trailer": "https://www.youtube.com/embed/oGEWsJhpOF8",
-          "category": "B - Без възрастови ограничения",
-          "times": ["16:30"]
+          "times": ["20:00", "22:00"]
         },
         {
           "title": "Звезда",
