@@ -472,8 +472,15 @@
           `
           : '';
 
-        const versionFormatted = String(movie.version || '')
-          .replace('3D', '<span class="tag-3d">3D</span>');
+        const versionText = String(movie.version || '');
+const has3D = versionText.includes('3D');
+const isDubbed = versionText.toLowerCase().includes('дублиран');
+
+const versionFormatted = `
+  ${has3D ? '<span class="tag-3d">3D</span>' : ''}
+  <span>${versionText.replace('3D / ', '').replace('3D', '').trim()}</span>
+  ${isDubbed ? '<img src="speaker.png" alt="Дублиран" class="dub-icon">' : ''}
+`;
 
         card.innerHTML = `
           <img class="poster" src="${movie.poster}" alt="${movie.title}">
