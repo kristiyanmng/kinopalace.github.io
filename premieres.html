@@ -21,6 +21,7 @@
       <nav>
         <a href="index.html">Начало / Програма</a>
         <a href="premieres.html">Премиери в България</a>
+        <a href="admin.html">Админ</a>
       </nav>
     </div>
   </div>
@@ -44,81 +45,80 @@
 </footer>
 
 <script>
+const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
 let premieresData = null;
 
-fetch('premieres.json')
-  .then(res => {
-    if (!res.ok) throw new Error('Грешка при зареждане');
-    return res.json();
-  })
-  .then(data => {
+loadPremieres();
+
+async function loadPremieres() {
+  try {
+    const res = await fetch(`${API_BASE}/api/export-premieres`);
+
+    if (!res.ok) throw new Error("Грешка при зареждане");
+
+    const data = await res.json();
     premieresData = data;
     renderPremieres();
-  })
-  .catch(error => {
-    console.error(error);
-    document.getElementById('premieres-container').innerHTML =
-      '<p style="color:#fca5a5;font-weight:700;">Грешка при зареждане на premieres.json</p>';
-  });
+  } catch (e) {
+    document.getElementById("premieres-container").innerHTML = `
+      <div style="padding:28px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;">
+        <h2 style="margin:0 0 12px;color:#fff;">В момента се прави подобрение по страницата</h2>
+        <p style="margin:0;color:#cbd5e1;font-size:18px;line-height:1.6;">
+          Надяваме се възможно най-скоро да възстановим достъпа до премиерите.
+        </p>
+      </div>
+    `;
+  }
+}
 
 function parseDate(dateStr) {
-  const [day, month] = String(dateStr).split('.');
+  const [day, month] = dateStr.split(".");
   const year = new Date().getFullYear();
-  return new Date(year, Number(month) - 1, Number(day), 0, 0, 0, 0);
+  return new Date(year, Number(month) - 1, Number(day));
 }
 
 function isFuture(dateStr) {
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  today.setHours(0,0,0,0);
 
   const d = parseDate(dateStr);
-  d.setHours(0, 0, 0, 0);
+  d.setHours(0,0,0,0);
 
-  return d > today;
+  return d >= today;
 }
 
 function renderPremieres() {
-  const container = document.getElementById('premieres-container');
+  const container = document.getElementById("premieres-container");
 
-  if (!premieresData || !Array.isArray(premieresData.premieres)) {
-    container.innerHTML = '<p style="color:#fca5a5;font-weight:700;">Невалиден формат на premieres.json</p>';
-    return;
-  }
-
-  const movies = premieresData.premieres
-    .filter(movie => movie && movie.date && isFuture(movie.date))
-    .sort((a, b) => parseDate(a.date) - parseDate(b.date));
+  const movies = (premieresData.premieres || [])
+    .filter(m => isFuture(m.date))
+    .sort((a,b) => parseDate(a.date) - parseDate(b.date));
 
   if (movies.length === 0) {
-    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма предстоящи премиери.</p>';
+    container.innerHTML = '<p style="color:#fde68a;">Няма предстоящи премиери.</p>';
     return;
   }
 
-  container.innerHTML = '';
+  container.innerHTML = "";
 
   movies.forEach(movie => {
-    const el = document.createElement('div');
-    el.className = 'premiere';
+    const el = document.createElement("div");
+    el.className = "premiere";
 
     el.innerHTML = `
-      <img src="${movie.poster || ''}" alt="${movie.title || 'Премиера'}">
+      <img src="${movie.poster}" alt="${movie.title}">
       <div class="premiere-body">
-        <h3>${movie.title || 'Без заглавие'}</h3>
+        <h3>${movie.title}</h3>
 
         <div class="date">Премиера: ${movie.date}</div>
 
         <div class="meta">
-          <div><strong>Времетраене:</strong> ${movie.duration || 'Няма информация'}</div>
-          <div><strong>Категория:</strong> ${movie.category || 'Няма информация'}</div>
+          <div><strong>Времетраене:</strong> ${movie.duration || "Няма информация"}</div>
+          <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
+          <div><strong>Версия:</strong> ${movie.version || "Няма информация"}</div>
         </div>
 
-        <p>${movie.description || ''}</p>
-
-        ${
-          movie.trailer
-            ? `<button class="trailer-btn" onclick="openTrailer('${movie.trailer}')">▶ Трейлър</button>`
-            : ''
-        }
+        <p>${movie.description || ""}</p>
       </div>
     `;
 
@@ -126,9 +126,7 @@ function renderPremieres() {
   });
 }
 
-function openTrailer(url) {
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
+setInterval(loadPremieres, 60000);
 </script>
 
 </body>
