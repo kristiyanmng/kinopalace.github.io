@@ -14,7 +14,6 @@
       --muted:#cbd5e1;
       --accent:#f59e0b;
       --danger:#ef4444;
-      --ok:#22c55e;
     }
 
     *{box-sizing:border-box}
@@ -131,6 +130,7 @@
       color:var(--muted);
       font-size:14px;
       line-height:1.5;
+      word-break:break-word;
     }
 
     .status{
@@ -201,6 +201,12 @@
 
         <label>Версия</label>
         <input id="movie-version" type="text" placeholder="2D / дублиран" />
+
+        <label>Трейлър URL</label>
+        <input id="movie-trailer" type="text" placeholder="https://www.youtube.com/embed/..." />
+
+        <label>Категория</label>
+        <input id="movie-category" type="text" placeholder="B - Без възрастови ограничения" />
 
         <button class="btn" onclick="addMovie()">Добави филм</button>
       </div>
@@ -335,7 +341,9 @@
             ID: ${movie.id}<br>
             Жанр: ${movie.genre || "-"}<br>
             Версия: ${movie.version || "-"}<br>
-            Продължителност: ${movie.duration || 0} мин
+            Продължителност: ${movie.duration || 0} мин<br>
+            Категория: ${movie.category || "-"}<br>
+            Трейлър: ${movie.trailer || "-"}
           </div>
           <button class="btn-danger btn-small" onclick="deleteMovie(${movie.id})">Изтрий филм</button>
         `;
@@ -396,7 +404,9 @@
             image: document.getElementById("movie-image").value.trim(),
             genre: document.getElementById("movie-genre").value.trim(),
             duration: Number(document.getElementById("movie-duration").value || 0),
-            version: document.getElementById("movie-version").value.trim()
+            version: document.getElementById("movie-version").value.trim(),
+            trailer: document.getElementById("movie-trailer").value.trim(),
+            category: document.getElementById("movie-category").value.trim()
           })
         });
 
