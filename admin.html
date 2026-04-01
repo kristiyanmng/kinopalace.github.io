@@ -124,6 +124,13 @@
       font-weight:800;
     }
 
+    .btn-logout{
+      background:#475569;
+      color:#fff;
+      width:auto;
+      margin:0;
+    }
+
     .actions-row{
       display:flex;
       gap:8px;
@@ -188,6 +195,27 @@
       margin-bottom:8px;
     }
 
+    .login-wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .login-card{
+      width:min(460px, 100%);
+      background:rgba(17,24,39,.96);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:24px;
+      box-shadow:0 20px 50px rgba(0,0,0,.35);
+    }
+
+    .hidden{
+      display:none !important;
+    }
+
     @media (max-width:700px){
       .row{grid-template-columns:1fr}
       h1{font-size:28px}
@@ -195,141 +223,173 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="topbar">
-      <a href="index.html">← Обратно към сайта</a>
-      <a href="premieres.html">Премиери</a>
+  <div id="login-screen" class="login-wrap">
+    <div class="login-card">
+      <h1 style="margin-bottom:10px;">Админ вход</h1>
+      <p class="muted" style="margin-top:0;">Без правилната парола панелът няма да прави нищо.</p>
+
+      <div id="login-status" class="status"></div>
+
+      <label>Парола</label>
+      <input id="admin-password" type="password" placeholder="Въведи админ парола" />
+
+      <button class="btn" onclick="login()">Вход</button>
     </div>
+  </div>
 
-    <h1>Админ панел</h1>
-    <div id="status" class="status"></div>
+  <div id="admin-app" class="hidden">
+    <div class="container">
+      <div class="topbar">
+        <a href="index.html">← Обратно към сайта</a>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <a href="premieres.html">Премиери</a>
+          <button class="btn-logout" onclick="logout()">Изход</button>
+        </div>
+      </div>
 
-    <div class="grid">
-      <div class="card">
-        <h2>Филм</h2>
-        <div id="movie-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
+      <h1>Админ панел</h1>
+      <div id="status" class="status"></div>
 
-        <input id="movie-id" type="hidden" />
+      <div class="grid">
+        <div class="card">
+          <h2>Филм</h2>
+          <div id="movie-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
 
-        <label>Заглавие</label>
-        <input id="movie-title" type="text" />
+          <input id="movie-id" type="hidden" />
 
-        <label>Описание</label>
-        <textarea id="movie-description"></textarea>
+          <label>Заглавие</label>
+          <input id="movie-title" type="text" />
 
-        <label>Постер URL</label>
-        <input id="movie-image" type="text" />
+          <label>Описание</label>
+          <textarea id="movie-description"></textarea>
 
-        <div class="row">
-          <div>
-            <label>Жанр</label>
-            <input id="movie-genre" type="text" />
+          <label>Постер URL</label>
+          <input id="movie-image" type="text" />
+
+          <div class="row">
+            <div>
+              <label>Жанр</label>
+              <input id="movie-genre" type="text" />
+            </div>
+            <div>
+              <label>Продължителност (в минути)</label>
+              <input id="movie-duration" type="number" />
+            </div>
           </div>
-          <div>
-            <label>Продължителност (в минути)</label>
-            <input id="movie-duration" type="number" />
-          </div>
+
+          <label>Версия</label>
+          <input id="movie-version" type="text" placeholder="2D / дублиран" />
+
+          <label>Трейлър URL</label>
+          <input id="movie-trailer" type="text" placeholder="https://www.youtube.com/embed/..." />
+
+          <label>Категория</label>
+          <input id="movie-category" type="text" placeholder="B - Без възрастови ограничения" />
+
+          <button class="btn" onclick="saveMovie()">Запази филм</button>
+          <button class="btn-secondary" onclick="resetMovieForm()">Изчисти форма</button>
         </div>
 
-        <label>Версия</label>
-        <input id="movie-version" type="text" placeholder="2D / дублиран" />
+        <div class="card">
+          <h2>Прожекция</h2>
+          <div id="showtime-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
 
-        <label>Трейлър URL</label>
-        <input id="movie-trailer" type="text" placeholder="https://www.youtube.com/embed/..." />
+          <input id="showtime-id" type="hidden" />
 
-        <label>Категория</label>
-        <input id="movie-category" type="text" placeholder="B - Без възрастови ограничения" />
+          <label>Филм</label>
+          <select id="showtime-movie"></select>
 
-        <button class="btn" onclick="saveMovie()">Запази филм</button>
-        <button class="btn-secondary" onclick="resetMovieForm()">Изчисти форма</button>
-      </div>
-
-      <div class="card">
-        <h2>Прожекция</h2>
-        <div id="showtime-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
-
-        <input id="showtime-id" type="hidden" />
-
-        <label>Филм</label>
-        <select id="showtime-movie"></select>
-
-        <div class="row">
-          <div>
-            <label>Дата</label>
-            <input id="showtime-date" type="text" placeholder="01.04" />
+          <div class="row">
+            <div>
+              <label>Дата</label>
+              <input id="showtime-date" type="text" placeholder="01.04" />
+            </div>
+            <div>
+              <label>Час</label>
+              <input id="showtime-time" type="text" placeholder="19:30" />
+            </div>
           </div>
-          <div>
-            <label>Час</label>
-            <input id="showtime-time" type="text" placeholder="19:30" />
+
+          <label>Зала</label>
+          <input id="showtime-hall" type="text" value="Зала 1" />
+
+          <div class="row">
+            <div>
+              <label>3D</label>
+              <select id="showtime-is3d">
+                <option value="0">Не</option>
+                <option value="1">Да</option>
+              </select>
+            </div>
+            <div>
+              <label>Дублиран</label>
+              <select id="showtime-isdubbed">
+                <option value="0">Не</option>
+                <option value="1">Да</option>
+              </select>
+            </div>
           </div>
+
+          <button class="btn" onclick="saveShowtime()">Запази прожекция</button>
+          <button class="btn-secondary" onclick="resetShowtimeForm()">Изчисти форма</button>
         </div>
 
-        <label>Зала</label>
-        <input id="showtime-hall" type="text" value="Зала 1" />
+        <div class="card">
+          <h2>Премиера</h2>
+          <div id="premiere-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
 
-        <div class="row">
-          <div>
-            <label>3D</label>
-            <select id="showtime-is3d">
-              <option value="0">Не</option>
-              <option value="1">Да</option>
-            </select>
-          </div>
-          <div>
-            <label>Дублиран</label>
-            <select id="showtime-isdubbed">
-              <option value="0">Не</option>
-              <option value="1">Да</option>
-            </select>
-          </div>
+          <input id="premiere-id" type="hidden" />
+
+          <label>Филм</label>
+          <select id="premiere-movie"></select>
+
+          <label>Дата на премиера</label>
+          <input id="premiere-date" type="text" placeholder="29.04" />
+
+          <button class="btn" onclick="savePremiere()">Запази премиера</button>
+          <button class="btn-secondary" onclick="resetPremiereForm()">Изчисти форма</button>
         </div>
 
-        <button class="btn" onclick="saveShowtime()">Запази прожекция</button>
-        <button class="btn-secondary" onclick="resetShowtimeForm()">Изчисти форма</button>
-      </div>
+        <div class="card">
+          <h2>Филми</h2>
+          <div id="movies-list" class="list"></div>
+        </div>
 
-      <div class="card">
-        <h2>Премиера</h2>
-        <div id="premiere-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
+        <div class="card">
+          <h2>Прожекции</h2>
+          <div id="showtimes-list" class="list"></div>
+        </div>
 
-        <input id="premiere-id" type="hidden" />
-
-        <label>Филм</label>
-        <select id="premiere-movie"></select>
-
-        <label>Дата на премиера</label>
-        <input id="premiere-date" type="text" placeholder="29.04" />
-
-        <button class="btn" onclick="savePremiere()">Запази премиера</button>
-        <button class="btn-secondary" onclick="resetPremiereForm()">Изчисти форма</button>
-      </div>
-
-      <div class="card">
-        <h2>Филми</h2>
-        <div id="movies-list" class="list"></div>
-      </div>
-
-      <div class="card">
-        <h2>Прожекции</h2>
-        <div id="showtimes-list" class="list"></div>
-      </div>
-
-      <div class="card">
-        <h2>Премиери</h2>
-        <div id="premieres-list" class="list"></div>
+        <div class="card">
+          <h2>Премиери</h2>
+          <div id="premieres-list" class="list"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
     const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
+    const STORAGE_KEY = "kinopalace_admin_key";
 
     let moviesCache = [];
     let showtimesCache = [];
     let premieresCache = [];
 
-    function showStatus(message, type = "ok") {
-      const el = document.getElementById("status");
+    function getAdminKey() {
+      return localStorage.getItem(STORAGE_KEY) || "";
+    }
+
+    function setAdminKey(value) {
+      localStorage.setItem(STORAGE_KEY, value);
+    }
+
+    function clearAdminKey() {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+
+    function showStatus(message, type = "ok", targetId = "status") {
+      const el = document.getElementById(targetId);
       el.className = `status show ${type}`;
       el.textContent = message;
       setTimeout(() => {
@@ -338,10 +398,19 @@
       }, 4000);
     }
 
-    async function api(path, options = {}) {
+    async function api(path, options = {}, protectedRoute = false) {
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      };
+
+      if (protectedRoute) {
+        headers["X-Admin-Key"] = getAdminKey();
+      }
+
       const res = await fetch(API_BASE + path, {
-        headers: { "Content-Type": "application/json" },
-        ...options
+        ...options,
+        headers
       });
 
       const contentType = res.headers.get("content-type") || "";
@@ -354,6 +423,66 @@
       }
 
       return data;
+    }
+
+    async function login() {
+      const password = document.getElementById("admin-password").value.trim();
+
+      if (!password) {
+        showStatus("Въведи парола.", "error", "login-status");
+        return;
+      }
+
+      try {
+        const res = await fetch(API_BASE + "/api/check-auth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Key": password
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error("Грешна парола");
+        }
+
+        setAdminKey(password);
+        document.getElementById("login-screen").classList.add("hidden");
+        document.getElementById("admin-app").classList.remove("hidden");
+        await refreshAll();
+      } catch {
+        showStatus("Грешна парола.", "error", "login-status");
+      }
+    }
+
+    function logout() {
+      clearAdminKey();
+      document.getElementById("admin-app").classList.add("hidden");
+      document.getElementById("login-screen").classList.remove("hidden");
+      document.getElementById("admin-password").value = "";
+    }
+
+    async function autoLogin() {
+      const saved = getAdminKey();
+      if (!saved) return;
+
+      try {
+        const res = await fetch(API_BASE + "/api/check-auth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Key": saved
+          }
+        });
+
+        if (!res.ok) throw new Error();
+
+        document.getElementById("login-screen").classList.add("hidden");
+        document.getElementById("admin-app").classList.remove("hidden");
+        await refreshAll();
+      } catch {
+        clearAdminKey();
+      }
     }
 
     function resetMovieForm() {
@@ -556,19 +685,20 @@
               id: Number(id),
               ...payload
             })
-          });
+          }, true);
           showStatus("Филмът е редактиран.");
         } else {
           await api("/api/add-movie", {
             method: "POST",
             body: JSON.stringify(payload)
-          });
+          }, true);
           showStatus("Филмът е добавен.");
         }
 
         resetMovieForm();
         await refreshAll();
       } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
     }
@@ -593,19 +723,20 @@
               id: Number(id),
               ...payload
             })
-          });
+          }, true);
           showStatus("Прожекцията е редактирана.");
         } else {
           await api("/api/add-showtime", {
             method: "POST",
             body: JSON.stringify(payload)
-          });
+          }, true);
           showStatus("Прожекцията е добавена.");
         }
 
         resetShowtimeForm();
         await refreshAll();
       } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
     }
@@ -626,19 +757,20 @@
               id: Number(id),
               ...payload
             })
-          });
+          }, true);
           showStatus("Премиерата е редактирана.");
         } else {
           await api("/api/add-premiere", {
             method: "POST",
             body: JSON.stringify(payload)
-          });
+          }, true);
           showStatus("Премиерата е добавена.");
         }
 
         resetPremiereForm();
         await refreshAll();
       } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
     }
@@ -649,11 +781,12 @@
         await api("/api/delete-movie", {
           method: "POST",
           body: JSON.stringify({ id })
-        });
+        }, true);
         showStatus("Филмът е изтрит.");
         resetMovieForm();
         await refreshAll();
       } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
     }
@@ -664,11 +797,12 @@
         await api("/api/delete-showtime", {
           method: "POST",
           body: JSON.stringify({ id })
-        });
+        }, true);
         showStatus("Прожекцията е изтрита.");
         resetShowtimeForm();
         await refreshAll();
       } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
     }
@@ -679,11 +813,12 @@
         await api("/api/delete-premiere", {
           method: "POST",
           body: JSON.stringify({ id })
-        });
+        }, true);
         showStatus("Премиерата е изтрита.");
         resetPremiereForm();
         await refreshAll();
       } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
     }
@@ -694,7 +829,13 @@
       await loadPremieres();
     }
 
-    refreshAll();
+    document.getElementById("admin-password").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        login();
+      }
+    });
+
+    autoLogin();
   </script>
 </body>
 </html>
