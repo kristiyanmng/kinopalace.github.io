@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>В процес на обновяване</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --bg2:#151d33;
+      --line:rgba(255,255,255,.08);
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --accent:#f59e0b;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+
+    .box{
+      width:min(760px,100%);
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:36px 28px;
+      text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,.3);
+    }
+
+    h1{
+      margin:0 0 16px;
+      font-size:34px;
+      line-height:1.2;
+    }
+
+    p{
+      margin:0;
+      color:var(--muted);
+      font-size:19px;
+      line-height:1.7;
+    }
+
+    .badge{
+      display:inline-block;
+      margin-bottom:18px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(245,158,11,.14);
+      color:#fde68a;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .link{
+      display:inline-block;
+      margin-top:22px;
+      color:#fde68a;
+      text-decoration:none;
+      font-weight:700;
+      border-bottom:1px solid rgba(253,230,138,.35);
+      padding-bottom:2px;
+    }
+
+    .link:hover{
+      color:#fdba74;
+    }
+
+    @media (max-width:640px){
+      .box{
+        padding:28px 18px;
+      }
+
+      h1{
+        font-size:26px;
+      }
+
+      p{
+        font-size:17px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="badge">Временно съобщение</div>
+    <h1>Сайтът е в процес на обновяване</h1>
+    <p>
+      В момента работим по подобрения по страницата и се надяваме
+      възможно най-скоро да възстановим пълния достъп до нея.
+    </p>
+    <a class="link" href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">
+      Официален сайт на кино Palace
+    </a>
+  </div>
+</body>
+</html>
