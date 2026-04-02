@@ -33,13 +33,10 @@
       <h1 id="week-title">Програма</h1>
     </section>
 
-    <div id="live-panel" class="live-panel hidden">
-      <div class="live-panel-header">
-        <span>LIVE сега</span>
-        <button id="live-panel-close" class="live-panel-close" type="button" aria-label="Затвори">×</button>
-      </div>
-      <div id="live-panel-list" class="live-panel-list"></div>
-    </div>
+    <section id="live-strip" class="live-strip hidden">
+      <div class="live-strip-title">LIVE сега</div>
+      <div id="live-strip-list" class="live-strip-list"></div>
+    </section>
 
     <div class="days-nav">
       <button class="days-arrow" id="days-prev" aria-label="Предишни дни">‹</button>
@@ -78,7 +75,6 @@
     let activeDayIndex = 0;
     let lastDate = new Date().getDate();
     let daysNavigationInitialized = false;
-    let livePanelInitialized = false;
 
     loadSchedule();
 
@@ -100,10 +96,9 @@
         renderDays();
         renderMovies();
         renderLiveNavButton();
-        renderLivePanel();
+        renderLiveStrip();
         setupDaysNavigation();
         setupLiveNavClick();
-        setupLivePanel();
       } catch (error) {
         console.error(error);
         document.getElementById("movies-container").innerHTML = `
@@ -258,7 +253,7 @@
             activeDayIndex = index;
             renderDays();
             renderMovies();
-            renderLivePanel();
+            renderLiveStrip();
           });
         }
 
@@ -336,11 +331,10 @@
       const entries = [];
 
       (todayDay.movies || []).forEach((movie, movieIndex) => {
-        (movie.times || []).forEach((timeItem, timeIndex) => {
+        (movie.times || []).forEach((timeItem) => {
           if (timeItem.status === "ads_started" || timeItem.status === "screening_started") {
             entries.push({
               movieIndex,
-              timeIndex,
               title: movie.title,
               time: timeItem.scheduled_time || timeItem.time,
               hall: timeItem.hall || "",
@@ -377,6 +371,39 @@
       }
     }
 
+    function renderLiveStrip() {
+      const strip = document.getElementById("live-strip");
+      const list = document.getElementById("live-strip-list");
+      if (!strip || !list) return;
+
+      const liveEntries = getLiveEntriesToday();
+
+      if (!liveEntries.length) {
+        strip.classList.add("hidden");
+        list.innerHTML = "";
+        return;
+      }
+
+      strip.classList.remove("hidden");
+      list.innerHTML = "";
+
+      liveEntries.forEach(entry => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "live-strip-item";
+        item.innerHTML = `
+          <span class="live-strip-badge ${entry.status === 'ads_started' ? 'ads' : 'movie'}">
+            ${entry.status === 'ads_started' ? 'Реклами' : 'В прожекция'}
+          </span>
+          <span class="live-strip-time">${entry.time}</span>
+          <span class="live-strip-title">${entry.title}</span>
+          <span class="live-strip-hall">${entry.hall || 'Зала 1'}</span>
+        `;
+        item.addEventListener("click", () => scrollToLiveCard(entry.movieIndex));
+        list.appendChild(item);
+      });
+    }
+
     function setupLiveNavClick() {
       const btn = document.getElementById("live-nav-btn");
       if (!btn || btn.dataset.bound === "1") return;
@@ -391,45 +418,17 @@
           menuToggle.checked = false;
         }
 
-        toggleLivePanel(true);
+        const strip = document.getElementById("live-strip");
+        if (strip && !strip.classList.contains("hidden")) {
+          strip.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+
+        const firstLiveCard = document.querySelector(".card-live");
+        if (firstLiveCard) {
+          firstLiveCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       });
-    }
-
-    function setupLivePanel() {
-      if (livePanelInitialized) return;
-      livePanelInitialized = true;
-
-      const closeBtn = document.getElementById("live-panel-close");
-      if (closeBtn) {
-        closeBtn.addEventListener("click", () => toggleLivePanel(false));
-      }
-
-      document.addEventListener("click", (e) => {
-        const panel = document.getElementById("live-panel");
-        const btn = document.getElementById("live-nav-btn");
-        if (!panel || panel.classList.contains("hidden")) return;
-
-        if (panel.contains(e.target)) return;
-        if (btn && btn.contains(e.target)) return;
-
-        toggleLivePanel(false);
-      });
-    }
-
-    function toggleLivePanel(forceState = null) {
-      const panel = document.getElementById("live-panel");
-      if (!panel) return;
-
-      const shouldOpen = forceState === null
-        ? panel.classList.contains("hidden")
-        : forceState;
-
-      if (shouldOpen) {
-        renderLivePanel();
-        panel.classList.remove("hidden");
-      } else {
-        panel.classList.add("hidden");
-      }
     }
 
     function scrollToLiveCard(movieIndex) {
@@ -437,41 +436,6 @@
       if (target) {
         target.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-      toggleLivePanel(false);
-    }
-
-    function renderLivePanel() {
-      const panel = document.getElementById("live-panel");
-      const list = document.getElementById("live-panel-list");
-      if (!panel || !list) return;
-
-      const liveEntries = getLiveEntriesToday();
-
-      if (!liveEntries.length) {
-        panel.classList.add("hidden");
-        list.innerHTML = "";
-        return;
-      }
-
-      list.innerHTML = "";
-
-      liveEntries.forEach(entry => {
-        const item = document.createElement("button");
-        item.type = "button";
-        item.className = "live-panel-item";
-        item.innerHTML = `
-          <div class="live-panel-item-top">
-            <span class="live-panel-badge ${entry.status === 'ads_started' ? 'ads' : 'movie'}">
-              ${entry.status === 'ads_started' ? 'Реклами' : 'В прожекция'}
-            </span>
-            <span class="live-panel-time">${entry.time}</span>
-          </div>
-          <div class="live-panel-title">${entry.title}</div>
-          <div class="live-panel-hall">${entry.hall || "Зала 1"}</div>
-        `;
-        item.addEventListener("click", () => scrollToLiveCard(entry.movieIndex));
-        list.appendChild(item);
-      });
     }
 
     function renderMovies() {
@@ -703,7 +667,7 @@
       });
 
       renderLiveNavButton();
-      renderLivePanel();
+      renderLiveStrip();
     }
 
     function openTrailer(url) {
@@ -745,7 +709,7 @@
 
       renderMovies();
       renderLiveNavButton();
-      renderLivePanel();
+      renderLiveStrip();
     }
 
     setInterval(() => {
