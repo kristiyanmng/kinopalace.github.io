@@ -34,7 +34,7 @@
     </section>
 
     <section id="live-strip" class="live-strip hidden">
-      <div class="live-strip-title">LIVE сега</div>
+      <div class="live-strip-title">Активни прожекции</div>
       <div id="live-strip-list" class="live-strip-list"></div>
     </section>
 
@@ -392,12 +392,15 @@
         item.type = "button";
         item.className = "live-strip-item";
         item.innerHTML = `
-          <span class="live-strip-badge ${entry.status === 'ads_started' ? 'ads' : 'movie'}">
-            ${entry.status === 'ads_started' ? 'Реклами' : 'В прожекция'}
-          </span>
-          <span class="live-strip-time">${entry.time}</span>
-          <span class="live-strip-title">${entry.title}</span>
-          <span class="live-strip-hall">${entry.hall || 'Зала 1'}</span>
+          <div class="live-strip-item-top">
+            <span class="live-strip-badge ${entry.status === 'ads_started' ? 'ads' : 'movie'}">
+              ${entry.status === 'ads_started' ? 'Реклами' : 'В прожекция'}
+            </span>
+            <span class="live-strip-time">${entry.time}</span>
+          </div>
+
+          <div class="live-strip-movie">${entry.title}</div>
+          <div class="live-strip-hall">${entry.hall || 'Зала 1'}</div>
         `;
         item.addEventListener("click", () => scrollToLiveCard(entry.movieIndex));
         list.appendChild(item);
