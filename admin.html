@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Админ панел</title>
+  <title>Админ панел v2</title>
   <style>
     :root{
       --bg:#0b1020;
@@ -13,12 +13,15 @@
       --text:#f8fafc;
       --muted:#cbd5e1;
       --accent:#f59e0b;
+      --accent2:#f97316;
       --danger:#ef4444;
       --info:#38bdf8;
+      --success:#22c55e;
+      --warning:#f59e0b;
+      --blue:#3b82f6;
     }
 
     *{box-sizing:border-box}
-
     body{
       margin:0;
       font-family:Arial, Helvetica, sans-serif;
@@ -27,14 +30,12 @@
     }
 
     .container{
-      width:min(1240px,92%);
+      width:min(1320px, 94%);
       margin:0 auto;
       padding:24px 0 60px;
     }
 
-    h1,h2{margin:0 0 16px}
-    h1{font-size:38px}
-    h2{font-size:24px}
+    .hidden{display:none !important}
 
     .topbar{
       display:flex;
@@ -43,7 +44,7 @@
       gap:16px;
       padding:18px 0;
       border-bottom:1px solid var(--line);
-      margin-bottom:28px;
+      margin-bottom:24px;
       flex-wrap:wrap;
     }
 
@@ -53,113 +54,38 @@
       font-weight:700;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
-      gap:20px;
-    }
+    h1,h2,h3{margin:0}
+    h1{font-size:36px}
+    h2{font-size:22px}
+    h3{font-size:18px}
 
-    .card{
-      background:rgba(17,24,39,.95);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      box-shadow:0 16px 40px rgba(0,0,0,.28);
-    }
-
-    label{
-      display:block;
-      font-weight:700;
-      margin:12px 0 6px;
-    }
-
-    input, textarea, select{
-      width:100%;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      font-size:15px;
-    }
-
-    textarea{
-      min-height:100px;
-      resize:vertical;
-    }
-
-    button{
-      border:none;
-      border-radius:12px;
-      padding:12px 16px;
-      font-weight:700;
-      cursor:pointer;
-      font-size:15px;
-    }
-
-    .btn{
-      background:linear-gradient(135deg, #f97316, #f59e0b);
-      color:#fff;
-      width:100%;
-      margin-top:16px;
-    }
-
-    .btn-secondary{
-      background:#334155;
-      color:#fff;
-      width:100%;
-      margin-top:10px;
-    }
-
-    .btn-danger{
-      background:var(--danger);
-      color:#fff;
-      padding:8px 12px;
-    }
-
-    .btn-edit{
-      background:var(--info);
-      color:#001018;
-      padding:8px 12px;
-      font-weight:800;
-    }
-
-    .btn-logout{
-      background:#475569;
-      color:#fff;
-      width:auto;
-      margin:0;
-    }
-
-    .actions-row{
+    .tabs{
       display:flex;
-      gap:8px;
+      gap:10px;
       flex-wrap:wrap;
-      margin-top:10px;
+      margin:18px 0 24px;
     }
 
-    .list{
-      display:grid;
-      gap:12px;
-      margin-top:14px;
+    .tab-btn{
+      border:none;
+      border-radius:999px;
+      padding:12px 16px;
+      font-weight:800;
+      cursor:pointer;
+      background:rgba(255,255,255,.06);
+      color:var(--text);
     }
 
-    .item{
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;
-      padding:12px;
-      background:rgba(255,255,255,.03);
+    .tab-btn.active{
+      background:linear-gradient(135deg, var(--accent2), var(--accent));
+      color:#fff;
     }
 
-    .muted{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
-      word-break:break-word;
-    }
+    .view{display:none}
+    .view.active{display:block}
 
     .status{
-      margin:0 0 20px;
+      margin:0 0 18px;
       padding:12px 14px;
       border-radius:12px;
       font-weight:700;
@@ -178,21 +104,186 @@
       color:#fca5a5;
     }
 
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:18px;
+    }
+
+    .card{
+      background:rgba(17,24,39,.96);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 16px 40px rgba(0,0,0,.28);
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .stat-card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .stat-label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    .stat-value{
+      font-size:32px;
+      font-weight:900;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      word-break:break-word;
+    }
+
+    .list{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .item{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:14px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .item-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .actions-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    button{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:800;
+      cursor:pointer;
+      font-size:14px;
+    }
+
+    .btn{
+      background:linear-gradient(135deg, #f97316, #f59e0b);
+      color:#fff;
+    }
+
+    .btn-secondary{
+      background:#334155;
+      color:#fff;
+    }
+
+    .btn-danger{
+      background:var(--danger);
+      color:#fff;
+    }
+
+    .btn-info{
+      background:var(--info);
+      color:#001018;
+    }
+
+    .btn-success{
+      background:var(--success);
+      color:#fff;
+    }
+
+    .btn-warning{
+      background:var(--warning);
+      color:#1f2937;
+    }
+
+    .btn-logout{
+      background:#475569;
+      color:#fff;
+    }
+
+    .btn-small{
+      padding:8px 12px;
+      font-size:13px;
+    }
+
+    label{
+      display:block;
+      font-weight:800;
+      margin:12px 0 6px;
+    }
+
+    input, textarea, select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-size:15px;
+    }
+
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+
     .row{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:12px;
     }
 
-    .edit-badge{
-      display:inline-block;
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
       padding:6px 10px;
       border-radius:999px;
-      background:rgba(56,189,248,.16);
-      color:#7dd3fc;
-      font-size:13px;
-      font-weight:700;
-      margin-bottom:8px;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .badge.scheduled{
+      background:rgba(245,158,11,.14);
+      color:#fcd34d;
+    }
+    .badge.ads_started{
+      background:rgba(59,130,246,.14);
+      color:#93c5fd;
+    }
+    .badge.screening_started{
+      background:rgba(34,197,94,.14);
+      color:#86efac;
+    }
+    .badge.finished{
+      background:rgba(148,163,184,.14);
+      color:#cbd5e1;
+    }
+    .badge.cancelled{
+      background:rgba(239,68,68,.14);
+      color:#fca5a5;
     }
 
     .login-wrap{
@@ -212,11 +303,35 @@
       box-shadow:0 20px 50px rgba(0,0,0,.35);
     }
 
-    .hidden{
-      display:none !important;
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
     }
 
-    @media (max-width:700px){
+    .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .filters > *{
+      min-width:160px;
+      flex:1;
+    }
+
+    .note{
+      margin-top:10px;
+      font-size:13px;
+      color:#fcd34d;
+      font-weight:700;
+    }
+
+    @media (max-width:760px){
       .row{grid-template-columns:1fr}
       h1{font-size:28px}
     }
@@ -226,14 +341,12 @@
   <div id="login-screen" class="login-wrap">
     <div class="login-card">
       <h1 style="margin-bottom:10px;">Админ вход</h1>
-      <p class="muted" style="margin-top:0;">Без правилната парола панелът няма да прави нищо.</p>
-
+      <p class="muted" style="margin-top:0;">Панелът вече работи с новата база и оперативни статуси.</p>
       <div id="login-status" class="status"></div>
 
       <label>Парола</label>
       <input id="admin-password" type="password" placeholder="Въведи админ парола" />
-
-      <button class="btn" onclick="login()">Вход</button>
+      <button class="btn" style="width:100%; margin-top:16px;" onclick="login()">Вход</button>
     </div>
   </div>
 
@@ -247,134 +360,348 @@
         </div>
       </div>
 
-      <h1>Админ панел</h1>
+      <h1>Админ панел v2</h1>
       <div id="status" class="status"></div>
 
-      <div class="grid">
-        <div class="card">
-          <h2>Филм</h2>
-          <div id="movie-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
-
-          <input id="movie-id" type="hidden" />
-
-          <label>Заглавие</label>
-          <input id="movie-title" type="text" />
-
-          <label>Описание</label>
-          <textarea id="movie-description"></textarea>
-
-          <label>Постер URL</label>
-          <input id="movie-image" type="text" />
-
-          <div class="row">
-            <div>
-              <label>Жанр</label>
-              <input id="movie-genre" type="text" />
-            </div>
-            <div>
-              <label>Продължителност (в минути)</label>
-              <input id="movie-duration" type="number" />
-            </div>
-          </div>
-
-          <label>Версия</label>
-          <input id="movie-version" type="text" placeholder="2D / дублиран" />
-
-          <label>Трейлър URL</label>
-          <input id="movie-trailer" type="text" placeholder="https://www.youtube.com/embed/..." />
-
-          <label>Категория</label>
-          <input id="movie-category" type="text" placeholder="B - Без възрастови ограничения" />
-
-          <button class="btn" onclick="saveMovie()">Запази филм</button>
-          <button class="btn-secondary" onclick="resetMovieForm()">Изчисти форма</button>
-        </div>
-
-        <div class="card">
-          <h2>Прожекция</h2>
-          <div id="showtime-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
-
-          <input id="showtime-id" type="hidden" />
-
-          <label>Филм</label>
-          <select id="showtime-movie"></select>
-
-          <div class="row">
-            <div>
-              <label>Дата</label>
-              <input id="showtime-date" type="text" placeholder="01.04" />
-            </div>
-            <div>
-              <label>Час</label>
-              <input id="showtime-time" type="text" placeholder="19:30" />
-            </div>
-          </div>
-
-          <label>Зала</label>
-          <input id="showtime-hall" type="text" value="Зала 1" />
-
-          <div class="row">
-            <div>
-              <label>3D</label>
-              <select id="showtime-is3d">
-                <option value="0">Не</option>
-                <option value="1">Да</option>
-              </select>
-            </div>
-            <div>
-              <label>Дублиран</label>
-              <select id="showtime-isdubbed">
-                <option value="0">Не</option>
-                <option value="1">Да</option>
-              </select>
-            </div>
-          </div>
-
-          <button class="btn" onclick="saveShowtime()">Запази прожекция</button>
-          <button class="btn-secondary" onclick="resetShowtimeForm()">Изчисти форма</button>
-        </div>
-
-        <div class="card">
-          <h2>Премиера</h2>
-          <div id="premiere-mode-badge" class="edit-badge" style="display:none;">Режим: редакция</div>
-
-          <input id="premiere-id" type="hidden" />
-
-          <label>Филм</label>
-          <select id="premiere-movie"></select>
-
-          <label>Дата на премиера</label>
-          <input id="premiere-date" type="text" placeholder="29.04" />
-
-          <button class="btn" onclick="savePremiere()">Запази премиера</button>
-          <button class="btn-secondary" onclick="resetPremiereForm()">Изчисти форма</button>
-        </div>
-
-        <div class="card">
-          <h2>Филми</h2>
-          <div id="movies-list" class="list"></div>
-        </div>
-
-        <div class="card">
-          <h2>Прожекции</h2>
-          <div id="showtimes-list" class="list"></div>
-        </div>
-
-        <div class="card">
-          <h2>Премиери</h2>
-          <div id="premieres-list" class="list"></div>
-        </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="setView('dashboard', event)">Dashboard</button>
+        <button class="tab-btn" onclick="setView('operations', event)">Операции</button>
+        <button class="tab-btn" onclick="setView('program', event)">Програма</button>
+        <button class="tab-btn" onclick="setView('premieres', event)">Премиери</button>
+        <button class="tab-btn" onclick="setView('settings', event)">Настройки</button>
       </div>
+
+      <section id="view-dashboard" class="view active">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2>Dashboard за днешните прожекции</h2>
+              <div class="muted" id="dashboard-date-text"></div>
+            </div>
+            <button class="btn-secondary" onclick="loadDashboard()">Обнови</button>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Общо днес</div>
+              <div class="stat-value" id="stat-total">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Планирани</div>
+              <div class="stat-value" id="stat-scheduled">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Реклами</div>
+              <div class="stat-value" id="stat-ads">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">В прожекция</div>
+              <div class="stat-value" id="stat-live">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Приключили</div>
+              <div class="stat-value" id="stat-finished">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Отпаднали</div>
+              <div class="stat-value" id="stat-cancelled">0</div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px;">
+            <h3>Следваща прожекция</h3>
+            <div id="next-showtime-box" class="muted" style="margin-top:10px;">Няма следваща прожекция.</div>
+          </div>
+
+          <div style="margin-top:18px;">
+            <h3>Днешни прожекции</h3>
+            <div id="dashboard-showtimes" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-operations" class="view">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2>Операции</h2>
+              <div class="muted">Тук е реалният контрол върху днешните прожекции.</div>
+            </div>
+            <button class="btn-secondary" onclick="loadOperations()">Обнови</button>
+          </div>
+          <div id="operations-list" class="list"></div>
+        </div>
+      </section>
+
+      <section id="view-program" class="view">
+        <div class="grid">
+          <div class="card">
+            <h2>Програмен филм</h2>
+            <input id="program-movie-id" type="hidden" />
+
+            <label>Заглавие</label>
+            <input id="program-title" type="text" />
+
+            <label>Описание</label>
+            <textarea id="program-description"></textarea>
+
+            <label>Постер URL</label>
+            <input id="program-image" type="text" />
+
+            <div class="row">
+              <div>
+                <label>Жанр</label>
+                <input id="program-genre" type="text" />
+              </div>
+              <div>
+                <label>Продължителност</label>
+                <input id="program-duration" type="number" />
+              </div>
+            </div>
+
+            <label>Версия</label>
+            <input id="program-version" type="text" />
+
+            <label>Трейлър URL</label>
+            <input id="program-trailer" type="text" />
+
+            <label>Категория</label>
+            <input id="program-category" type="text" />
+
+            <div class="row">
+              <div>
+                <label>Статус</label>
+                <select id="program-status">
+                  <option value="active">active</option>
+                  <option value="inactive">inactive</option>
+                </select>
+              </div>
+              <div>
+                <label>Подредба</label>
+                <input id="program-sort-order" type="number" value="0" />
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn" onclick="saveProgramMovie()">Запази</button>
+              <button class="btn-secondary" onclick="resetProgramMovieForm()">Изчисти</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Прожекция</h2>
+            <input id="showtime-id" type="hidden" />
+
+            <label>Филм</label>
+            <select id="showtime-movie"></select>
+
+            <div class="row">
+              <div>
+                <label>Дата</label>
+                <input id="showtime-date" type="date" />
+              </div>
+              <div>
+                <label>Час</label>
+                <input id="showtime-time" type="time" />
+              </div>
+            </div>
+
+            <label>Зала</label>
+            <input id="showtime-hall" type="text" value="Зала 1" />
+
+            <div class="row">
+              <div>
+                <label>3D</label>
+                <select id="showtime-is3d">
+                  <option value="0">Не</option>
+                  <option value="1">Да</option>
+                </select>
+              </div>
+              <div>
+                <label>Дублиран</label>
+                <select id="showtime-isdubbed">
+                  <option value="0">Не</option>
+                  <option value="1">Да</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn" onclick="saveShowtime()">Запази</button>
+              <button class="btn-secondary" onclick="resetShowtimeForm()">Изчисти</button>
+            </div>
+
+            <div class="note">Тук създаваш само програмни прожекции. Не премиери.</div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Програмни филми</h2>
+              <button class="btn-secondary" onclick="loadProgramMovies()">Обнови</button>
+            </div>
+            <div id="program-movies-list" class="list"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Прожекции</h2>
+              <button class="btn-secondary" onclick="loadShowtimes()">Обнови</button>
+            </div>
+
+            <div class="filters">
+              <input id="showtime-filter-date" type="date" />
+              <input id="showtime-filter-hall" type="text" placeholder="Филтър по зала" />
+              <input id="showtime-filter-search" type="text" placeholder="Търси филм" />
+              <button class="btn-secondary" onclick="loadShowtimes()">Приложи</button>
+            </div>
+
+            <div id="showtimes-list" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-premieres" class="view">
+        <div class="grid">
+          <div class="card">
+            <h2>Премиерен филм</h2>
+            <input id="premiere-movie-id" type="hidden" />
+
+            <label>Заглавие</label>
+            <input id="premiere-title" type="text" />
+
+            <label>Описание</label>
+            <textarea id="premiere-description"></textarea>
+
+            <label>Постер URL</label>
+            <input id="premiere-image" type="text" />
+
+            <div class="row">
+              <div>
+                <label>Жанр</label>
+                <input id="premiere-genre" type="text" />
+              </div>
+              <div>
+                <label>Продължителност</label>
+                <input id="premiere-duration" type="number" />
+              </div>
+            </div>
+
+            <label>Версия</label>
+            <input id="premiere-version" type="text" />
+
+            <label>Трейлър URL</label>
+            <input id="premiere-trailer" type="text" />
+
+            <label>Категория</label>
+            <input id="premiere-category" type="text" />
+
+            <div class="row">
+              <div>
+                <label>Статус</label>
+                <select id="premiere-movie-status">
+                  <option value="active">active</option>
+                  <option value="inactive">inactive</option>
+                </select>
+              </div>
+              <div>
+                <label>Подредба</label>
+                <input id="premiere-sort-order" type="number" value="0" />
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn" onclick="savePremiereMovie()">Запази</button>
+              <button class="btn-secondary" onclick="resetPremiereMovieForm()">Изчисти</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Премиера</h2>
+            <input id="premiere-event-id" type="hidden" />
+
+            <label>Премиерен филм</label>
+            <select id="premiere-event-movie"></select>
+
+            <label>Дата</label>
+            <input id="premiere-event-date" type="date" />
+
+            <label>Статус</label>
+            <select id="premiere-event-status">
+              <option value="scheduled">scheduled</option>
+              <option value="published">published</option>
+              <option value="cancelled">cancelled</option>
+            </select>
+
+            <label>Бележки</label>
+            <textarea id="premiere-event-notes"></textarea>
+
+            <div class="actions-row">
+              <button class="btn" onclick="savePremiereEvent()">Запази</button>
+              <button class="btn-secondary" onclick="resetPremiereEventForm()">Изчисти</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Премиерни филми</h2>
+              <button class="btn-secondary" onclick="loadPremiereMovies()">Обнови</button>
+            </div>
+            <div id="premiere-movies-list" class="list"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Премиери</h2>
+              <button class="btn-secondary" onclick="loadPremiereEvents()">Обнови</button>
+            </div>
+            <div id="premiere-events-list" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view">
+        <div class="grid">
+          <div class="card">
+            <h2>Настройки</h2>
+
+            <label>Ключ</label>
+            <input id="setting-key" type="text" placeholder="default_ads_minutes" />
+
+            <label>Стойност</label>
+            <textarea id="setting-value"></textarea>
+
+            <div class="actions-row">
+              <button class="btn" onclick="saveSetting()">Запази</button>
+              <button class="btn-secondary" onclick="loadSettings()">Обнови списъка</button>
+            </div>
+
+            <div class="note">
+              Примерни ключове: default_ads_minutes, site_program_title, hall_names
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Текущи настройки</h2>
+              <button class="btn-secondary" onclick="loadSettings()">Обнови</button>
+            </div>
+            <div id="settings-list" class="list"></div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
   <script>
     const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
-    const STORAGE_KEY = "kinopalace_admin_key";
+    const STORAGE_KEY = "kinopalace_admin_key_v2";
 
-    let moviesCache = [];
+    let dashboardCache = null;
+    let programMoviesCache = [];
     let showtimesCache = [];
-    let premieresCache = [];
+    let premiereMoviesCache = [];
+    let premiereEventsCache = [];
+    let settingsCache = [];
 
     function getAdminKey() {
       return localStorage.getItem(STORAGE_KEY) || "";
@@ -425,6 +752,28 @@
       return data;
     }
 
+    function setView(name, event) {
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+
+      document.getElementById(`view-${name}`).classList.add("active");
+      if (event?.target) event.target.classList.add("active");
+
+      if (name === "dashboard") loadDashboard();
+      if (name === "operations") loadOperations();
+      if (name === "program") {
+        loadProgramMovies();
+        loadShowtimes();
+      }
+      if (name === "premieres") {
+        loadPremiereMovies();
+        loadPremiereEvents();
+      }
+      if (name === "settings") {
+        loadSettings();
+      }
+    }
+
     async function login() {
       const password = document.getElementById("admin-password").value.trim();
 
@@ -442,9 +791,7 @@
           }
         });
 
-        if (!res.ok) {
-          throw new Error("Грешна парола");
-        }
+        if (!res.ok) throw new Error("Грешна парола");
 
         setAdminKey(password);
         document.getElementById("login-screen").classList.add("hidden");
@@ -485,17 +832,386 @@
       }
     }
 
-    function resetMovieForm() {
-      document.getElementById("movie-id").value = "";
-      document.getElementById("movie-title").value = "";
-      document.getElementById("movie-description").value = "";
-      document.getElementById("movie-image").value = "";
-      document.getElementById("movie-genre").value = "";
-      document.getElementById("movie-duration").value = "";
-      document.getElementById("movie-version").value = "";
-      document.getElementById("movie-trailer").value = "";
-      document.getElementById("movie-category").value = "";
-      document.getElementById("movie-mode-badge").style.display = "none";
+    function statusLabel(status) {
+      const map = {
+        scheduled: "Планирана",
+        ads_started: "Реклами",
+        screening_started: "В прожекция",
+        finished: "Приключила",
+        cancelled: "Отпаднала"
+      };
+      return map[status] || status;
+    }
+
+    function formatDateBG(isoDate) {
+      if (!isoDate) return "";
+      if (/^\d{2}\.\d{2}$/.test(isoDate)) return isoDate;
+      const parts = isoDate.split("-");
+      if (parts.length !== 3) return isoDate;
+      return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+
+    async function loadDashboard() {
+      try {
+        const data = await api("/api/dashboard/today");
+        dashboardCache = data;
+
+        document.getElementById("dashboard-date-text").textContent = `Дата: ${data.date || ""}`;
+        document.getElementById("stat-total").textContent = data.stats?.total || 0;
+        document.getElementById("stat-scheduled").textContent = data.stats?.scheduled || 0;
+        document.getElementById("stat-ads").textContent = data.stats?.ads_started || 0;
+        document.getElementById("stat-live").textContent = data.stats?.screening_started || 0;
+        document.getElementById("stat-finished").textContent = data.stats?.finished || 0;
+        document.getElementById("stat-cancelled").textContent = data.stats?.cancelled || 0;
+
+        const nextBox = document.getElementById("next-showtime-box");
+        if (data.next_showtime) {
+          nextBox.innerHTML = `
+            <strong>${data.next_showtime.title || "-"}</strong><br>
+            ${data.next_showtime.scheduled_time || "-"} • ${data.next_showtime.hall || "Зала 1"}<br>
+            <span class="badge ${data.next_showtime.status}">${statusLabel(data.next_showtime.status)}</span>
+          `;
+        } else {
+          nextBox.textContent = "Няма следваща прожекция.";
+        }
+
+        renderDashboardShowtimes(data.showtimes || []);
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    function renderDashboardShowtimes(items) {
+      const list = document.getElementById("dashboard-showtimes");
+      list.innerHTML = "";
+
+      if (!items.length) {
+        list.innerHTML = `<div class="muted">Няма прожекции за днес.</div>`;
+        return;
+      }
+
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="item-header">
+            <div>
+              <strong>${item.title || "Без заглавие"}</strong>
+              <div class="muted">
+                ${item.date} • ${item.scheduled_time}<br>
+                ${item.hall || "Зала 1"}
+              </div>
+            </div>
+            <span class="badge ${item.status}">${statusLabel(item.status)}</span>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    async function loadOperations() {
+      try {
+        const items = await api("/api/showtimes-v2/today");
+        renderOperations(items || []);
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    function renderOperations(items) {
+      const list = document.getElementById("operations-list");
+      list.innerHTML = "";
+
+      if (!items.length) {
+        list.innerHTML = `<div class="muted">Няма прожекции за днес.</div>`;
+        return;
+      }
+
+      items.forEach(item => {
+        const actions = [];
+
+        if (item.status === "scheduled") {
+          actions.push(`<button class="btn-info btn-small" onclick="startAds(${item.id})">Старт реклами</button>`);
+          actions.push(`<button class="btn-success btn-small" onclick="startScreening(${item.id})">Старт прожекция</button>`);
+          actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
+        } else if (item.status === "ads_started") {
+          actions.push(`<button class="btn-success btn-small" onclick="startScreening(${item.id})">Старт прожекция</button>`);
+          actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
+        } else if (item.status === "screening_started") {
+          actions.push(`<button class="btn-warning btn-small" onclick="endScreening(${item.id})">Край прожекция</button>`);
+          actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
+        }
+
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="item-header">
+            <div>
+              <strong>${item.title || "Без заглавие"}</strong>
+              <div class="muted">
+                ${item.date} • ${item.scheduled_time}<br>
+                ${item.hall || "Зала 1"}<br>
+                3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}
+              </div>
+            </div>
+            <span class="badge ${item.status}">${statusLabel(item.status)}</span>
+          </div>
+
+          <div class="muted" style="margin-top:10px;">
+            Реклами: ${item.ads_started_at || "-"}<br>
+            Начало: ${item.screening_started_at || "-"}<br>
+            Край: ${item.ended_at || "-"}<br>
+            Отпаднала: ${item.cancelled_at || "-"}${item.cancelled_reason ? `<br>Причина: ${item.cancelled_reason}` : ""}
+          </div>
+
+          <div class="actions-row">${actions.join("")}</div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    async function startAds(id) {
+      try {
+        await api(`/api/showtimes-v2/${id}/start-ads`, { method: "POST" }, true);
+        showStatus("Рекламите са стартирани.");
+        await loadDashboard();
+        await loadOperations();
+        await loadShowtimes();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function startScreening(id) {
+      try {
+        await api(`/api/showtimes-v2/${id}/start-screening`, { method: "POST" }, true);
+        showStatus("Прожекцията е стартирана.");
+        await loadDashboard();
+        await loadOperations();
+        await loadShowtimes();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function endScreening(id) {
+      try {
+        await api(`/api/showtimes-v2/${id}/end`, { method: "POST" }, true);
+        showStatus("Прожекцията е приключена.");
+        await loadDashboard();
+        await loadOperations();
+        await loadShowtimes();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function cancelShowtime(id) {
+      const reason = prompt("Причина за отпаднала прожекция:", "") || "";
+      try {
+        await api(`/api/showtimes-v2/${id}/cancel`, {
+          method: "POST",
+          body: JSON.stringify({ reason })
+        }, true);
+        showStatus("Прожекцията е маркирана като отпаднала.");
+        await loadDashboard();
+        await loadOperations();
+        await loadShowtimes();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function loadProgramMovies() {
+      try {
+        const items = await api("/api/program-movies");
+        programMoviesCache = items || [];
+        renderProgramMovies(items || []);
+        fillProgramMovieSelect();
+      } catch (e) {
+        showStatus(e.message, "error");
+      }
+    }
+
+    function fillProgramMovieSelect() {
+      const select = document.getElementById("showtime-movie");
+      select.innerHTML = "";
+      programMoviesCache.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = `${item.id} - ${item.title}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderProgramMovies(items) {
+      const list = document.getElementById("program-movies-list");
+      list.innerHTML = "";
+
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <strong>${item.title}</strong>
+          <div class="muted">
+            ID: ${item.id}<br>
+            Жанр: ${item.genre || "-"}<br>
+            Продължителност: ${item.duration || 0} мин<br>
+            Версия: ${item.version || "-"}<br>
+            Статус: ${item.status || "-"}<br>
+            Подредба: ${item.sort_order || 0}
+          </div>
+          <div class="actions-row">
+            <button class="btn-info btn-small" onclick="editProgramMovie(${item.id})">Редактирай</button>
+            <button class="btn-danger btn-small" onclick="deleteProgramMovie(${item.id})">Изтрий</button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    function resetProgramMovieForm() {
+      document.getElementById("program-movie-id").value = "";
+      document.getElementById("program-title").value = "";
+      document.getElementById("program-description").value = "";
+      document.getElementById("program-image").value = "";
+      document.getElementById("program-genre").value = "";
+      document.getElementById("program-duration").value = "";
+      document.getElementById("program-version").value = "";
+      document.getElementById("program-trailer").value = "";
+      document.getElementById("program-category").value = "";
+      document.getElementById("program-status").value = "active";
+      document.getElementById("program-sort-order").value = 0;
+    }
+
+    function editProgramMovie(id) {
+      const item = programMoviesCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+      document.getElementById("program-movie-id").value = item.id;
+      document.getElementById("program-title").value = item.title || "";
+      document.getElementById("program-description").value = item.description || "";
+      document.getElementById("program-image").value = item.image || "";
+      document.getElementById("program-genre").value = item.genre || "";
+      document.getElementById("program-duration").value = item.duration || "";
+      document.getElementById("program-version").value = item.version || "";
+      document.getElementById("program-trailer").value = item.trailer || "";
+      document.getElementById("program-category").value = item.category || "";
+      document.getElementById("program-status").value = item.status || "active";
+      document.getElementById("program-sort-order").value = item.sort_order || 0;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function saveProgramMovie() {
+      try {
+        const id = document.getElementById("program-movie-id").value.trim();
+
+        const payload = {
+          title: document.getElementById("program-title").value.trim(),
+          description: document.getElementById("program-description").value.trim(),
+          image: document.getElementById("program-image").value.trim(),
+          genre: document.getElementById("program-genre").value.trim(),
+          duration: Number(document.getElementById("program-duration").value || 0),
+          version: document.getElementById("program-version").value.trim(),
+          trailer: document.getElementById("program-trailer").value.trim(),
+          category: document.getElementById("program-category").value.trim(),
+          status: document.getElementById("program-status").value,
+          sort_order: Number(document.getElementById("program-sort-order").value || 0)
+        };
+
+        if (id) {
+          await api("/api/program-movies/update", {
+            method: "POST",
+            body: JSON.stringify({ id: Number(id), ...payload })
+          }, true);
+          showStatus("Програмният филм е редактиран.");
+        } else {
+          await api("/api/program-movies", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          }, true);
+          showStatus("Програмният филм е добавен.");
+        }
+
+        resetProgramMovieForm();
+        await loadProgramMovies();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function deleteProgramMovie(id) {
+      if (!confirm("Сигурен ли си? Ще изтрие и свързаните прожекции.")) return;
+      try {
+        await api("/api/program-movies/delete", {
+          method: "POST",
+          body: JSON.stringify({ id })
+        }, true);
+        showStatus("Програмният филм е изтрит.");
+        resetProgramMovieForm();
+        await loadProgramMovies();
+        await loadShowtimes();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function loadShowtimes() {
+      try {
+        const date = document.getElementById("showtime-filter-date").value.trim();
+        const hall = document.getElementById("showtime-filter-hall").value.trim();
+        const search = document.getElementById("showtime-filter-search").value.trim();
+
+        const params = new URLSearchParams();
+        if (date) params.set("date", date);
+        if (hall) params.set("hall", hall);
+        if (search) params.set("search", search);
+
+        const path = "/api/showtimes-v2" + (params.toString() ? `?${params.toString()}` : "");
+        const items = await api(path);
+
+        showtimesCache = items || [];
+        renderShowtimes(items || []);
+      } catch (e) {
+        showStatus(e.message, "error");
+      }
+    }
+
+    function renderShowtimes(items) {
+      const list = document.getElementById("showtimes-list");
+      list.innerHTML = "";
+
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="item-header">
+            <div>
+              <strong>${item.title || "Без заглавие"}</strong>
+              <div class="muted">
+                ID: ${item.id}<br>
+                ${item.date} • ${item.scheduled_time}<br>
+                ${item.hall || "Зала 1"}<br>
+                3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}
+              </div>
+            </div>
+            <span class="badge ${item.status}">${statusLabel(item.status)}</span>
+          </div>
+
+          <div class="actions-row">
+            <button class="btn-info btn-small" onclick="editShowtime(${item.id})">Редактирай</button>
+            <button class="btn-danger btn-small" onclick="deleteShowtime(${item.id})">Изтрий</button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
     }
 
     function resetShowtimeForm() {
@@ -505,202 +1221,20 @@
       document.getElementById("showtime-hall").value = "Зала 1";
       document.getElementById("showtime-is3d").value = "0";
       document.getElementById("showtime-isdubbed").value = "0";
-      document.getElementById("showtime-mode-badge").style.display = "none";
-    }
-
-    function resetPremiereForm() {
-      document.getElementById("premiere-id").value = "";
-      document.getElementById("premiere-date").value = "";
-      document.getElementById("premiere-mode-badge").style.display = "none";
-    }
-
-    function fillMovieForm(movie) {
-      document.getElementById("movie-id").value = movie.id;
-      document.getElementById("movie-title").value = movie.title || "";
-      document.getElementById("movie-description").value = movie.description || "";
-      document.getElementById("movie-image").value = movie.image || "";
-      document.getElementById("movie-genre").value = movie.genre || "";
-      document.getElementById("movie-duration").value = movie.duration || "";
-      document.getElementById("movie-version").value = movie.version || "";
-      document.getElementById("movie-trailer").value = movie.trailer || "";
-      document.getElementById("movie-category").value = movie.category || "";
-      document.getElementById("movie-mode-badge").style.display = "inline-block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function fillShowtimeForm(item) {
-      document.getElementById("showtime-id").value = item.id;
-      document.getElementById("showtime-movie").value = item.movie_id;
-      document.getElementById("showtime-date").value = item.date || "";
-      document.getElementById("showtime-time").value = item.time || "";
-      document.getElementById("showtime-hall").value = item.hall || "Зала 1";
-      document.getElementById("showtime-is3d").value = item.is_3d ? "1" : "0";
-      document.getElementById("showtime-isdubbed").value = item.is_dubbed ? "1" : "0";
-      document.getElementById("showtime-mode-badge").style.display = "inline-block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function fillPremiereForm(item) {
-      document.getElementById("premiere-id").value = item.id;
-      document.getElementById("premiere-movie").value = item.movie_id;
-      document.getElementById("premiere-date").value = item.premiere_date || "";
-      document.getElementById("premiere-mode-badge").style.display = "inline-block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    async function loadMovies() {
-      const movies = await api("/api/movies");
-      moviesCache = movies;
-
-      const movieSelect = document.getElementById("showtime-movie");
-      const premiereSelect = document.getElementById("premiere-movie");
-      const moviesList = document.getElementById("movies-list");
-
-      movieSelect.innerHTML = "";
-      premiereSelect.innerHTML = "";
-      moviesList.innerHTML = "";
-
-      movies.forEach(movie => {
-        const option1 = document.createElement("option");
-        option1.value = movie.id;
-        option1.textContent = `${movie.id} - ${movie.title}`;
-        movieSelect.appendChild(option1);
-
-        const option2 = document.createElement("option");
-        option2.value = movie.id;
-        option2.textContent = `${movie.id} - ${movie.title}`;
-        premiereSelect.appendChild(option2);
-
-        const item = document.createElement("div");
-        item.className = "item";
-        item.innerHTML = `
-          <strong>${movie.title}</strong>
-          <div class="muted">
-            ID: ${movie.id}<br>
-            Жанр: ${movie.genre || "-"}<br>
-            Версия: ${movie.version || "-"}<br>
-            Продължителност: ${movie.duration || 0} мин<br>
-            Категория: ${movie.category || "-"}<br>
-            Трейлър: ${movie.trailer || "-"}
-          </div>
-          <div class="actions-row">
-            <button class="btn-edit" onclick="editMovie(${movie.id})">Редактирай</button>
-            <button class="btn-danger" onclick="deleteMovie(${movie.id})">Изтрий</button>
-          </div>
-        `;
-        moviesList.appendChild(item);
-      });
-    }
-
-    async function loadShowtimes() {
-      const showtimes = await api("/api/showtimes");
-      showtimesCache = showtimes;
-
-      const list = document.getElementById("showtimes-list");
-      list.innerHTML = "";
-
-      showtimes.forEach(item => {
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
-          <strong>${item.title || "Без име"}</strong>
-          <div class="muted">
-            ID: ${item.id}<br>
-            ${item.date} • ${item.time}<br>
-            ${item.hall || "Зала 1"}<br>
-            3D: ${item.is_3d ? "Да" : "Не"}<br>
-            Дублиран: ${item.is_dubbed ? "Да" : "Не"}
-          </div>
-          <div class="actions-row">
-            <button class="btn-edit" onclick="editShowtime(${item.id})">Редактирай</button>
-            <button class="btn-danger" onclick="deleteShowtime(${item.id})">Изтрий</button>
-          </div>
-        `;
-        list.appendChild(el);
-      });
-    }
-
-    async function loadPremieres() {
-      const premieres = await api("/api/premieres");
-      premieresCache = premieres;
-
-      const list = document.getElementById("premieres-list");
-      list.innerHTML = "";
-
-      premieres.forEach(item => {
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
-          <strong>${item.title || "Без име"}</strong>
-          <div class="muted">
-            ID: ${item.id}<br>
-            Премиера: ${item.premiere_date}
-          </div>
-          <div class="actions-row">
-            <button class="btn-edit" onclick="editPremiere(${item.id})">Редактирай</button>
-            <button class="btn-danger" onclick="deletePremiere(${item.id})">Изтрий</button>
-          </div>
-        `;
-        list.appendChild(el);
-      });
-    }
-
-    function editMovie(id) {
-      const movie = moviesCache.find(m => Number(m.id) === Number(id));
-      if (!movie) return;
-      fillMovieForm(movie);
     }
 
     function editShowtime(id) {
-      const item = showtimesCache.find(s => Number(s.id) === Number(id));
+      const item = showtimesCache.find(x => Number(x.id) === Number(id));
       if (!item) return;
-      fillShowtimeForm(item);
-    }
 
-    function editPremiere(id) {
-      const item = premieresCache.find(p => Number(p.id) === Number(id));
-      if (!item) return;
-      fillPremiereForm(item);
-    }
-
-    async function saveMovie() {
-      try {
-        const id = document.getElementById("movie-id").value.trim();
-
-        const payload = {
-          title: document.getElementById("movie-title").value.trim(),
-          description: document.getElementById("movie-description").value.trim(),
-          image: document.getElementById("movie-image").value.trim(),
-          genre: document.getElementById("movie-genre").value.trim(),
-          duration: Number(document.getElementById("movie-duration").value || 0),
-          version: document.getElementById("movie-version").value.trim(),
-          trailer: document.getElementById("movie-trailer").value.trim(),
-          category: document.getElementById("movie-category").value.trim()
-        };
-
-        if (id) {
-          await api("/api/update-movie", {
-            method: "POST",
-            body: JSON.stringify({
-              id: Number(id),
-              ...payload
-            })
-          }, true);
-          showStatus("Филмът е редактиран.");
-        } else {
-          await api("/api/add-movie", {
-            method: "POST",
-            body: JSON.stringify(payload)
-          }, true);
-          showStatus("Филмът е добавен.");
-        }
-
-        resetMovieForm();
-        await refreshAll();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
+      document.getElementById("showtime-id").value = item.id;
+      document.getElementById("showtime-movie").value = item.movie_id;
+      document.getElementById("showtime-date").value = item.date || "";
+      document.getElementById("showtime-time").value = item.scheduled_time || "";
+      document.getElementById("showtime-hall").value = item.hall || "Зала 1";
+      document.getElementById("showtime-is3d").value = item.is_3d ? "1" : "0";
+      document.getElementById("showtime-isdubbed").value = item.is_dubbed ? "1" : "0";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     async function saveShowtime() {
@@ -709,24 +1243,21 @@
 
         const payload = {
           movie_id: Number(document.getElementById("showtime-movie").value),
-          date: document.getElementById("showtime-date").value.trim(),
-          time: document.getElementById("showtime-time").value.trim(),
+          date: document.getElementById("showtime-date").value,
+          scheduled_time: document.getElementById("showtime-time").value,
           hall: document.getElementById("showtime-hall").value.trim(),
           is_3d: Number(document.getElementById("showtime-is3d").value),
           is_dubbed: Number(document.getElementById("showtime-isdubbed").value)
         };
 
         if (id) {
-          await api("/api/update-showtime", {
+          await api("/api/showtimes-v2/update", {
             method: "POST",
-            body: JSON.stringify({
-              id: Number(id),
-              ...payload
-            })
+            body: JSON.stringify({ id: Number(id), ...payload })
           }, true);
           showStatus("Прожекцията е редактирана.");
         } else {
-          await api("/api/add-showtime", {
+          await api("/api/showtimes-v2", {
             method: "POST",
             body: JSON.stringify(payload)
           }, true);
@@ -734,57 +1265,9 @@
         }
 
         resetShowtimeForm();
-        await refreshAll();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    async function savePremiere() {
-      try {
-        const id = document.getElementById("premiere-id").value.trim();
-
-        const payload = {
-          movie_id: Number(document.getElementById("premiere-movie").value),
-          premiere_date: document.getElementById("premiere-date").value.trim()
-        };
-
-        if (id) {
-          await api("/api/update-premiere", {
-            method: "POST",
-            body: JSON.stringify({
-              id: Number(id),
-              ...payload
-            })
-          }, true);
-          showStatus("Премиерата е редактирана.");
-        } else {
-          await api("/api/add-premiere", {
-            method: "POST",
-            body: JSON.stringify(payload)
-          }, true);
-          showStatus("Премиерата е добавена.");
-        }
-
-        resetPremiereForm();
-        await refreshAll();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    async function deleteMovie(id) {
-      if (!confirm("Сигурен ли си?")) return;
-      try {
-        await api("/api/delete-movie", {
-          method: "POST",
-          body: JSON.stringify({ id })
-        }, true);
-        showStatus("Филмът е изтрит.");
-        resetMovieForm();
-        await refreshAll();
+        await loadShowtimes();
+        await loadDashboard();
+        await loadOperations();
       } catch (e) {
         if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
@@ -794,29 +1277,303 @@
     async function deleteShowtime(id) {
       if (!confirm("Сигурен ли си?")) return;
       try {
-        await api("/api/delete-showtime", {
+        await api("/api/showtimes-v2/delete", {
           method: "POST",
           body: JSON.stringify({ id })
         }, true);
         showStatus("Прожекцията е изтрита.");
         resetShowtimeForm();
-        await refreshAll();
+        await loadShowtimes();
+        await loadDashboard();
+        await loadOperations();
       } catch (e) {
         if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
     }
 
-    async function deletePremiere(id) {
+    async function loadPremiereMovies() {
+      try {
+        const items = await api("/api/premiere-movies");
+        premiereMoviesCache = items || [];
+        renderPremiereMovies(items || []);
+        fillPremiereMovieSelect();
+      } catch (e) {
+        showStatus(e.message, "error");
+      }
+    }
+
+    function fillPremiereMovieSelect() {
+      const select = document.getElementById("premiere-event-movie");
+      select.innerHTML = "";
+      premiereMoviesCache.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = `${item.id} - ${item.title}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderPremiereMovies(items) {
+      const list = document.getElementById("premiere-movies-list");
+      list.innerHTML = "";
+
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <strong>${item.title}</strong>
+          <div class="muted">
+            ID: ${item.id}<br>
+            Жанр: ${item.genre || "-"}<br>
+            Продължителност: ${item.duration || 0} мин<br>
+            Версия: ${item.version || "-"}<br>
+            Статус: ${item.status || "-"}<br>
+            Подредба: ${item.sort_order || 0}
+          </div>
+          <div class="actions-row">
+            <button class="btn-info btn-small" onclick="editPremiereMovie(${item.id})">Редактирай</button>
+            <button class="btn-danger btn-small" onclick="deletePremiereMovie(${item.id})">Изтрий</button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    function resetPremiereMovieForm() {
+      document.getElementById("premiere-movie-id").value = "";
+      document.getElementById("premiere-title").value = "";
+      document.getElementById("premiere-description").value = "";
+      document.getElementById("premiere-image").value = "";
+      document.getElementById("premiere-genre").value = "";
+      document.getElementById("premiere-duration").value = "";
+      document.getElementById("premiere-version").value = "";
+      document.getElementById("premiere-trailer").value = "";
+      document.getElementById("premiere-category").value = "";
+      document.getElementById("premiere-movie-status").value = "active";
+      document.getElementById("premiere-sort-order").value = 0;
+    }
+
+    function editPremiereMovie(id) {
+      const item = premiereMoviesCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+
+      document.getElementById("premiere-movie-id").value = item.id;
+      document.getElementById("premiere-title").value = item.title || "";
+      document.getElementById("premiere-description").value = item.description || "";
+      document.getElementById("premiere-image").value = item.image || "";
+      document.getElementById("premiere-genre").value = item.genre || "";
+      document.getElementById("premiere-duration").value = item.duration || "";
+      document.getElementById("premiere-version").value = item.version || "";
+      document.getElementById("premiere-trailer").value = item.trailer || "";
+      document.getElementById("premiere-category").value = item.category || "";
+      document.getElementById("premiere-movie-status").value = item.status || "active";
+      document.getElementById("premiere-sort-order").value = item.sort_order || 0;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function savePremiereMovie() {
+      try {
+        const id = document.getElementById("premiere-movie-id").value.trim();
+
+        const payload = {
+          title: document.getElementById("premiere-title").value.trim(),
+          description: document.getElementById("premiere-description").value.trim(),
+          image: document.getElementById("premiere-image").value.trim(),
+          genre: document.getElementById("premiere-genre").value.trim(),
+          duration: Number(document.getElementById("premiere-duration").value || 0),
+          version: document.getElementById("premiere-version").value.trim(),
+          trailer: document.getElementById("premiere-trailer").value.trim(),
+          category: document.getElementById("premiere-category").value.trim(),
+          status: document.getElementById("premiere-movie-status").value,
+          sort_order: Number(document.getElementById("premiere-sort-order").value || 0)
+        };
+
+        if (id) {
+          await api("/api/premiere-movies/update", {
+            method: "POST",
+            body: JSON.stringify({ id: Number(id), ...payload })
+          }, true);
+          showStatus("Премиерният филм е редактиран.");
+        } else {
+          await api("/api/premiere-movies", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          }, true);
+          showStatus("Премиерният филм е добавен.");
+        }
+
+        resetPremiereMovieForm();
+        await loadPremiereMovies();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function deletePremiereMovie(id) {
+      if (!confirm("Сигурен ли си? Ще изтрие и свързаните премиери.")) return;
+      try {
+        await api("/api/premiere-movies/delete", {
+          method: "POST",
+          body: JSON.stringify({ id })
+        }, true);
+        showStatus("Премиерният филм е изтрит.");
+        resetPremiereMovieForm();
+        await loadPremiereMovies();
+        await loadPremiereEvents();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function loadPremiereEvents() {
+      try {
+        const items = await api("/api/premieres-v2");
+        premiereEventsCache = items || [];
+        renderPremiereEvents(items || []);
+      } catch (e) {
+        showStatus(e.message, "error");
+      }
+    }
+
+    function renderPremiereEvents(items) {
+      const list = document.getElementById("premiere-events-list");
+      list.innerHTML = "";
+
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <strong>${item.title || "Без заглавие"}</strong>
+          <div class="muted">
+            ID: ${item.id}<br>
+            Дата: ${formatDateBG(item.premiere_date)}<br>
+            Статус: ${item.status || "-"}<br>
+            Бележки: ${item.notes || "-"}
+          </div>
+          <div class="actions-row">
+            <button class="btn-info btn-small" onclick="editPremiereEvent(${item.id})">Редактирай</button>
+            <button class="btn-danger btn-small" onclick="deletePremiereEvent(${item.id})">Изтрий</button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    function resetPremiereEventForm() {
+      document.getElementById("premiere-event-id").value = "";
+      document.getElementById("premiere-event-date").value = "";
+      document.getElementById("premiere-event-status").value = "scheduled";
+      document.getElementById("premiere-event-notes").value = "";
+    }
+
+    function editPremiereEvent(id) {
+      const item = premiereEventsCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+
+      document.getElementById("premiere-event-id").value = item.id;
+      document.getElementById("premiere-event-movie").value = item.premiere_movie_id;
+      document.getElementById("premiere-event-date").value = item.premiere_date || "";
+      document.getElementById("premiere-event-status").value = item.status || "scheduled";
+      document.getElementById("premiere-event-notes").value = item.notes || "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function savePremiereEvent() {
+      try {
+        const id = document.getElementById("premiere-event-id").value.trim();
+
+        const payload = {
+          premiere_movie_id: Number(document.getElementById("premiere-event-movie").value),
+          premiere_date: document.getElementById("premiere-event-date").value,
+          status: document.getElementById("premiere-event-status").value,
+          notes: document.getElementById("premiere-event-notes").value.trim()
+        };
+
+        if (id) {
+          await api("/api/premieres-v2/update", {
+            method: "POST",
+            body: JSON.stringify({ id: Number(id), ...payload })
+          }, true);
+          showStatus("Премиерата е редактирана.");
+        } else {
+          await api("/api/premieres-v2", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          }, true);
+          showStatus("Премиерата е добавена.");
+        }
+
+        resetPremiereEventForm();
+        await loadPremiereEvents();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function deletePremiereEvent(id) {
       if (!confirm("Сигурен ли си?")) return;
       try {
-        await api("/api/delete-premiere", {
+        await api("/api/premieres-v2/delete", {
           method: "POST",
           body: JSON.stringify({ id })
         }, true);
         showStatus("Премиерата е изтрита.");
-        resetPremiereForm();
-        await refreshAll();
+        resetPremiereEventForm();
+        await loadPremiereEvents();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function loadSettings() {
+      try {
+        const items = await api("/api/settings");
+        settingsCache = items || [];
+
+        const list = document.getElementById("settings-list");
+        list.innerHTML = "";
+
+        items.forEach(item => {
+          const el = document.createElement("div");
+          el.className = "item";
+          el.innerHTML = `
+            <strong>${item.key}</strong>
+            <div class="muted">${item.value || ""}</div>
+            <div class="actions-row">
+              <button class="btn-info btn-small" onclick="editSetting(${item.id})">Зареди във формата</button>
+            </div>
+          `;
+          list.appendChild(el);
+        });
+      } catch (e) {
+        showStatus(e.message, "error");
+      }
+    }
+
+    function editSetting(id) {
+      const item = settingsCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+      document.getElementById("setting-key").value = item.key || "";
+      document.getElementById("setting-value").value = item.value || "";
+    }
+
+    async function saveSetting() {
+      try {
+        const key = document.getElementById("setting-key").value.trim();
+        const value = document.getElementById("setting-value").value;
+
+        await api("/api/settings/upsert", {
+          method: "POST",
+          body: JSON.stringify({ key, value })
+        }, true);
+
+        showStatus("Настройката е запазена.");
+        await loadSettings();
       } catch (e) {
         if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
@@ -824,15 +1581,17 @@
     }
 
     async function refreshAll() {
-      await loadMovies();
+      await loadDashboard();
+      await loadOperations();
+      await loadProgramMovies();
       await loadShowtimes();
-      await loadPremieres();
+      await loadPremiereMovies();
+      await loadPremiereEvents();
+      await loadSettings();
     }
 
     document.getElementById("admin-password").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        login();
-      }
+      if (e.key === "Enter") login();
     });
 
     autoLogin();
