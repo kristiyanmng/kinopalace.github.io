@@ -146,10 +146,7 @@ nav a:hover{
 /* LIVE STRIP */
 .live-strip{
   margin:0 0 18px;
-  padding:14px;
-  border-radius:18px;
-  background:rgba(8,15,36,.82);
-  border:1px solid rgba(255,255,255,.08);
+  padding:14px 0 4px;
 }
 
 .live-strip.hidden{
@@ -160,14 +157,14 @@ nav a:hover{
   font-size:18px;
   font-weight:900;
   color:#fff;
-  margin-bottom:12px;
+  margin:0 0 12px;
 }
 
 .live-strip-list{
   display:flex;
   gap:10px;
   overflow-x:auto;
-  padding-bottom:4px;
+  padding:2px 2px 10px;
   scroll-behavior:smooth;
 }
 
@@ -176,20 +173,22 @@ nav a:hover{
 }
 
 .live-strip-item{
-  flex:0 0 230px;
-  min-height:110px;
+  flex:0 0 235px;
+  min-height:108px;
   text-align:left;
   padding:12px 14px;
-  border-radius:16px;
+  border-radius:18px;
   border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.05);
+  background:rgba(17,24,39,.96);
+  box-shadow:0 12px 28px rgba(0,0,0,.22);
   color:#fff;
   cursor:pointer;
+  transition:.2s ease;
 }
 
 .live-strip-item:hover{
-  border-color:rgba(245,158,11,.35);
-  transform:translateY(-1px);
+  transform:translateY(-2px);
+  border-color:rgba(245,158,11,.30);
 }
 
 .live-strip-item-top{
@@ -206,7 +205,7 @@ nav a:hover{
   justify-content:center;
   padding:5px 9px;
   border-radius:999px;
-  font-size:12px;
+  font-size:11px;
   font-weight:800;
   white-space:nowrap;
 }
@@ -214,33 +213,38 @@ nav a:hover{
 .live-strip-badge.ads{
   background:rgba(59,130,246,.16);
   color:#93c5fd;
+  border:1px solid rgba(59,130,246,.26);
 }
 
 .live-strip-badge.movie{
   background:rgba(34,197,94,.16);
   color:#86efac;
+  border:1px solid rgba(34,197,94,.26);
 }
 
 .live-strip-time{
-  font-size:14px;
+  font-size:13px;
   font-weight:900;
   color:#fde68a;
   white-space:nowrap;
 }
 
-.live-strip-item .live-strip-title{
-  display:block;
+.live-strip-movie{
   font-size:15px;
   font-weight:800;
   color:#fff;
-  margin-bottom:6px;
   line-height:1.3;
+  margin-bottom:6px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
 }
 
 .live-strip-hall{
-  display:block;
   font-size:13px;
   color:#cbd5e1;
+  font-weight:700;
 }
 
 /* DAYS */
@@ -910,20 +914,27 @@ footer a:hover{
 
   .live-strip{
     margin:0 0 14px;
-    padding:12px;
+    padding:8px 0 4px;
   }
 
   .live-strip-title{
     font-size:16px;
+    margin-bottom:10px;
+  }
+
+  .live-strip-list{
+    gap:8px;
+    padding-bottom:8px;
   }
 
   .live-strip-item{
-    flex:0 0 200px;
+    flex:0 0 210px;
     min-height:100px;
-    padding:10px 12px;
+    padding:11px 12px;
+    border-radius:16px;
   }
 
-  .live-strip-item .live-strip-title{
+  .live-strip-movie{
     font-size:14px;
   }
 
@@ -932,7 +943,7 @@ footer a:hover{
   }
 
   .live-strip-time{
-    font-size:13px;
+    font-size:12px;
   }
 
   .days-nav{
