@@ -21,6 +21,9 @@
           <a href="index.html">Програма</a>
           <a href="premieres.html">Премиери в България</a>
           <a href="admin.html">Админ</a>
+          <a href="#movies-container" id="live-nav-btn" class="live-nav-btn" style="display:none;">
+            LIVE
+          </a>
         </nav>
       </div>
     </div>
@@ -63,17 +66,18 @@
 
   <script>
     const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
+    const ADS_MINUTES = 10;
 
     let scheduleData = null;
     let activeDayIndex = 0;
     let lastDate = new Date().getDate();
-    const ADS_MINUTES = 10;
+    let daysNavigationInitialized = false;
 
     loadSchedule();
 
     async function loadSchedule() {
       try {
-        const response = await fetch(`${API_BASE}/api/export-schedule`);
+        const response = await fetch(`${API_BASE}/api/export-schedule`, { cache: "no-store" });
 
         if (!response.ok) {
           throw new Error("Не може да се зареди програмата от API");
@@ -88,6 +92,7 @@
         setTodayAsActive();
         renderDays();
         renderMovies();
+        renderLiveNavButton();
         setupDaysNavigation();
       } catch (error) {
         console.error(error);
@@ -127,16 +132,17 @@
           };
         }
 
+        const hall = item.hall || "Зала 1";
         return {
           time: item.time || "",
-          hall: item.hall || "Зала 1",
-          type: item.type || (item.hall === "VIP Зала" || item.hall === "VIP зала" ? "vip" : "standard")
+          hall,
+          type: item.type || (/vip/i.test(hall) ? "vip" : "standard")
         };
       }).filter(item => item.time);
     }
 
     function parseDayDate(dayDate) {
-      const [day, month] = dayDate.split(".");
+      const [day, month] = String(dayDate).split(".");
       const year = new Date().getFullYear();
       return new Date(year, Number(month) - 1, Number(day));
     }
@@ -242,8 +248,6 @@
       next.disabled = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 2;
     }
 
-    let daysNavigationInitialized = false;
-
     function setupDaysNavigation() {
       if (daysNavigationInitialized) return;
       daysNavigationInitialized = true;
@@ -263,6 +267,7 @@
       });
 
       strip.addEventListener("scroll", updateDaysArrows);
+
       window.addEventListener("resize", () => {
         renderDays();
         updateDaysArrows();
@@ -272,7 +277,7 @@
     }
 
     function parseTimeToDate(dayDate, timeString) {
-      const [day, month] = dayDate.split(".");
+      const [day, month] = String(dayDate).split(".");
       const [hours, minutes] = String(timeString).split(":");
       const year = new Date().getFullYear();
 
@@ -292,7 +297,7 @@
       return match ? Number(match[0]) : 0;
     }
 
-    function isTimeStillVisible(dayDate, timeString) {
+    function isUpcomingTime(dayDate, timeString) {
       const screeningTime = parseTimeToDate(dayDate, timeString);
       const now = new Date();
       return screeningTime > now;
@@ -334,6 +339,44 @@
       };
     }
 
+    function getAllLiveEntriesToday() {
+      const visibleDays = getVisibleDays();
+      const todayDay = visibleDays.find(day => isTodayDay(day.date));
+      if (!todayDay) return [];
+
+      const lives = [];
+
+      (todayDay.movies || []).forEach(movie => {
+        (movie.times || []).forEach(timeItem => {
+          const progress = getScreeningProgress(todayDay.date, timeItem.time, movie.duration);
+          if (progress) {
+            lives.push({
+              title: movie.title,
+              time: timeItem.time,
+              hall: timeItem.hall || "",
+              progress
+            });
+          }
+        });
+      });
+
+      return lives.sort((a, b) => a.time.localeCompare(b.time));
+    }
+
+    function renderLiveNavButton() {
+      const btn = document.getElementById("live-nav-btn");
+      if (!btn) return;
+
+      const liveEntries = getAllLiveEntriesToday();
+
+      if (liveEntries.length > 0) {
+        btn.style.display = "inline-flex";
+        btn.textContent = `LIVE ${liveEntries[0].time}`;
+      } else {
+        btn.style.display = "none";
+      }
+    }
+
     function renderMovies() {
       const container = document.getElementById("movies-container");
       const visibleDays = getVisibleDays();
@@ -351,8 +394,8 @@
 
       let preparedMovies = (day.movies || [])
         .map((movie, index) => {
-          const visibleTimes = movie.times
-            .filter(item => isTimeStillVisible(day.date, item.time))
+          const upcomingTimesOnly = movie.times
+            .filter(item => isUpcomingTime(day.date, item.time))
             .sort((a, b) => parseTimeToDate(day.date, a.time) - parseTimeToDate(day.date, b.time));
 
           const activeProgress = movie.times
@@ -402,14 +445,14 @@
             sortTime = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
           }
 
-          if (visibleTimes.length === 0 && !activeProgress) {
+          if (upcomingTimesOnly.length === 0 && !activeProgress) {
             return null;
           }
 
           return {
             ...movie,
             _id: index,
-            visibleTimes,
+            visibleTimes: upcomingTimesOnly,
             activeProgress,
             sortTime,
             nextCountdown,
@@ -449,7 +492,7 @@
 
       preparedMovies.forEach(movie => {
         const card = document.createElement("article");
-        card.className = "card";
+        card.className = "card" + (movie.activeProgress ? " card-live" : "");
 
         const timesHtml = movie.visibleTimes.length
           ? movie.visibleTimes.map(item => `
@@ -490,12 +533,15 @@
           `
           : "";
 
-        const speakerIcon = String(movie.version || "").toLowerCase().includes("дублиран")
+        const hasDubbed = String(movie.version || "").toLowerCase().includes("дублиран");
+        const speakerIcon = hasDubbed
           ? ` <img src="speaker.png" alt="Дублиран" style="width:22px;height:22px;vertical-align:middle;margin-left:8px;">`
           : "";
 
         const versionFormatted = String(movie.version || "")
-          .replace("3D", '<span class="tag-3d">3D</span>');
+          .replace(/3D/g, '<span class="tag-3d">3D</span>');
+
+        const safeTrailer = String(movie.trailer || "").replace(/'/g, "\\'");
 
         card.innerHTML = `
           <img class="poster" src="${movie.poster}" alt="${movie.title}">
@@ -503,13 +549,13 @@
             <h3>${movie.title}</h3>
 
             <div class="meta">
-              <div><strong>Жанр:</strong> ${movie.genre}</div>
-              <div><strong>Продължителност:</strong> ${movie.duration}</div>
-              <div><strong>Версия:</strong> ${versionFormatted}${speakerIcon}</div>
+              <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
+              <div><strong>Продължителност:</strong> ${movie.duration || "Няма информация"}</div>
+              <div><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
             </div>
 
             <div class="actions">
-              <button class="trailer-btn" onclick="openTrailer('${movie.trailer || ""}')">
+              <button class="trailer-btn" onclick="openTrailer('${safeTrailer}')">
                 ▶ Трейлър
               </button>
             </div>
@@ -531,26 +577,32 @@
 
         container.appendChild(card);
       });
+
+      renderLiveNavButton();
     }
 
     function openTrailer(url) {
       if (!url) return;
+
       const modal = document.getElementById("trailerModal");
       const frame = document.getElementById("trailerFrame");
-      frame.src = url + "?autoplay=1";
+      const separator = url.includes("?") ? "&" : "?";
+
+      frame.src = url + separator + "autoplay=1";
       modal.classList.add("active");
     }
 
     function closeTrailer() {
       const modal = document.getElementById("trailerModal");
       const frame = document.getElementById("trailerFrame");
+
       frame.src = "";
       modal.classList.remove("active");
     }
 
     function outsideClose(event) {
       const content = document.querySelector(".modal-content");
-      if (!content.contains(event.target)) {
+      if (content && !content.contains(event.target)) {
         closeTrailer();
       }
     }
@@ -567,6 +619,7 @@
       }
 
       renderMovies();
+      renderLiveNavButton();
     }
 
     setInterval(() => {
