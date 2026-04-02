@@ -669,6 +669,13 @@ nav a:hover{
   background:none !important;
 }
 
+.version-row{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
 .premiere-body{
   padding:18px;
 }
