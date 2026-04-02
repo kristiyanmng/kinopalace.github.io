@@ -44,6 +44,20 @@
   </div>
 </footer>
 
+<div id="trailerModal" class="modal" onclick="outsideClose(event)">
+  <div class="modal-content">
+    <button class="close" onclick="closeTrailer()" aria-label="Затвори трейлъра">×</button>
+    <iframe
+      id="trailerFrame"
+      src=""
+      title="Трейлър"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
 <script>
 const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
 let premieresData = null;
@@ -52,7 +66,7 @@ loadPremieres();
 
 async function loadPremieres() {
   try {
-    const res = await fetch(`${API_BASE}/api/export-premieres`);
+    const res = await fetch(`${API_BASE}/api/export-premieres`, { cache: "no-store" });
 
     if (!res.ok) throw new Error("Грешка при зареждане");
 
@@ -60,6 +74,7 @@ async function loadPremieres() {
     premieresData = data;
     renderPremieres();
   } catch (e) {
+    console.error(e);
     document.getElementById("premieres-container").innerHTML = `
       <div style="padding:28px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;">
         <h2 style="margin:0 0 12px;color:#fff;">В момента се прави подобрение по страницата</h2>
@@ -72,17 +87,17 @@ async function loadPremieres() {
 }
 
 function parseDate(dateStr) {
-  const [day, month] = dateStr.split(".");
+  const [day, month] = String(dateStr).split(".");
   const year = new Date().getFullYear();
   return new Date(year, Number(month) - 1, Number(day));
 }
 
 function isFuture(dateStr) {
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
 
   const d = parseDate(dateStr);
-  d.setHours(0,0,0,0);
+  d.setHours(0, 0, 0, 0);
 
   return d >= today;
 }
@@ -90,12 +105,12 @@ function isFuture(dateStr) {
 function renderPremieres() {
   const container = document.getElementById("premieres-container");
 
-  const movies = (premieresData.premieres || [])
-    .filter(m => isFuture(m.date))
-    .sort((a,b) => parseDate(a.date) - parseDate(b.date));
+  const movies = (premieresData?.premieres || [])
+    .filter(movie => isFuture(movie.date))
+    .sort((a, b) => parseDate(a.date) - parseDate(b.date));
 
   if (movies.length === 0) {
-    container.innerHTML = '<p style="color:#fde68a;">Няма предстоящи премиери.</p>';
+    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма предстоящи премиери.</p>';
     return;
   }
 
@@ -105,25 +120,74 @@ function renderPremieres() {
     const el = document.createElement("div");
     el.className = "premiere";
 
-    el.innerHTML = `
-      <img src="${movie.poster}" alt="${movie.title}">
-      <div class="premiere-body">
-        <h3>${movie.title}</h3>
+    const hasDubbed = String(movie.version || "").toLowerCase().includes("дублиран");
+    const speakerIcon = hasDubbed
+      ? ` <img src="speaker.png" alt="Дублиран" style="width:22px;height:22px;vertical-align:middle;margin-left:8px;">`
+      : "";
 
-        <div class="date">Премиера: ${movie.date}</div>
+    const versionFormatted = String(movie.version || "")
+      .replace(/3D/g, '<span class="tag-3d">3D</span>');
+
+    const safeTrailer = String(movie.trailer || "").replace(/'/g, "\\'");
+
+    const trailerButton = movie.trailer
+      ? `
+        <button class="trailer-btn" onclick="openTrailer('${safeTrailer}')">
+          ▶ Трейлър
+        </button>
+      `
+      : "";
+
+    el.innerHTML = `
+      <img src="${movie.poster || ""}" alt="${movie.title || ""}">
+      <div class="premiere-body">
+        <h3>${movie.title || "Без заглавие"}</h3>
+
+        <div class="date">Премиера: ${movie.date || "-"}</div>
 
         <div class="meta">
           <div><strong>Времетраене:</strong> ${movie.duration || "Няма информация"}</div>
           <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
-          <div><strong>Версия:</strong> ${movie.version || "Няма информация"}</div>
+          <div><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
+          <div><strong>Категория:</strong> ${movie.category || "Няма информация"}</div>
         </div>
 
         <p>${movie.description || ""}</p>
+
+        <div class="actions">
+          ${trailerButton}
+        </div>
       </div>
     `;
 
     container.appendChild(el);
   });
+}
+
+function openTrailer(url) {
+  if (!url) return;
+
+  const modal = document.getElementById("trailerModal");
+  const frame = document.getElementById("trailerFrame");
+  const separator = url.includes("?") ? "&" : "?";
+
+  frame.src = url + separator + "autoplay=1";
+  modal.classList.add("active");
+}
+
+function closeTrailer() {
+  const modal = document.getElementById("trailerModal");
+  const frame = document.getElementById("trailerFrame");
+
+  frame.src = "";
+  modal.classList.remove("active");
+}
+
+function outsideClose(event) {
+  const content = document.querySelector(".modal-content");
+  if (content && !content.contains(event.target)) {
+    closeTrailer();
+  }
 }
 
 setInterval(loadPremieres, 60000);
