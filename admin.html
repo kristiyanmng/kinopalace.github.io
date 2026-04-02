@@ -921,56 +921,66 @@
     }
 
     function renderOperations(items) {
-      const list = document.getElementById("operations-list");
-      list.innerHTML = "";
+  const list = document.getElementById("operations-list");
+  list.innerHTML = "";
 
-      if (!items.length) {
-        list.innerHTML = `<div class="muted">Няма прожекции за днес.</div>`;
-        return;
-      }
+  if (!items.length) {
+    list.innerHTML = `<div class="muted">Няма прожекции за днес.</div>`;
+    return;
+  }
 
-      items.forEach(item => {
-        const actions = [];
+  items.forEach(item => {
+    const actions = [];
 
-        if (item.status === "scheduled") {
-          actions.push(`<button class="btn-info btn-small" onclick="startAds(${item.id})">Старт реклами</button>`);
-          actions.push(`<button class="btn-success btn-small" onclick="startScreening(${item.id})">Старт прожекция</button>`);
-          actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
-        } else if (item.status === "ads_started") {
-          actions.push(`<button class="btn-success btn-small" onclick="startScreening(${item.id})">Старт прожекция</button>`);
-          actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
-        } else if (item.status === "screening_started") {
-          actions.push(`<button class="btn-warning btn-small" onclick="endScreening(${item.id})">Край прожекция</button>`);
-          actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
-        }
-
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
-          <div class="item-header">
-            <div>
-              <strong>${item.title || "Без заглавие"}</strong>
-              <div class="muted">
-                ${item.date} • ${item.scheduled_time}<br>
-                ${item.hall || "Зала 1"}<br>
-                3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}
-              </div>
-            </div>
-            <span class="badge ${item.status}">${statusLabel(item.status)}</span>
-          </div>
-
-          <div class="muted" style="margin-top:10px;">
-            Реклами: ${item.ads_started_at || "-"}<br>
-            Начало: ${item.screening_started_at || "-"}<br>
-            Край: ${item.ended_at || "-"}<br>
-            Отпаднала: ${item.cancelled_at || "-"}${item.cancelled_reason ? `<br>Причина: ${item.cancelled_reason}` : ""}
-          </div>
-
-          <div class="actions-row">${actions.join("")}</div>
-        `;
-        list.appendChild(el);
-      });
+    // Реклами можеш да стартираш само ако още е scheduled
+    if (item.status === "scheduled") {
+      actions.push(`<button class="btn-info btn-small" onclick="startAds(${item.id})">Старт реклами</button>`);
     }
+
+    // Прожекция можеш да стартираш ако още не е тръгнала реално
+    if (item.status === "scheduled" || item.status === "ads_started") {
+      actions.push(`<button class="btn-success btn-small" onclick="startScreening(${item.id})">Старт прожекция</button>`);
+    }
+
+    // Край прожекция само ако вече тече
+    if (item.status === "screening_started") {
+      actions.push(`<button class="btn-warning btn-small" onclick="endScreening(${item.id})">Край прожекция</button>`);
+    }
+
+    // Отпаднала да може за всичко, което не е приключило/отпаднало
+    if (item.status !== "finished" && item.status !== "cancelled") {
+      actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
+    }
+
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerHTML = `
+      <div class="item-header">
+        <div>
+          <strong>${item.title || "Без заглавие"}</strong>
+          <div class="muted">
+            ID: ${item.id}<br>
+            ${item.date} • ${item.scheduled_time}<br>
+            ${item.hall || "Зала 1"}<br>
+            3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}<br>
+            Raw status: ${item.status || "-"}
+          </div>
+        </div>
+        <span class="badge ${item.status}">${statusLabel(item.status)}</span>
+      </div>
+
+      <div class="muted" style="margin-top:10px;">
+        Реклами: ${item.ads_started_at || "-"}<br>
+        Начало: ${item.screening_started_at || "-"}<br>
+        Край: ${item.ended_at || "-"}<br>
+        Отпаднала: ${item.cancelled_at || "-"}${item.cancelled_reason ? `<br>Причина: ${item.cancelled_reason}` : ""}
+      </div>
+
+      <div class="actions-row">${actions.join("") || '<span class="muted">Няма налични действия</span>'}</div>
+    `;
+    list.appendChild(el);
+  });
+}
 
     async function startAds(id) {
       try {
