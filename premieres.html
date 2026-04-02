@@ -158,8 +158,8 @@ function renderPremieres() {
 
     const hasDubbed = String(movie.version || "").toLowerCase().includes("дублиран");
     const speakerIcon = hasDubbed
-      ? ` <img src="speaker.png" alt="Дублиран" style="width:22px;height:22px;vertical-align:middle;margin-left:8px;">`
-      : "";
+  ? ` <img src="speaker.png" alt="Дублиран" class="dubbed-icon">`
+  : "";
 
     const versionFormatted = String(movie.version || "")
       .replace(/3D/g, '<span class="tag-3d">3D</span>');
