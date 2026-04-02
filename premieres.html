@@ -21,7 +21,6 @@
       <nav>
         <a href="index.html">Начало / Програма</a>
         <a href="premieres.html">Премиери в България</a>
-        <a href="admin.html">Админ</a>
       </nav>
     </div>
   </div>
@@ -71,7 +70,7 @@ async function loadPremieres() {
     if (!res.ok) throw new Error("Грешка при зареждане");
 
     const data = await res.json();
-    premieresData = data;
+    premieresData = normalizePremieresData(data);
     renderPremieres();
   } catch (e) {
     console.error(e);
@@ -86,28 +85,65 @@ async function loadPremieres() {
   }
 }
 
-function parseDate(dateStr) {
-  const [day, month] = String(dateStr).split(".");
-  const year = new Date().getFullYear();
-  return new Date(year, Number(month) - 1, Number(day));
+function normalizePremieresData(data) {
+  return {
+    premieres: (data?.premieres || []).map(item => ({
+      ...item,
+      iso_date: item.iso_date || bgToISO(item.date),
+      status: item.status || "scheduled"
+    }))
+  };
 }
 
-function isFuture(dateStr) {
+function bgToISO(dayDate) {
+  if (!dayDate) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dayDate)) return dayDate;
+
+  const [day, month, yearMaybe] = String(dayDate).split(".");
+  const year = yearMaybe || String(new Date().getFullYear());
+
+  if (!day || !month) return "";
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function parseISODate(isoDate) {
+  return new Date(`${isoDate}T00:00:00`);
+}
+
+function isFutureOrToday(isoDate) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const d = parseDate(dateStr);
+  const d = parseISODate(isoDate);
   d.setHours(0, 0, 0, 0);
 
   return d >= today;
+}
+
+function getPremiereStatusLabel(status) {
+  const map = {
+    scheduled: "Очаква се",
+    published: "Публикувана",
+    cancelled: "Отменена"
+  };
+  return map[status] || status;
+}
+
+function getPremiereStatusClass(status) {
+  const map = {
+    scheduled: "premiere-status-scheduled",
+    published: "premiere-status-published",
+    cancelled: "premiere-status-cancelled"
+  };
+  return map[status] || "premiere-status-scheduled";
 }
 
 function renderPremieres() {
   const container = document.getElementById("premieres-container");
 
   const movies = (premieresData?.premieres || [])
-    .filter(movie => isFuture(movie.date))
-    .sort((a, b) => parseDate(a.date) - parseDate(b.date));
+    .filter(movie => isFutureOrToday(movie.iso_date))
+    .sort((a, b) => parseISODate(a.iso_date) - parseISODate(b.iso_date));
 
   if (movies.length === 0) {
     container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма предстоящи премиери.</p>';
@@ -138,10 +174,19 @@ function renderPremieres() {
       `
       : "";
 
+    const statusBadge = `
+      <span class="premiere-status ${getPremiereStatusClass(movie.status)}">
+        ${getPremiereStatusLabel(movie.status)}
+      </span>
+    `;
+
     el.innerHTML = `
       <img src="${movie.poster || ""}" alt="${movie.title || ""}">
       <div class="premiere-body">
-        <h3>${movie.title || "Без заглавие"}</h3>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+          <h3>${movie.title || "Без заглавие"}</h3>
+          ${statusBadge}
+        </div>
 
         <div class="date">Премиера: ${movie.date || "-"}</div>
 
@@ -191,6 +236,16 @@ function outsideClose(event) {
 }
 
 setInterval(loadPremieres, 60000);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    loadPremieres();
+  }
+});
+
+window.addEventListener("focus", () => {
+  loadPremieres();
+});
 </script>
 
 </body>
