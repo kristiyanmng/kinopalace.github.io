@@ -92,6 +92,7 @@
         renderMovies();
         renderLiveNavButton();
         setupDaysNavigation();
+        setupLiveNavClick();
       } catch (error) {
         console.error(error);
         document.getElementById("movies-container").innerHTML = `
@@ -360,6 +361,33 @@
       } else {
         btn.style.display = "none";
       }
+    }
+
+    function setupLiveNavClick() {
+      const btn = document.getElementById("live-nav-btn");
+      if (!btn || btn.dataset.bound === "1") return;
+
+      btn.dataset.bound = "1";
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const menuToggle = document.getElementById("menu-toggle");
+        if (menuToggle) {
+          menuToggle.checked = false;
+        }
+
+        const firstLiveCard = document.querySelector(".card-live");
+        if (firstLiveCard) {
+          firstLiveCard.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+
+        const fallback = document.getElementById("movies-container");
+        if (fallback) {
+          fallback.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
     }
 
     function renderMovies() {
