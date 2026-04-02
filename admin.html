@@ -341,7 +341,7 @@
   <div id="login-screen" class="login-wrap">
     <div class="login-card">
       <h1 style="margin-bottom:10px;">Админ вход</h1>
-      <p class="muted" style="margin-top:0;">Панелът вече работи с новата база и оперативни статуси.</p>
+      <p class="muted" style="margin-top:0;">Панелът работи с новата база и оперативни статуси.</p>
       <div id="login-status" class="status"></div>
 
       <label>Парола</label>
@@ -1539,6 +1539,8 @@
         list.innerHTML = "";
 
         items.forEach(item => {
+          const safeKey = String(item.key || "").replace(/'/g, "\\'");
+
           const el = document.createElement("div");
           el.className = "item";
           el.innerHTML = `
@@ -1546,6 +1548,7 @@
             <div class="muted">${item.value || ""}</div>
             <div class="actions-row">
               <button class="btn-info btn-small" onclick="editSetting(${item.id})">Зареди във формата</button>
+              <button class="btn-danger btn-small" onclick="deleteSetting('${safeKey}')">Изтрий</button>
             </div>
           `;
           list.appendChild(el);
@@ -1560,6 +1563,28 @@
       if (!item) return;
       document.getElementById("setting-key").value = item.key || "";
       document.getElementById("setting-value").value = item.value || "";
+    }
+
+    async function deleteSetting(key) {
+      if (!confirm(`Сигурен ли си, че искаш да изтриеш setting: ${key}?`)) return;
+
+      try {
+        await api("/api/settings/delete", {
+          method: "POST",
+          body: JSON.stringify({ key })
+        }, true);
+
+        if (document.getElementById("setting-key").value.trim() === key) {
+          document.getElementById("setting-key").value = "";
+          document.getElementById("setting-value").value = "";
+        }
+
+        showStatus("Настройката е изтрита.");
+        await loadSettings();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
     }
 
     async function saveSetting() {
