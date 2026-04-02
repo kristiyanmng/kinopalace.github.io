@@ -136,13 +136,15 @@
         }
 
         const hall = item.hall || "Зала 1";
+        const status = item.status || "scheduled";
+
         return {
           id: item.id ?? null,
           time: item.time || item.scheduled_time || "",
           scheduled_time: item.scheduled_time || item.time || "",
           hall,
           type: item.type || (/vip/i.test(hall) ? "vip" : "standard"),
-          status: item.status || "scheduled",
+          status,
           iso_date: item.iso_date || fallbackIsoDate || "",
           is_3d: !!item.is_3d,
           is_dubbed: !!item.is_dubbed
@@ -184,7 +186,11 @@
     }
 
     function getVisibleDays() {
-      return (scheduleData?.days || []).filter(day => isFutureOrToday(day.iso_date));
+      return (scheduleData?.days || []).filter(day =>
+        isFutureOrToday(day.iso_date) &&
+        Array.isArray(day.movies) &&
+        day.movies.some(movie => Array.isArray(movie.times) && movie.times.length > 0)
+      );
     }
 
     function setTodayAsActive() {
@@ -339,11 +345,18 @@
       const liveEntries = getLiveEntriesToday();
 
       if (liveEntries.length > 0) {
-        const first = liveEntries[0];
+        const adsCount = liveEntries.filter(x => x.status === "ads_started").length;
+        const screeningCount = liveEntries.filter(x => x.status === "screening_started").length;
+
         btn.style.display = "inline-flex";
-        btn.textContent = first.status === "ads_started"
-          ? `LIVE РЕКЛАМИ ${first.time}`
-          : `LIVE ${first.time}`;
+
+        if (adsCount > 0 && screeningCount === 0) {
+          btn.textContent = `LIVE РЕКЛАМИ ${adsCount}`;
+        } else if (screeningCount > 0 && adsCount === 0) {
+          btn.textContent = `LIVE ${screeningCount}`;
+        } else {
+          btn.textContent = `LIVE ${liveEntries.length}`;
+        }
       } else {
         btn.style.display = "none";
       }
@@ -366,9 +379,11 @@
 
       let preparedMovies = (day.movies || [])
         .map((movie, index) => {
-          const activeLiveItem = (movie.times || []).find(
+          const activeLiveItems = (movie.times || []).filter(
             item => item.status === "ads_started" || item.status === "screening_started"
           );
+
+          const activeLiveItem = activeLiveItems[0] || null;
 
           const visibleTimes = (movie.times || [])
             .filter(item => item.status !== "finished" && item.status !== "cancelled")
@@ -434,6 +449,7 @@
             _id: index,
             visibleTimes,
             activeLiveItem,
+            activeLiveItems,
             sortTime,
             nextCountdown,
             showNextCountdown: false
@@ -470,13 +486,16 @@
 
         const timesHtml = movie.visibleTimes.length
           ? movie.visibleTimes.map(item => {
-              const isCancelled = item.status === "cancelled";
               const statusText = item.status && item.status !== "scheduled"
                 ? `<small class="hall-label">${getStatusLabel(item.status)}</small>`
                 : `<small class="hall-label">${item.hall || ""}</small>`;
 
+              let extraClass = "";
+              if (item.status === "cancelled") extraClass = " cancelled-time";
+              if (item.status === "ads_started" || item.status === "screening_started") extraClass = " live-time";
+
               return `
-                <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}" style="${isCancelled ? "opacity:.45;" : ""}">
+                <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}${extraClass}">
                   <span class="time-value">${item.scheduled_time || item.time}</span>
                   ${statusText}
                 </span>
