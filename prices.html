@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Цени</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#0b1020;
+  color:white;
+}
+
+.container {
+  width:95%;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+h1 {
+  margin-bottom:20px;
+}
+
+.category {
+  margin-top:30px;
+}
+
+.category h2 {
+  margin-bottom:10px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  padding-bottom:6px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+}
+
+.card {
+  background:#111827;
+  border-radius:12px;
+  padding:14px;
+}
+
+.card img {
+  width:100%;
+  border-radius:8px;
+  margin-bottom:10px;
+}
+
+.price {
+  font-size:18px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.muted {
+  color:#9ca3af;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Цени</h1>
+  <div id="prices-container">Зареждане...</div>
+</div>
+
+<script>
+const API = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
+
+// 🔥 евро → лев
+function eurToBgn(eur) {
+  return (eur * 1.95583).toFixed(2);
+}
+
+// 🔥 дали да показва левове
+function showBGN() {
+  return new Date() < new Date("2026-08-08");
+}
+
+async function loadPrices() {
+  try {
+    const res = await fetch(API + "/api/price-items");
+    const data = await res.json();
+
+    const container = document.getElementById("prices-container");
+
+    if (!data.length) {
+      container.innerHTML = "<p>Няма налични цени.</p>";
+      return;
+    }
+
+    // групиране по категория
+    const grouped = {};
+
+    data.forEach(item => {
+      if (item.status !== "active") return;
+
+      const cat = item.category || "Други";
+
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(item);
+    });
+
+    container.innerHTML = "";
+
+    Object.keys(grouped).forEach(cat => {
+      const section = document.createElement("div");
+      section.className = "category";
+
+      section.innerHTML = `<h2>${cat}</h2><div class="grid"></div>`;
+      const grid = section.querySelector(".grid");
+
+      grouped[cat]
+        .sort((a,b)=> (a.sort_order||0)-(b.sort_order||0))
+        .forEach(item => {
+
+          const card = document.createElement("div");
+          card.className = "card";
+
+          const priceBGN = eurToBgn(item.price_eur);
+
+          card.innerHTML = `
+            ${item.image ? `<img src="${item.image}" alt="">` : ""}
+            <strong>${item.title}</strong>
+            <div class="muted">${item.description || ""}</div>
+
+            <div class="price">
+              ${
+                showBGN()
+                ? `${priceBGN} лв / €${item.price_eur}`
+                : `€${item.price_eur}`
+              }
+            </div>
+          `;
+
+          grid.appendChild(card);
+        });
+
+      container.appendChild(section);
+    });
+
+  } catch (e) {
+    console.error(e);
+    document.getElementById("prices-container").innerHTML =
+      "<p>Грешка при зареждане.</p>";
+  }
+}
+
+loadPrices();
+</script>
+
+</body>
+</html>
