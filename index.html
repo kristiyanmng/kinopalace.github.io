@@ -20,6 +20,7 @@
         <nav>
           <a href="index.html">Програма</a>
           <a href="premieres.html">Премиери в България</a>
+          <a href="prices.html">Цени</a>
           <a href="#movies-container" id="live-nav-btn" class="live-nav-btn" style="display:none;">
             LIVE
           </a>
@@ -75,10 +76,15 @@
     let activeDayIndex = 0;
     let lastDate = new Date().getDate();
     let daysNavigationInitialized = false;
+    let lastVersion = null;
+    let isLoadingSchedule = false;
 
-    loadSchedule();
+    loadSchedule(true);
 
-    async function loadSchedule() {
+    async function loadSchedule(initial = false) {
+      if (isLoadingSchedule) return;
+      isLoadingSchedule = true;
+
       try {
         const response = await fetch(`${API_BASE}/api/export-schedule`, { cache: "no-store" });
 
@@ -99,6 +105,10 @@
         renderLiveStrip();
         setupDaysNavigation();
         setupLiveNavClick();
+
+        if (initial) {
+          await primeVersion();
+        }
       } catch (error) {
         console.error(error);
         document.getElementById("movies-container").innerHTML = `
@@ -109,6 +119,41 @@
             </p>
           </div>
         `;
+      } finally {
+        isLoadingSchedule = false;
+      }
+    }
+
+    async function primeVersion() {
+      try {
+        const res = await fetch(`${API_BASE}/api/public-version`, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        lastVersion = data.version || "0";
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function checkVersion() {
+      try {
+        const res = await fetch(`${API_BASE}/api/public-version`, { cache: "no-store" });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const currentVersion = data.version || "0";
+
+        if (!lastVersion) {
+          lastVersion = currentVersion;
+          return;
+        }
+
+        if (currentVersion !== lastVersion) {
+          lastVersion = currentVersion;
+          await loadSchedule();
+        }
+      } catch (e) {
+        console.error(e);
       }
     }
 
@@ -626,7 +671,7 @@
 
         const hasDubbed = String(movie.version || "").toLowerCase().includes("дублиран");
         const speakerIcon = hasDubbed
-          ? ` <img src="speaker.png" alt="Дублиран" style="width:22px;height:22px;vertical-align:middle;margin-left:8px;">`
+          ? ` <img src="speaker.png" alt="Дублиран" class="dubbed-icon">`
           : "";
 
         const versionFormatted = String(movie.version || "")
@@ -642,7 +687,7 @@
             <div class="meta">
               <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
               <div><strong>Продължителност:</strong> ${movie.duration || "Няма информация"}</div>
-              <div><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
+              <div class="version-row"><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
             </div>
 
             <div class="actions">
@@ -715,13 +760,20 @@
       renderLiveStrip();
     }
 
+    // Само UI refresh за countdown / live визуализация
     setInterval(() => {
       refreshUI();
     }, 1000);
 
+    // Проверка за промяна от backend на 30 сек
+    setInterval(() => {
+      checkVersion();
+    }, 30000);
+
+    // Нормален reload на данните на 10 минути
     setInterval(() => {
       loadSchedule();
-    }, 60000);
+    }, 600000);
 
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
