@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Админ панел v3</title>
+  <title>Админ панел v2</title>
   <style>
     :root{
       --bg:#0b1020;
@@ -1735,18 +1735,19 @@ async function loadPriceItems() {
       const el = document.createElement("div");
       el.className = "item";
       el.innerHTML = `
-        <strong>${item.title}</strong>
-        <div class="muted">
-          Категория: ${item.category || "-"}<br>
-          EUR: €${formatMoney(item.price_eur)}<br>
-          BGN: ${item.price_bgn !== null && item.price_bgn !== undefined ? ${formatMoney(item.price_bgn)} лв : "скрито"}<br>
-          Статус: ${item.status || "-"}<br>
-          Подредба: ${item.sort_order || 0}
-        </div>
-        <div class="actions-row">
-          <button class="btn-info btn-small" onclick="editPriceItem(${item.id})">Редактирай</button>
-          <button class="btn-danger btn-small" onclick="deletePriceItem(${item.id})">Изтрий</button>
-        </div>
+  <strong>${item.title}</strong>
+  <div class="muted">
+    Категория: ${item.category || ""}<br>
+    EUR: €${formatMoney(item.price_eur)}<br>
+    BGN: ${item.price_bgn !== null && item.price_bgn !== undefined ? formatMoney(item.price_bgn) + " лв" : "скрито"}<br>
+    Статус: ${item.status || "-"}<br>
+    Подредба: ${item.sort_order || 0}
+  </div>
+  <div class="actions-row">
+    <button class="btn-info btn-small" onclick="editPriceItem(${item.id})">Редактирай</button>
+    <button class="btn-danger btn-small" onclick="deletePriceItem(${item.id})">Изтрий</button>
+  </div>
+`;
       `;
       list.appendChild(el);
     });
