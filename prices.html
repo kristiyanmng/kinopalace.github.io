@@ -5,63 +5,164 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Цени</title>
 <link rel="stylesheet" href="style.css" />
-  
+
 <style>
-body {
+body{
   margin:0;
-  font-family:Arial;
+  font-family:Arial, Helvetica, sans-serif;
   background:#0b1020;
-  color:white;
+  color:#fff;
 }
 
-.container {
+.container{
   width:95%;
   max-width:1100px;
   margin:auto;
   padding:20px;
 }
 
-h1 {
+h1{
   margin-bottom:20px;
 }
 
-.category {
-  margin-top:30px;
+.category{
+  margin-top:34px;
 }
 
-.category h2 {
-  margin-bottom:10px;
-  border-bottom:1px solid rgba(255,255,255,.1);
-  padding-bottom:6px;
+.category h2{
+  margin:0 0 14px;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  font-size:20px;
 }
 
-.grid {
+.prices-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:12px;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:18px;
 }
 
-.card {
+.price-card{
   background:#111827;
-  border-radius:12px;
-  padding:14px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 16px 40px rgba(0,0,0,.22);
+  display:flex;
+  flex-direction:column;
 }
 
-.card img {
+.price-card-image-wrap{
   width:100%;
-  border-radius:8px;
-  margin-bottom:10px;
+  height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(255,255,255,.02);
 }
 
-.price {
+.price-card img{
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:block;
+}
+
+.price-card-body{
+  padding:16px 16px 18px;
+}
+
+.price-card-title{
+  margin:0 0 8px;
   font-size:18px;
-  font-weight:bold;
-  margin-top:8px;
+  line-height:1.3;
+  font-weight:800;
 }
 
-.muted {
+.price-card-description{
+  margin:0;
   color:#9ca3af;
   font-size:14px;
+  line-height:1.5;
+  min-height:42px;
+}
+
+.price{
+  font-size:24px;
+  font-weight:900;
+  margin-top:14px;
+  line-height:1.2;
+}
+
+.price-eur{
+  color:#fde68a;
+}
+
+.price-bgn{
+  color:#e5e7eb;
+}
+
+.empty-box{
+  background:#111827;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:24px;
+  color:#cbd5e1;
+}
+
+.error-box{
+  background:rgba(239,68,68,.08);
+  border:1px solid rgba(239,68,68,.20);
+  border-radius:18px;
+  padding:24px;
+  color:#fecaca;
+}
+
+@media (max-width: 760px){
+  .container{
+    width:94%;
+    padding:16px;
+  }
+
+  h1{
+    font-size:28px;
+  }
+
+  .category h2{
+    font-size:18px;
+  }
+
+  .prices-grid{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+
+  .price-card-image-wrap{
+    height:170px;
+    padding:14px;
+  }
+
+  .price-card-title{
+    font-size:17px;
+  }
+
+  .price-card-description{
+    font-size:14px;
+    min-height:auto;
+  }
+
+  .price{
+    font-size:20px;
+  }
+}
+
+@media (min-width: 1200px){
+  .price-card-image-wrap{
+    height:210px;
+  }
 }
 </style>
 </head>
@@ -90,37 +191,42 @@ h1 {
     </div>
   </header>
 
-<div class="container">
-  <h1>Цени</h1>
-  <div id="prices-container">Зареждане...</div>
-</div>
+  <div class="container">
+    <h1>Цени</h1>
+    <div id="prices-container">Зареждане...</div>
+  </div>
 
 <script>
 const API = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
 
-// 🔥 евро → лев
-function eurToBgn(eur) {
-  return (eur * 1.95583).toFixed(2);
+function formatMoney(value) {
+  return Number(value || 0).toFixed(2);
 }
 
-// 🔥 дали да показва левове
+function eurToBgn(eur) {
+  return (Number(eur || 0) * 1.95583).toFixed(2);
+}
+
 function showBGN() {
-  return new Date() < new Date("2026-08-08");
+  return new Date() < new Date("2026-08-08T00:00:00");
 }
 
 async function loadPrices() {
   try {
-    const res = await fetch(API + "/api/price-items");
-    const data = await res.json();
+    const res = await fetch(API + "/api/price-items", { cache: "no-store" });
 
+    if (!res.ok) {
+      throw new Error("Неуспешно зареждане на цените");
+    }
+
+    const data = await res.json();
     const container = document.getElementById("prices-container");
 
-    if (!data.length) {
-      container.innerHTML = "<p>Няма налични цени.</p>";
+    if (!Array.isArray(data) || !data.length) {
+      container.innerHTML = `<div class="empty-box">Няма налични цени.</div>`;
       return;
     }
 
-    // групиране по категория
     const grouped = {};
 
     data.forEach(item => {
@@ -132,48 +238,65 @@ async function loadPrices() {
       grouped[cat].push(item);
     });
 
+    const categoryNames = Object.keys(grouped);
+
+    if (!categoryNames.length) {
+      container.innerHTML = `<div class="empty-box">Няма активни артикули.</div>`;
+      return;
+    }
+
     container.innerHTML = "";
 
-    Object.keys(grouped).forEach(cat => {
-      const section = document.createElement("div");
+    categoryNames.forEach(cat => {
+      const section = document.createElement("section");
       section.className = "category";
 
-      section.innerHTML = `<h2>${cat}</h2><div class="grid"></div>`;
-      const grid = section.querySelector(".grid");
+      const title = document.createElement("h2");
+      title.textContent = cat;
+
+      const grid = document.createElement("div");
+      grid.className = "prices-grid";
 
       grouped[cat]
-        .sort((a,b)=> (a.sort_order||0)-(b.sort_order||0))
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
         .forEach(item => {
+          const card = document.createElement("article");
+          card.className = "price-card";
 
-          const card = document.createElement("div");
-          card.className = "card";
-
-          const priceBGN = eurToBgn(item.price_eur);
+          const eur = formatMoney(item.price_eur);
+          const bgn = eurToBgn(item.price_eur);
 
           card.innerHTML = `
-            ${item.image ? `<img src="${item.image}" alt="">` : ""}
-            <strong>${item.title}</strong>
-            <div class="muted">${item.description || ""}</div>
+            <div class="price-card-image-wrap">
+              ${item.image ? `<img src="${item.image}" alt="${item.title || ""}">` : ""}
+            </div>
 
-            <div class="price">
-              ${
-                showBGN()
-                ? `${priceBGN} лв / €${item.price_eur}`
-                : `€${item.price_eur}`
-              }
+            <div class="price-card-body">
+              <h3 class="price-card-title">${item.title || ""}</h3>
+              <p class="price-card-description">${item.description || ""}</p>
+
+              <div class="price">
+                ${
+                  showBGN()
+                    ? `<span class="price-eur">€${eur}</span> <span class="price-bgn">/ ${bgn} лв</span>`
+                    : `<span class="price-eur">€${eur}</span>`
+                }
+              </div>
             </div>
           `;
 
           grid.appendChild(card);
         });
 
+      section.appendChild(title);
+      section.appendChild(grid);
       container.appendChild(section);
     });
 
   } catch (e) {
     console.error(e);
     document.getElementById("prices-container").innerHTML =
-      "<p>Грешка при зареждане.</p>";
+      `<div class="error-box">Грешка при зареждане.</div>`;
   }
 }
 
