@@ -1151,11 +1151,11 @@ footer a:hover{
 
 .price-card-image-wrap{
   width:100%;
-  height:240px;
+  height:260px; /* ⬅️ по-голяма зона */
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
+  padding:10px; /* ⬅️ по-малко padding */
   background:rgba(255,255,255,.02);
 }
 
