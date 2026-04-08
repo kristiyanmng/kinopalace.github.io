@@ -87,12 +87,22 @@
     loadSchedule(true);
 
     function getServerNow() {
-      if (!serverNowBase || !clientNowBase) {
+      if (!serverNowBase || clientNowBase === null) {
         return new Date();
       }
 
       const elapsed = Date.now() - clientNowBase;
       return new Date(serverNowBase.getTime() + elapsed);
+    }
+
+    function getServerOffsetString() {
+      const source = serverNowBase || new Date();
+      const offsetMinutes = -source.getTimezoneOffset();
+      const sign = offsetMinutes >= 0 ? "+" : "-";
+      const abs = Math.abs(offsetMinutes);
+      const hours = String(Math.floor(abs / 60)).padStart(2, "0");
+      const minutes = String(abs % 60).padStart(2, "0");
+      return `${sign}${hours}:${minutes}`;
     }
 
     function getServerTodayISO() {
@@ -130,9 +140,7 @@
 
         serverToday = data.server_today || null;
         serverTimezone = data.server_timezone || "Europe/Sofia";
-
         scheduleData = normalizeScheduleData(data);
-
         lastDate = getServerNow().getDate();
 
         document.getElementById("week-title").textContent =
@@ -256,7 +264,11 @@
     }
 
     function parseISODate(isoDate) {
-      return new Date(`${isoDate}T00:00:00`);
+      return new Date(`${isoDate}T00:00:00${getServerOffsetString()}`);
+    }
+
+    function parseTimeToDate(isoDate, timeString) {
+      return new Date(`${isoDate}T${timeString}:00${getServerOffsetString()}`);
     }
 
     function isFutureOrToday(isoDate) {
@@ -383,10 +395,6 @@
       updateDaysArrows();
     }
 
-    function parseTimeToDate(isoDate, timeString) {
-      return new Date(`${isoDate}T${timeString}:00`);
-    }
-
     function isUpcomingScheduledTime(isoDate, timeItem) {
       if (timeItem.status !== "scheduled") return false;
       const screeningTime = parseTimeToDate(isoDate, timeItem.scheduled_time || timeItem.time);
@@ -481,8 +489,9 @@
           </div>
 
           <div class="live-strip-movie">${entry.title}</div>
-          <div class="live-strip-hall">${entry.hall || 'Зала 1'}</div>
+          <div class="live-strip-hall">${entry.hall || "Зала 1"}</div>
         `;
+
         item.addEventListener("click", () => scrollToLiveCard(entry.movieIndex));
         list.appendChild(item);
       });
@@ -537,7 +546,7 @@
       const now = getServerNow();
       const isTodaySelected = isTodayISO(day.iso_date);
 
-      let preparedMovies = (day.movies || [])
+      const preparedMovies = (day.movies || [])
         .map((movie, index) => {
           const activeLiveItems = (movie.times || []).filter(
             item => item.status === "ads_started" || item.status === "screening_started"
@@ -572,7 +581,7 @@
           let nextCountdown = null;
 
           if (activeLiveItem) {
-            sortTime = new Date(now.getTime() - 60 * 1000);
+            sortTime = new Date(now.getTime() - 60000);
           } else if (upcomingTimes.length > 0) {
             sortTime = upcomingTimes[0].dateObj;
 
@@ -715,6 +724,14 @@
 
         const safeTrailer = String(movie.trailer || "").replace(/'/g, "\\'");
 
+        const trailerButton = movie.trailer
+          ? `
+            <button class="trailer-btn" onclick="openTrailer('${safeTrailer}')">
+              ▶ Трейлър
+            </button>
+          `
+          : "";
+
         card.innerHTML = `
           <img class="poster" src="${movie.poster}" alt="${movie.title}">
           <div class="card-body">
@@ -727,9 +744,7 @@
             </div>
 
             <div class="actions">
-              <button class="trailer-btn" onclick="openTrailer('${safeTrailer}')">
-                ▶ Трейлър
-              </button>
+              ${trailerButton}
             </div>
 
             <div class="times">
@@ -796,17 +811,14 @@
       renderLiveStrip();
     }
 
-    // Само UI refresh за countdown / live визуализация
     setInterval(() => {
       refreshUI();
     }, 1000);
 
-    // Проверка за промяна от backend на 30 сек
     setInterval(() => {
       checkVersion();
     }, 30000);
 
-    // Нормален reload на данните на 10 минути
     setInterval(() => {
       loadSchedule();
     }, 600000);
