@@ -74,12 +74,38 @@
 
     let scheduleData = null;
     let activeDayIndex = 0;
-    let lastDate = new Date().getDate();
+    let lastDate = null;
     let daysNavigationInitialized = false;
     let lastVersion = null;
     let isLoadingSchedule = false;
 
+    let serverNowBase = null;
+    let clientNowBase = null;
+    let serverToday = null;
+    let serverTimezone = "Europe/Sofia";
+
     loadSchedule(true);
+
+    function getServerNow() {
+      if (!serverNowBase || !clientNowBase) {
+        return new Date();
+      }
+
+      const elapsed = Date.now() - clientNowBase;
+      return new Date(serverNowBase.getTime() + elapsed);
+    }
+
+    function getServerTodayISO() {
+      if (serverToday && /^\d{4}-\d{2}-\d{2}$/.test(serverToday)) {
+        return serverToday;
+      }
+
+      const now = getServerNow();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
 
     async function loadSchedule(initial = false) {
       if (isLoadingSchedule) return;
@@ -93,7 +119,21 @@
         }
 
         const data = await response.json();
+
+        if (data.server_now) {
+          const parsedServerNow = new Date(data.server_now);
+          if (!isNaN(parsedServerNow.getTime())) {
+            serverNowBase = parsedServerNow;
+            clientNowBase = Date.now();
+          }
+        }
+
+        serverToday = data.server_today || null;
+        serverTimezone = data.server_timezone || "Europe/Sofia";
+
         scheduleData = normalizeScheduleData(data);
+
+        lastDate = getServerNow().getDate();
 
         document.getElementById("week-title").textContent =
           scheduleData.weekTitle || "Програма";
@@ -209,7 +249,7 @@
       if (/^\d{4}-\d{2}-\d{2}$/.test(dayDate)) return dayDate;
 
       const [day, month, yearMaybe] = String(dayDate).split(".");
-      const year = yearMaybe || String(new Date().getFullYear());
+      const year = yearMaybe || String(getServerNow().getFullYear());
 
       if (!day || !month) return "";
       return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -220,7 +260,7 @@
     }
 
     function isFutureOrToday(isoDate) {
-      const today = new Date();
+      const today = parseISODate(getServerTodayISO());
       today.setHours(0, 0, 0, 0);
 
       const dateObj = parseISODate(isoDate);
@@ -230,11 +270,7 @@
     }
 
     function isTodayISO(isoDate) {
-      const today = new Date();
-      const y = today.getFullYear();
-      const m = String(today.getMonth() + 1).padStart(2, "0");
-      const d = String(today.getDate()).padStart(2, "0");
-      return isoDate === `${y}-${m}-${d}`;
+      return isoDate === getServerTodayISO();
     }
 
     function getVisibleDays() {
@@ -354,7 +390,7 @@
     function isUpcomingScheduledTime(isoDate, timeItem) {
       if (timeItem.status !== "scheduled") return false;
       const screeningTime = parseTimeToDate(isoDate, timeItem.scheduled_time || timeItem.time);
-      return screeningTime > new Date();
+      return screeningTime > getServerNow();
     }
 
     function getStatusLabel(status) {
@@ -498,7 +534,7 @@
         return;
       }
 
-      const now = new Date();
+      const now = getServerNow();
       const isTodaySelected = isTodayISO(day.iso_date);
 
       let preparedMovies = (day.movies || [])
@@ -747,7 +783,7 @@
     function refreshUI() {
       if (!scheduleData) return;
 
-      const now = new Date();
+      const now = getServerNow();
 
       if (now.getDate() !== lastDate) {
         lastDate = now.getDate();
