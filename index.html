@@ -113,6 +113,9 @@
       isLoadingSchedule = true;
 
       try {
+        const previousVisibleDays = getVisibleDays();
+        const previousSelectedIsoDate = previousVisibleDays[activeDayIndex]?.iso_date || null;
+
         const response = await fetch(`${API_BASE}/api/export-schedule`, { cache: "no-store" });
 
         if (!response.ok) {
@@ -136,7 +139,20 @@
         document.getElementById("week-title").textContent =
           scheduleData.weekTitle || "Програма";
 
-        setTodayAsActive();
+        if (initial) {
+          setTodayAsActive();
+        } else {
+          const newVisibleDays = getVisibleDays();
+          const preservedIndex = newVisibleDays.findIndex(day => day.iso_date === previousSelectedIsoDate);
+
+          if (preservedIndex !== -1) {
+            activeDayIndex = preservedIndex;
+          } else {
+            const todayIndex = newVisibleDays.findIndex(day => isTodayISO(day.iso_date));
+            activeDayIndex = todayIndex !== -1 ? todayIndex : 0;
+          }
+        }
+
         renderDays();
         renderMovies();
         setupDaysNavigation();
@@ -578,12 +594,12 @@
 
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
-        loadSchedule();
+        checkVersion();
       }
     });
 
     window.addEventListener("focus", () => {
-      loadSchedule();
+      checkVersion();
     });
   </script>
 </body>
