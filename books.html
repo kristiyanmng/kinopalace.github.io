@@ -90,6 +90,7 @@
       line-height:1.65;
       margin:0 0 14px;
       flex:1;
+      white-space:pre-line;
     }
 
     .book-price{
@@ -254,7 +255,7 @@
         }
 
         const data = await res.json();
-        booksData = data.books || [];
+        booksData = Array.isArray(data.books) ? data.books : [];
         renderBooks();
       } catch (e) {
         console.error(e);
@@ -268,6 +269,15 @@
 
     function formatMoney(value) {
       return Number(value || 0).toFixed(2);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
     function renderStatus(status) {
@@ -296,7 +306,7 @@
 
       if (book.order_link) {
         buttons.push(`
-          <a class="book-btn primary" href="${book.order_link}" target="_blank" rel="noopener noreferrer">
+          <a class="book-btn primary" href="${escapeHtml(book.order_link)}" target="_blank" rel="noopener noreferrer">
             Поръчай
           </a>
         `);
@@ -304,7 +314,7 @@
 
       if (book.contact_link) {
         buttons.push(`
-          <a class="book-btn secondary" href="${book.contact_link}" target="_blank" rel="noopener noreferrer">
+          <a class="book-btn secondary" href="${escapeHtml(book.contact_link)}" target="_blank" rel="noopener noreferrer">
             Запитване
           </a>
         `);
@@ -319,6 +329,32 @@
       }
 
       return `<div class="book-actions">${buttons.join("")}</div>`;
+    }
+
+    function renderBookMeta(book) {
+      const parts = [];
+
+      if (book.category) {
+        parts.push(`<div><strong>Категория:</strong> ${escapeHtml(book.category)}</div>`);
+      }
+
+      if (book.pages) {
+        parts.push(`<div><strong>Страници:</strong> ${escapeHtml(book.pages)}</div>`);
+      }
+
+      if (book.isbn) {
+        parts.push(`<div><strong>ISBN:</strong> ${escapeHtml(book.isbn)}</div>`);
+      }
+
+      if (book.published_year) {
+        parts.push(`<div><strong>Година:</strong> ${escapeHtml(book.published_year)}</div>`);
+      }
+
+      if (!parts.length) {
+        return "";
+      }
+
+      return `<div class="book-meta">${parts.join("")}</div>`;
     }
 
     function renderBooks() {
@@ -340,24 +376,15 @@
         article.className = "book-card";
 
         article.innerHTML = `
-          <img class="book-cover" src="${book.cover_image || ""}" alt="${book.title || "Книга"}">
+          <img class="book-cover" src="${escapeHtml(book.cover_image || "")}" alt="${escapeHtml(book.title || "Книга")}">
           <div class="book-body">
-            <h2 class="book-title">${book.title || "Без заглавие"}</h2>
-            <div class="book-author">${book.author || "Без автор"}</div>
-            ${book.subtitle ? `<div class="book-subtitle">${book.subtitle}</div>` : ""}
-
-            <div class="book-meta">
-              ${book.category ? `<div><strong>Категория:</strong> ${book.category}</div>` : ""}
-              ${book.pages ? `<div><strong>Страници:</strong> ${book.pages}</div>` : ""}
-              ${book.isbn ? `<div><strong>ISBN:</strong> ${book.isbn}</div>` : ""}
-              ${book.published_at ? `<div><strong>Издадена:</strong> ${book.published_at}</div>` : ""}
-            </div>
-
+            <h2 class="book-title">${escapeHtml(book.title || "Без заглавие")}</h2>
+            <div class="book-author">${escapeHtml(book.author || "Без автор")}</div>
+            ${book.subtitle ? `<div class="book-subtitle">${escapeHtml(book.subtitle)}</div>` : ""}
+            ${renderBookMeta(book)}
             ${renderStatus(book.status)}
             ${renderPrice(book)}
-
-            <p class="book-description">${book.description || ""}</p>
-
+            <p class="book-description">${escapeHtml(book.description || "")}</p>
             ${renderButtons(book)}
           </div>
         `;
