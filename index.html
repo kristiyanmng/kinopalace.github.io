@@ -407,6 +407,7 @@
       }
 
       const now = getServerNow();
+      const isSelectedDayToday = isTodayISO(day.iso_date);
 
       const preparedMovies = (day.movies || [])
         .map((movie, index) => {
@@ -458,9 +459,11 @@
         return;
       }
 
-      const globalNextMovieIndex = preparedMovies.findIndex(movie => movie.nextCountdown);
-      if (globalNextMovieIndex !== -1) {
-        preparedMovies[globalNextMovieIndex].showNextCountdown = true;
+      if (isSelectedDayToday) {
+        const globalNextMovieIndex = preparedMovies.findIndex(movie => movie.nextCountdown);
+        if (globalNextMovieIndex !== -1) {
+          preparedMovies[globalNextMovieIndex].showNextCountdown = true;
+        }
       }
 
       preparedMovies.forEach(movie => {
