@@ -16,9 +16,6 @@
       --accent2:#f97316;
       --danger:#ef4444;
       --info:#38bdf8;
-      --success:#22c55e;
-      --warning:#f59e0b;
-      --blue:#3b82f6;
     }
 
     *{box-sizing:border-box}
@@ -118,32 +115,6 @@
       box-shadow:0 16px 40px rgba(0,0,0,.28);
     }
 
-    .stats-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:14px;
-      margin-top:16px;
-    }
-
-    .stat-card{
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:16px;
-      padding:16px;
-    }
-
-    .stat-label{
-      color:var(--muted);
-      font-size:13px;
-      margin-bottom:8px;
-      font-weight:700;
-    }
-
-    .stat-value{
-      font-size:32px;
-      font-weight:900;
-    }
-
     .muted{
       color:var(--muted);
       font-size:14px;
@@ -162,14 +133,6 @@
       border-radius:14px;
       padding:14px;
       background:rgba(255,255,255,.03);
-    }
-
-    .item-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      flex-wrap:wrap;
     }
 
     .actions-row{
@@ -208,16 +171,6 @@
       color:#001018;
     }
 
-    .btn-success{
-      background:var(--success);
-      color:#fff;
-    }
-
-    .btn-warning{
-      background:var(--warning);
-      color:#1f2937;
-    }
-
     .btn-logout{
       background:#475569;
       color:#fff;
@@ -253,37 +206,6 @@
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:12px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:800;
-    }
-
-    .badge.scheduled{
-      background:rgba(245,158,11,.14);
-      color:#fcd34d;
-    }
-    .badge.ads_started{
-      background:rgba(59,130,246,.14);
-      color:#93c5fd;
-    }
-    .badge.screening_started{
-      background:rgba(34,197,94,.14);
-      color:#86efac;
-    }
-    .badge.finished{
-      background:rgba(148,163,184,.14);
-      color:#cbd5e1;
-    }
-    .badge.cancelled{
-      background:rgba(239,68,68,.14);
-      color:#fca5a5;
     }
 
     .login-wrap{
@@ -341,7 +263,7 @@
   <div id="login-screen" class="login-wrap">
     <div class="login-card">
       <h1 style="margin-bottom:10px;">Админ вход</h1>
-      <p class="muted" style="margin-top:0;">Панелът работи с новата база и оперативни статуси.</p>
+      <p class="muted" style="margin-top:0;">Опростен панел без live и оперативни действия.</p>
       <div id="login-status" class="status"></div>
 
       <label>Парола</label>
@@ -364,77 +286,13 @@
       <div id="status" class="status"></div>
 
       <div class="tabs">
-        <button class="tab-btn active" onclick="setView('dashboard', event)">Dashboard</button>
-        <button class="tab-btn" onclick="setView('operations', event)">Операции</button>
-        <button class="tab-btn" onclick="setView('program', event)">Програма</button>
+        <button class="tab-btn active" onclick="setView('program', event)">Програма</button>
         <button class="tab-btn" onclick="setView('premieres', event)">Премиери</button>
-         <button class="tab-btn" onclick="setView('prices', event)">Цени</button>
+        <button class="tab-btn" onclick="setView('prices', event)">Цени</button>
         <button class="tab-btn" onclick="setView('settings', event)">Настройки</button>
       </div>
 
-      <section id="view-dashboard" class="view active">
-        <div class="card">
-          <div class="section-head">
-            <div>
-              <h2>Dashboard за днешните прожекции</h2>
-              <div class="muted" id="dashboard-date-text"></div>
-            </div>
-            <button class="btn-secondary" onclick="loadDashboard()">Обнови</button>
-          </div>
-
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-label">Общо днес</div>
-              <div class="stat-value" id="stat-total">0</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Планирани</div>
-              <div class="stat-value" id="stat-scheduled">0</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Реклами</div>
-              <div class="stat-value" id="stat-ads">0</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">В прожекция</div>
-              <div class="stat-value" id="stat-live">0</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Приключили</div>
-              <div class="stat-value" id="stat-finished">0</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Отпаднали</div>
-              <div class="stat-value" id="stat-cancelled">0</div>
-            </div>
-          </div>
-
-          <div style="margin-top:18px;">
-            <h3>Следваща прожекция</h3>
-            <div id="next-showtime-box" class="muted" style="margin-top:10px;">Няма следваща прожекция.</div>
-          </div>
-
-          <div style="margin-top:18px;">
-            <h3>Днешни прожекции</h3>
-            <div id="dashboard-showtimes" class="list"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="view-operations" class="view">
-        <div class="card">
-          <div class="section-head">
-            <div>
-              <h2>Операции</h2>
-              <div class="muted">Тук е реалният контрол върху днешните прожекции.</div>
-            </div>
-            <button class="btn-secondary" onclick="loadOperations()">Обнови</button>
-          </div>
-          <div id="operations-list" class="list"></div>
-        </div>
-      </section>
-
-      <section id="view-program" class="view">
+      <section id="view-program" class="view active">
         <div class="grid">
           <div class="card">
             <h2>Програмен филм</h2>
@@ -532,7 +390,7 @@
               <button class="btn-secondary" onclick="resetShowtimeForm()">Изчисти</button>
             </div>
 
-            <div class="note">Тук създаваш само програмни прожекции. Не премиери.</div>
+            <div class="note">Тук създаваш само програмни прожекции.</div>
           </div>
 
           <div class="card">
@@ -660,68 +518,66 @@
         </div>
       </section>
 
-<section id="view-prices" class="view">
-  <div class="grid">
-    <div class="card">
-      <h2>Артикул / Цена</h2>
-      <input id="price-item-id" type="hidden" />
+      <section id="view-prices" class="view">
+        <div class="grid">
+          <div class="card">
+            <h2>Артикул / Цена</h2>
+            <input id="price-item-id" type="hidden" />
 
-      <label>Категория</label>
-      <input id="price-category" type="text" placeholder="Пуканки / Напитки / Комбо / Билети" />
+            <label>Категория</label>
+            <input id="price-category" type="text" placeholder="Пуканки / Напитки / Комбо / Билети" />
 
-      <label>Име</label>
-      <input id="price-title" type="text" />
+            <label>Име</label>
+            <input id="price-title" type="text" />
 
-      <label>Описание</label>
-      <textarea id="price-description"></textarea>
+            <label>Описание</label>
+            <textarea id="price-description"></textarea>
 
-      <label>Снимка URL</label>
-      <input id="price-image" type="text" />
+            <label>Снимка URL</label>
+            <input id="price-image" type="text" />
 
-      <div class="row">
-        <div>
-          <label>Цена EUR</label>
-          <input id="price-eur" type="number" step="0.01" />
+            <div class="row">
+              <div>
+                <label>Цена EUR</label>
+                <input id="price-eur" type="number" step="0.01" />
+              </div>
+              <div>
+                <label>Цена BGN</label>
+                <input id="price-bgn-preview" type="text" disabled />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Статус</label>
+                <select id="price-status">
+                  <option value="active">active</option>
+                  <option value="inactive">inactive</option>
+                </select>
+              </div>
+              <div>
+                <label>Подредба</label>
+                <input id="price-sort-order" type="number" value="0" />
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn" onclick="savePriceItem()">Запази</button>
+              <button class="btn-secondary" onclick="resetPriceForm()">Изчисти</button>
+            </div>
+
+            <div class="note">Левовата цена е preview. Основната цена се пази в EUR.</div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Цени</h2>
+              <button class="btn-secondary" onclick="loadPriceItems()">Обнови</button>
+            </div>
+            <div id="price-items-list" class="list"></div>
+          </div>
         </div>
-        <div>
-          <label>Цена BGN</label>
-          <input id="price-bgn-preview" type="text" disabled />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Статус</label>
-          <select id="price-status">
-            <option value="active">active</option>
-            <option value="inactive">inactive</option>
-          </select>
-        </div>
-        <div>
-          <label>Подредба</label>
-          <input id="price-sort-order" type="number" value="0" />
-        </div>
-      </div>
-
-      <div class="actions-row">
-        <button class="btn" onclick="savePriceItem()">Запази</button>
-        <button class="btn-secondary" onclick="resetPriceForm()">Изчисти</button>
-      </div>
-
-      <div class="note">
-        Левовата цена е preview. Основната цена се пази в EUR.
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-head">
-        <h2>Цени</h2>
-        <button class="btn-secondary" onclick="loadPriceItems()">Обнови</button>
-      </div>
-      <div id="price-items-list" class="list"></div>
-    </div>
-  </div>
-</section>
+      </section>
 
       <section id="view-settings" class="view">
         <div class="grid">
@@ -729,7 +585,7 @@
             <h2>Настройки</h2>
 
             <label>Ключ</label>
-            <input id="setting-key" type="text" placeholder="default_ads_minutes" />
+            <input id="setting-key" type="text" placeholder="site_program_title" />
 
             <label>Стойност</label>
             <textarea id="setting-value"></textarea>
@@ -739,9 +595,7 @@
               <button class="btn-secondary" onclick="loadSettings()">Обнови списъка</button>
             </div>
 
-            <div class="note">
-              Примерни ключове: default_ads_minutes, site_program_title, hall_names
-            </div>
+            <div class="note">Примерни ключове: site_program_title, hall_names</div>
           </div>
 
           <div class="card">
@@ -760,13 +614,12 @@
     const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
     const STORAGE_KEY = "kinopalace_admin_key_v2";
 
-    let dashboardCache = null;
     let programMoviesCache = [];
     let showtimesCache = [];
     let premiereMoviesCache = [];
     let premiereEventsCache = [];
     let settingsCache = [];
-	let priceItemsCache = [];
+    let priceItemsCache = [];
 
     function getAdminKey() {
       return localStorage.getItem(STORAGE_KEY) || "";
@@ -824,8 +677,6 @@
       document.getElementById(`view-${name}`).classList.add("active");
       if (event?.target) event.target.classList.add("active");
 
-      if (name === "dashboard") loadDashboard();
-      if (name === "operations") loadOperations();
       if (name === "program") {
         loadProgramMovies();
         loadShowtimes();
@@ -834,9 +685,9 @@
         loadPremiereMovies();
         loadPremiereEvents();
       }
-	  if (name ==="prices") {
-		loadPriceItems();
-		}
+      if (name === "prices") {
+        loadPriceItems();
+      }
       if (name === "settings") {
         loadSettings();
       }
@@ -900,214 +751,11 @@
       }
     }
 
-    function statusLabel(status) {
-      const map = {
-        scheduled: "Планирана",
-        ads_started: "Реклами",
-        screening_started: "В прожекция",
-        finished: "Приключила",
-        cancelled: "Отпаднала"
-      };
-      return map[status] || status;
-    }
-
     function formatDateBG(isoDate) {
       if (!isoDate) return "";
-      if (/^\d{2}\.\d{2}$/.test(isoDate)) return isoDate;
-      const parts = isoDate.split("-");
+      const parts = String(isoDate).split("-");
       if (parts.length !== 3) return isoDate;
       return `${parts[2]}.${parts[1]}.${parts[0]}`;
-    }
-
-    async function loadDashboard() {
-      try {
-        const data = await api("/api/dashboard/today");
-        dashboardCache = data;
-
-        document.getElementById("dashboard-date-text").textContent = `Дата: ${data.date || ""}`;
-        document.getElementById("stat-total").textContent = data.stats?.total || 0;
-        document.getElementById("stat-scheduled").textContent = data.stats?.scheduled || 0;
-        document.getElementById("stat-ads").textContent = data.stats?.ads_started || 0;
-        document.getElementById("stat-live").textContent = data.stats?.screening_started || 0;
-        document.getElementById("stat-finished").textContent = data.stats?.finished || 0;
-        document.getElementById("stat-cancelled").textContent = data.stats?.cancelled || 0;
-
-        const nextBox = document.getElementById("next-showtime-box");
-
-if (data.spotlight) {
-  const heading = data.spotlight.mode === "live" ? "Текуща прожекция" : "Следваща прожекция";
-
-  nextBox.innerHTML = `
-    <strong>${heading}: ${data.spotlight.title || "-"}</strong><br>
-    ${data.spotlight.scheduled_time || "-"} • ${data.spotlight.hall || "Зала 1"}<br>
-    <span class="badge ${data.spotlight.status}">${statusLabel(data.spotlight.status)}</span><br>
-    <span style="display:inline-block;margin-top:8px;">${data.spotlight.remaining_label || ""}</span>
-  `;
-} else {
-  nextBox.textContent = "Няма следваща прожекция.";
-}
-
-        renderDashboardShowtimes(data.showtimes || []);
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    function renderDashboardShowtimes(items) {
-      const list = document.getElementById("dashboard-showtimes");
-      list.innerHTML = "";
-
-      if (!items.length) {
-        list.innerHTML = `<div class="muted">Няма прожекции за днес.</div>`;
-        return;
-      }
-
-      items.forEach(item => {
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
-          <div class="item-header">
-            <div>
-              <strong>${item.title || "Без заглавие"}</strong>
-              <div class="muted">
-                ${item.date} • ${item.scheduled_time}<br>
-                ${item.hall || "Зала 1"}
-              </div>
-            </div>
-            <span class="badge ${item.status}">${statusLabel(item.status)}</span>
-          </div>
-        `;
-        list.appendChild(el);
-      });
-    }
-
-    async function loadOperations() {
-      try {
-        const items = await api("/api/showtimes-v2/today");
-        renderOperations(items || []);
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    function renderOperations(items) {
-  const list = document.getElementById("operations-list");
-  list.innerHTML = "";
-
-  if (!items.length) {
-    list.innerHTML = `<div class="muted">Няма прожекции за днес.</div>`;
-    return;
-  }
-
-  items.forEach(item => {
-    const actions = [];
-
-    // Реклами можеш да стартираш само ако още е scheduled
-    if (item.status === "scheduled") {
-      actions.push(`<button class="btn-info btn-small" onclick="startAds(${item.id})">Старт реклами</button>`);
-    }
-
-    // Прожекция можеш да стартираш ако още не е тръгнала реално
-    if (item.status === "scheduled" || item.status === "ads_started") {
-      actions.push(`<button class="btn-success btn-small" onclick="startScreening(${item.id})">Старт прожекция</button>`);
-    }
-
-    // Край прожекция само ако вече тече
-    if (item.status === "screening_started") {
-      actions.push(`<button class="btn-warning btn-small" onclick="endScreening(${item.id})">Край прожекция</button>`);
-    }
-
-    // Отпаднала да може за всичко, което не е приключило/отпаднало
-    if (item.status !== "finished" && item.status !== "cancelled") {
-      actions.push(`<button class="btn-danger btn-small" onclick="cancelShowtime(${item.id})">Отпаднала</button>`);
-    }
-
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerHTML = `
-      <div class="item-header">
-        <div>
-          <strong>${item.title || "Без заглавие"}</strong>
-          <div class="muted">
-            ID: ${item.id}<br>
-            ${item.date} • ${item.scheduled_time}<br>
-            ${item.hall || "Зала 1"}<br>
-            3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}<br>
-            Raw status: ${item.status || "-"}
-          </div>
-        </div>
-        <span class="badge ${item.status}">${statusLabel(item.status)}</span>
-      </div>
-
-      <div class="muted" style="margin-top:10px;">
-        Реклами: ${item.ads_started_at || "-"}<br>
-        Начало: ${item.screening_started_at || "-"}<br>
-        Край: ${item.ended_at || "-"}<br>
-        Отпаднала: ${item.cancelled_at || "-"}${item.cancelled_reason ? `<br>Причина: ${item.cancelled_reason}` : ""}
-      </div>
-
-      <div class="actions-row">${actions.join("") || '<span class="muted">Няма налични действия</span>'}</div>
-    `;
-    list.appendChild(el);
-  });
-}
-
-    async function startAds(id) {
-      try {
-        await api(`/api/showtimes-v2/${id}/start-ads`, { method: "POST" }, true);
-        showStatus("Рекламите са стартирани.");
-        await loadDashboard();
-        await loadOperations();
-        await loadShowtimes();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    async function startScreening(id) {
-      try {
-        await api(`/api/showtimes-v2/${id}/start-screening`, { method: "POST" }, true);
-        showStatus("Прожекцията е стартирана.");
-        await loadDashboard();
-        await loadOperations();
-        await loadShowtimes();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    async function endScreening(id) {
-      try {
-        await api(`/api/showtimes-v2/${id}/end`, { method: "POST" }, true);
-        showStatus("Прожекцията е приключена.");
-        await loadDashboard();
-        await loadOperations();
-        await loadShowtimes();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    async function cancelShowtime(id) {
-      const reason = prompt("Причина за отпаднала прожекция:", "") || "";
-      try {
-        await api(`/api/showtimes-v2/${id}/cancel`, {
-          method: "POST",
-          body: JSON.stringify({ reason })
-        }, true);
-        showStatus("Прожекцията е маркирана като отпаднала.");
-        await loadDashboard();
-        await loadOperations();
-        await loadShowtimes();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
     }
 
     async function loadProgramMovies() {
@@ -1274,17 +922,12 @@ if (data.spotlight) {
         const el = document.createElement("div");
         el.className = "item";
         el.innerHTML = `
-          <div class="item-header">
-            <div>
-              <strong>${item.title || "Без заглавие"}</strong>
-              <div class="muted">
-                ID: ${item.id}<br>
-                ${item.date} • ${item.scheduled_time}<br>
-                ${item.hall || "Зала 1"}<br>
-                3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}
-              </div>
-            </div>
-            <span class="badge ${item.status}">${statusLabel(item.status)}</span>
+          <strong>${item.title || "Без заглавие"}</strong>
+          <div class="muted">
+            ID: ${item.id}<br>
+            ${item.date} • ${item.scheduled_time}<br>
+            ${item.hall || "Зала 1"}<br>
+            3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}
           </div>
 
           <div class="actions-row">
@@ -1348,8 +991,6 @@ if (data.spotlight) {
 
         resetShowtimeForm();
         await loadShowtimes();
-        await loadDashboard();
-        await loadOperations();
       } catch (e) {
         if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
@@ -1366,8 +1007,6 @@ if (data.spotlight) {
         showStatus("Прожекцията е изтрита.");
         resetShowtimeForm();
         await loadShowtimes();
-        await loadDashboard();
-        await loadOperations();
       } catch (e) {
         if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
@@ -1687,153 +1326,151 @@ if (data.spotlight) {
       }
     }
 
-function formatMoney(value) {
-  return Number(value || 0).toFixed(2);
-}
-
-function eurToBgnClient(eur) {
-  return (Number(eur || 0) * 1.95583).toFixed(2);
-}
-
-function resetPriceForm() {
-  document.getElementById("price-item-id").value = "";
-  document.getElementById("price-category").value = "";
-  document.getElementById("price-title").value = "";
-  document.getElementById("price-description").value = "";
-  document.getElementById("price-image").value = "";
-  document.getElementById("price-eur").value = "";
-  document.getElementById("price-bgn-preview").value = "";
-  document.getElementById("price-status").value = "active";
-  document.getElementById("price-sort-order").value = 0;
-}
-
-function editPriceItem(id) {
-  const item = priceItemsCache.find(x => Number(x.id) === Number(id));
-  if (!item) return;
-
-  document.getElementById("price-item-id").value = item.id;
-  document.getElementById("price-category").value = item.category || "";
-  document.getElementById("price-title").value = item.title || "";
-  document.getElementById("price-description").value = item.description || "";
-  document.getElementById("price-image").value = item.image || "";
-  document.getElementById("price-eur").value = item.price_eur || "";
-  document.getElementById("price-bgn-preview").value = formatMoney(item.price_bgn || 0);
-  document.getElementById("price-status").value = item.status || "active";
-  document.getElementById("price-sort-order").value = item.sort_order || 0;
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function loadPriceItems() {
-  try {
-    const items = await api("/api/price-items");
-    priceItemsCache = items || [];
-
-    const list = document.getElementById("price-items-list");
-    list.innerHTML = "";
-
-    (items || []).forEach(item => {
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `
-  <strong>${item.title}</strong>
-  <div class="muted">
-    Категория: ${item.category || ""}<br>
-    EUR: €${formatMoney(item.price_eur)}<br>
-    BGN: ${item.price_bgn !== null && item.price_bgn !== undefined ? formatMoney(item.price_bgn) + " лв" : "скрито"}<br>
-    Статус: ${item.status || "-"}<br>
-    Подредба: ${item.sort_order || 0}
-  </div>
-  <div class="actions-row">
-    <button class="btn-info btn-small" onclick="editPriceItem(${item.id})">Редактирай</button>
-    <button class="btn-danger btn-small" onclick="deletePriceItem(${item.id})">Изтрий</button>
-  </div>
-`;
-      list.appendChild(el);
-    });
-  } catch (e) {
-    if (e.message.includes("Невалидна парола")) logout();
-    showStatus(e.message, "error");
-  }
-}
-
-async function savePriceItem() {
-  try {
-    const id = document.getElementById("price-item-id").value.trim();
-
-    const payload = {
-      category: document.getElementById("price-category").value.trim(),
-      title: document.getElementById("price-title").value.trim(),
-      description: document.getElementById("price-description").value.trim(),
-      image: document.getElementById("price-image").value.trim(),
-      price_eur: Number(document.getElementById("price-eur").value || 0),
-      status: document.getElementById("price-status").value,
-      sort_order: Number(document.getElementById("price-sort-order").value || 0)
-    };
-
-    if (id) {
-      await api("/api/price-items/update", {
-        method: "POST",
-        body: JSON.stringify({ id: Number(id), ...payload })
-      }, true);
-      showStatus("Артикулът е редактиран.");
-    } else {
-      await api("/api/price-items", {
-        method: "POST",
-        body: JSON.stringify(payload)
-      }, true);
-      showStatus("Артикулът е добавен.");
+    function formatMoney(value) {
+      return Number(value || 0).toFixed(2);
     }
 
-    resetPriceForm();
-    await loadPriceItems();
-  } catch (e) {
-    if (e.message.includes("Невалидна парола")) logout();
-    showStatus(e.message, "error");
-  }
-}
+    function eurToBgnClient(eur) {
+      return (Number(eur || 0) * 1.95583).toFixed(2);
+    }
 
-async function deletePriceItem(id) {
-  if (!confirm("Сигурен ли си?")) return;
+    function resetPriceForm() {
+      document.getElementById("price-item-id").value = "";
+      document.getElementById("price-category").value = "";
+      document.getElementById("price-title").value = "";
+      document.getElementById("price-description").value = "";
+      document.getElementById("price-image").value = "";
+      document.getElementById("price-eur").value = "";
+      document.getElementById("price-bgn-preview").value = "";
+      document.getElementById("price-status").value = "active";
+      document.getElementById("price-sort-order").value = 0;
+    }
 
-  try {
-    await api("/api/price-items/delete", {
-      method: "POST",
-      body: JSON.stringify({ id })
-    }, true);
-    showStatus("Артикулът е изтрит.");
-    resetPriceForm();
-    await loadPriceItems();
-  } catch (e) {
-    if (e.message.includes("Невалидна парола")) logout();
-    showStatus(e.message, "error");
-  }
-}
+    function editPriceItem(id) {
+      const item = priceItemsCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+
+      document.getElementById("price-item-id").value = item.id;
+      document.getElementById("price-category").value = item.category || "";
+      document.getElementById("price-title").value = item.title || "";
+      document.getElementById("price-description").value = item.description || "";
+      document.getElementById("price-image").value = item.image || "";
+      document.getElementById("price-eur").value = item.price_eur || "";
+      document.getElementById("price-bgn-preview").value = formatMoney(item.price_bgn || 0);
+      document.getElementById("price-status").value = item.status || "active";
+      document.getElementById("price-sort-order").value = item.sort_order || 0;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function loadPriceItems() {
+      try {
+        const items = await api("/api/price-items");
+        priceItemsCache = items || [];
+
+        const list = document.getElementById("price-items-list");
+        list.innerHTML = "";
+
+        (items || []).forEach(item => {
+          const el = document.createElement("div");
+          el.className = "item";
+          el.innerHTML = `
+            <strong>${item.title}</strong>
+            <div class="muted">
+              Категория: ${item.category || ""}<br>
+              EUR: €${formatMoney(item.price_eur)}<br>
+              BGN: ${item.price_bgn !== null && item.price_bgn !== undefined ? formatMoney(item.price_bgn) + " лв" : "скрито"}<br>
+              Статус: ${item.status || "-"}<br>
+              Подредба: ${item.sort_order || 0}
+            </div>
+            <div class="actions-row">
+              <button class="btn-info btn-small" onclick="editPriceItem(${item.id})">Редактирай</button>
+              <button class="btn-danger btn-small" onclick="deletePriceItem(${item.id})">Изтрий</button>
+            </div>
+          `;
+          list.appendChild(el);
+        });
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function savePriceItem() {
+      try {
+        const id = document.getElementById("price-item-id").value.trim();
+
+        const payload = {
+          category: document.getElementById("price-category").value.trim(),
+          title: document.getElementById("price-title").value.trim(),
+          description: document.getElementById("price-description").value.trim(),
+          image: document.getElementById("price-image").value.trim(),
+          price_eur: Number(document.getElementById("price-eur").value || 0),
+          status: document.getElementById("price-status").value,
+          sort_order: Number(document.getElementById("price-sort-order").value || 0)
+        };
+
+        if (id) {
+          await api("/api/price-items/update", {
+            method: "POST",
+            body: JSON.stringify({ id: Number(id), ...payload })
+          }, true);
+          showStatus("Артикулът е редактиран.");
+        } else {
+          await api("/api/price-items", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          }, true);
+          showStatus("Артикулът е добавен.");
+        }
+
+        resetPriceForm();
+        await loadPriceItems();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function deletePriceItem(id) {
+      if (!confirm("Сигурен ли си?")) return;
+
+      try {
+        await api("/api/price-items/delete", {
+          method: "POST",
+          body: JSON.stringify({ id })
+        }, true);
+        showStatus("Артикулът е изтрит.");
+        resetPriceForm();
+        await loadPriceItems();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
 
     async function refreshAll() {
-      await loadDashboard();
-      await loadOperations();
       await loadProgramMovies();
       await loadShowtimes();
       await loadPremiereMovies();
       await loadPremiereEvents();
-	  await loadPriceItems ();
+      await loadPriceItems();
       await loadSettings();
     }
 
     document.getElementById("admin-password").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") login();
-});
+      if (e.key === "Enter") login();
+    });
 
-document.addEventListener("input", (e) => {
-  if (e.target && e.target.id === "price-eur") {
-    const preview = document.getElementById("price-bgn-preview");
-    if (preview) {
-      preview.value = eurToBgnClient(e.target.value);
-    }
-  }
-});
+    document.addEventListener("input", (e) => {
+      if (e.target && e.target.id === "price-eur") {
+        const preview = document.getElementById("price-bgn-preview");
+        if (preview) {
+          preview.value = eurToBgnClient(e.target.value);
+        }
+      }
+    });
 
-autoLogin();
+    autoLogin();
   </script>
 </body>
 </html>
