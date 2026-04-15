@@ -19,6 +19,7 @@
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family:Arial, Helvetica, sans-serif;
@@ -90,11 +91,13 @@
     }
 
     .status.show{display:block}
+
     .status.ok{
       background:rgba(34,197,94,.12);
       border:1px solid rgba(34,197,94,.24);
       color:#86efac;
     }
+
     .status.error{
       background:rgba(239,68,68,.12);
       border:1px solid rgba(239,68,68,.24);
@@ -286,12 +289,12 @@
       <div id="status" class="status"></div>
 
       <div class="tabs">
-  <button class="tab-btn active" onclick="setView('program', event)">Програма</button>
-  <button class="tab-btn" onclick="setView('premieres', event)">Премиери</button>
-  <button class="tab-btn" onclick="setView('prices', event)">Цени</button>
-  <button class="tab-btn" onclick="setView('books', event)">Книги</button>
-  <button class="tab-btn" onclick="setView('settings', event)">Настройки</button>
-</div>
+        <button class="tab-btn active" onclick="setView('program', event)">Програма</button>
+        <button class="tab-btn" onclick="setView('premieres', event)">Премиери</button>
+        <button class="tab-btn" onclick="setView('prices', event)">Цени</button>
+        <button class="tab-btn" onclick="setView('books', event)">Книги</button>
+        <button class="tab-btn" onclick="setView('settings', event)">Настройки</button>
+      </div>
 
       <section id="view-program" class="view active">
         <div class="grid">
@@ -579,112 +582,112 @@
           </div>
         </div>
       </section>
-	  
-	  <section id="view-books" class="view">
-  <div class="grid">
-    <div class="card">
-      <h2>Книга</h2>
-      <input id="book-id" type="hidden" />
 
-      <label>Заглавие</label>
-      <input id="book-title" type="text" />
+      <section id="view-books" class="view">
+        <div class="grid">
+          <div class="card">
+            <h2>Книга</h2>
+            <input id="book-id" type="hidden" />
 
-      <label>Автор</label>
-      <input id="book-author" type="text" />
+            <label>Заглавие</label>
+            <input id="book-title" type="text" />
 
-      <label>Подзаглавие</label>
-      <input id="book-subtitle" type="text" />
+            <label>Автор</label>
+            <input id="book-author" type="text" />
 
-      <label>Описание</label>
-      <textarea id="book-description"></textarea>
+            <label>Подзаглавие</label>
+            <input id="book-subtitle" type="text" />
 
-      <label>Корица URL</label>
-      <input id="book-cover-image" type="text" />
+            <label>Описание</label>
+            <textarea id="book-description"></textarea>
 
-      <div class="row">
-        <div>
-          <label>Цена EUR</label>
-          <input id="book-price-eur" type="number" step="0.01" />
+            <label>Корица URL</label>
+            <input id="book-cover-image" type="text" />
+
+            <div class="row">
+              <div>
+                <label>Цена EUR</label>
+                <input id="book-price-eur" type="number" step="0.01" />
+              </div>
+              <div>
+                <label>Цена BGN</label>
+                <input id="book-price-bgn" type="number" step="0.01" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Двойно показване до</label>
+                <input id="book-dual-currency-until" type="date" value="2026-08-08" />
+              </div>
+              <div>
+                <label>Статус</label>
+                <select id="book-status">
+                  <option value="draft">draft</option>
+                  <option value="available">available</option>
+                  <option value="out_of_stock">out_of_stock</option>
+                  <option value="archived">archived</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Категория</label>
+                <input id="book-category" type="text" />
+              </div>
+              <div>
+                <label>ISBN</label>
+                <input id="book-isbn" type="text" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Страници</label>
+                <input id="book-pages" type="number" value="0" />
+              </div>
+              <div>
+                <label>Година на издаване</label>
+                <input id="book-published-year" type="number" min="0" max="2100" />
+              </div>
+            </div>
+
+            <label>Линк за поръчка</label>
+            <input id="book-order-link" type="text" />
+
+            <label>Линк за контакт</label>
+            <input id="book-contact-link" type="text" />
+
+            <div class="row">
+              <div>
+                <label>Подредба</label>
+                <input id="book-sort-order" type="number" value="0" />
+              </div>
+              <div>
+                <label>Акцент</label>
+                <select id="book-is-featured">
+                  <option value="0">Не</option>
+                  <option value="1">Да</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn" onclick="saveBook()">Запази</button>
+              <button class="btn-secondary" onclick="resetBookForm()">Изчисти</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Книги</h2>
+              <button class="btn-secondary" onclick="loadBooks()">Обнови</button>
+            </div>
+            <div id="books-list" class="list"></div>
+          </div>
         </div>
-        <div>
-          <label>Цена BGN</label>
-          <input id="book-price-bgn" type="number" step="0.01" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Двойно показване до</label>
-          <input id="book-dual-currency-until" type="date" value="2026-08-08" />
-        </div>
-        <div>
-          <label>Статус</label>
-          <select id="book-status">
-            <option value="draft">draft</option>
-            <option value="available">available</option>
-            <option value="out_of_stock">out_of_stock</option>
-            <option value="archived">archived</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Категория</label>
-          <input id="book-category" type="text" />
-        </div>
-        <div>
-          <label>ISBN</label>
-          <input id="book-isbn" type="text" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Страници</label>
-          <input id="book-pages" type="number" value="0" />
-        </div>
-        <div>
-          <label>Дата на издаване</label>
-          <input id="book-published-at" type="date" />
-        </div>
-      </div>
-
-      <label>Линк за поръчка</label>
-      <input id="book-order-link" type="text" />
-
-      <label>Линк за контакт</label>
-      <input id="book-contact-link" type="text" />
-
-      <div class="row">
-        <div>
-          <label>Подредба</label>
-          <input id="book-sort-order" type="number" value="0" />
-        </div>
-        <div>
-          <label>Акцент</label>
-          <select id="book-is-featured">
-            <option value="0">Не</option>
-            <option value="1">Да</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="actions-row">
-        <button class="btn" onclick="saveBook()">Запази</button>
-        <button class="btn-secondary" onclick="resetBookForm()">Изчисти</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-head">
-        <h2>Книги</h2>
-        <button class="btn-secondary" onclick="loadBooks()">Обнови</button>
-      </div>
-      <div id="books-list" class="list"></div>
-    </div>
-  </div>
-</section>
+      </section>
 
       <section id="view-settings" class="view">
         <div class="grid">
@@ -721,13 +724,13 @@
     const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
     const STORAGE_KEY = "kinopalace_admin_key_v2";
 
-	let programMoviesCache = [];
-	let showtimesCache = [];
-	let premiereMoviesCache = [];
-	let premiereEventsCache = [];
-	let settingsCache = [];
-	let priceItemsCache = [];
-	let booksCache = [];
+    let programMoviesCache = [];
+    let showtimesCache = [];
+    let premiereMoviesCache = [];
+    let premiereEventsCache = [];
+    let settingsCache = [];
+    let priceItemsCache = [];
+    let booksCache = [];
 
     function getAdminKey() {
       return localStorage.getItem(STORAGE_KEY) || "";
@@ -779,30 +782,30 @@
     }
 
     function setView(name, event) {
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
 
-  document.getElementById(`view-${name}`).classList.add("active");
-  if (event?.target) event.target.classList.add("active");
+      document.getElementById(`view-${name}`).classList.add("active");
+      if (event?.target) event.target.classList.add("active");
 
-  if (name === "program") {
-    loadProgramMovies();
-    loadShowtimes();
-  }
-  if (name === "premieres") {
-    loadPremiereMovies();
-    loadPremiereEvents();
-  }
-  if (name === "prices") {
-    loadPriceItems();
-  }
-  if (name === "books") {
-    loadBooks();
-  }
-  if (name === "settings") {
-    loadSettings();
-  }
-}
+      if (name === "program") {
+        loadProgramMovies();
+        loadShowtimes();
+      }
+      if (name === "premieres") {
+        loadPremiereMovies();
+        loadPremiereEvents();
+      }
+      if (name === "prices") {
+        loadPriceItems();
+      }
+      if (name === "books") {
+        loadBooks();
+      }
+      if (name === "settings") {
+        loadSettings();
+      }
+    }
 
     async function login() {
       const password = document.getElementById("admin-password").value.trim();
@@ -867,6 +870,14 @@
       const parts = String(isoDate).split("-");
       if (parts.length !== 3) return isoDate;
       return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+
+    function formatMoney(value) {
+      return Number(value || 0).toFixed(2);
+    }
+
+    function eurToBgnClient(eur) {
+      return (Number(eur || 0) * 1.95583).toFixed(2);
     }
 
     async function loadProgramMovies() {
@@ -934,6 +945,7 @@
     function editProgramMovie(id) {
       const item = programMoviesCache.find(x => Number(x.id) === Number(id));
       if (!item) return;
+
       document.getElementById("program-movie-id").value = item.id;
       document.getElementById("program-title").value = item.title || "";
       document.getElementById("program-description").value = item.description || "";
@@ -945,6 +957,7 @@
       document.getElementById("program-category").value = item.category || "";
       document.getElementById("program-status").value = item.status || "active";
       document.getElementById("program-sort-order").value = item.sort_order || 0;
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -989,6 +1002,7 @@
 
     async function deleteProgramMovie(id) {
       if (!confirm("Сигурен ли си? Ще изтрие и свързаните прожекции.")) return;
+
       try {
         await api("/api/program-movies/delete", {
           method: "POST",
@@ -1040,7 +1054,6 @@
             ${item.hall || "Зала 1"}<br>
             3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}
           </div>
-
           <div class="actions-row">
             <button class="btn-info btn-small" onclick="editShowtime(${item.id})">Редактирай</button>
             <button class="btn-danger btn-small" onclick="deleteShowtime(${item.id})">Изтрий</button>
@@ -1070,6 +1083,7 @@
       document.getElementById("showtime-hall").value = item.hall || "Зала 1";
       document.getElementById("showtime-is3d").value = item.is_3d ? "1" : "0";
       document.getElementById("showtime-isdubbed").value = item.is_dubbed ? "1" : "0";
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1110,6 +1124,7 @@
 
     async function deleteShowtime(id) {
       if (!confirm("Сигурен ли си?")) return;
+
       try {
         await api("/api/showtimes-v2/delete", {
           method: "POST",
@@ -1201,6 +1216,7 @@
       document.getElementById("premiere-category").value = item.category || "";
       document.getElementById("premiere-movie-status").value = item.status || "active";
       document.getElementById("premiere-sort-order").value = item.sort_order || 0;
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1245,6 +1261,7 @@
 
     async function deletePremiereMovie(id) {
       if (!confirm("Сигурен ли си? Ще изтрие и свързаните премиери.")) return;
+
       try {
         await api("/api/premiere-movies/delete", {
           method: "POST",
@@ -1310,6 +1327,7 @@
       document.getElementById("premiere-event-date").value = item.premiere_date || "";
       document.getElementById("premiere-event-status").value = item.status || "scheduled";
       document.getElementById("premiere-event-notes").value = item.notes || "";
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1348,6 +1366,7 @@
 
     async function deletePremiereEvent(id) {
       if (!confirm("Сигурен ли си?")) return;
+
       try {
         await api("/api/premieres-v2/delete", {
           method: "POST",
@@ -1360,117 +1379,6 @@
         if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
-    }
-
-    async function loadSettings() {
-      try {
-        const items = await api("/api/settings");
-        settingsCache = items || [];
-
-        const list = document.getElementById("settings-list");
-        list.innerHTML = "";
-
-        items.forEach(item => {
-          const safeKey = String(item.key || "").replace(/'/g, "\\'");
-
-          const el = document.createElement("div");
-          el.className = "item";
-          el.innerHTML = `
-            <strong>${item.key}</strong>
-            <div class="muted">${item.value || ""}</div>
-            <div class="actions-row">
-              <button class="btn-info btn-small" onclick="editSetting(${item.id})">Зареди във формата</button>
-              <button class="btn-danger btn-small" onclick="deleteSetting('${safeKey}')">Изтрий</button>
-            </div>
-          `;
-          list.appendChild(el);
-        });
-      } catch (e) {
-        showStatus(e.message, "error");
-      }
-    }
-
-    function editSetting(id) {
-      const item = settingsCache.find(x => Number(x.id) === Number(id));
-      if (!item) return;
-      document.getElementById("setting-key").value = item.key || "";
-      document.getElementById("setting-value").value = item.value || "";
-    }
-
-    async function deleteSetting(key) {
-      if (!confirm(`Сигурен ли си, че искаш да изтриеш setting: ${key}?`)) return;
-
-      try {
-        await api("/api/settings/delete", {
-          method: "POST",
-          body: JSON.stringify({ key })
-        }, true);
-
-        if (document.getElementById("setting-key").value.trim() === key) {
-          document.getElementById("setting-key").value = "";
-          document.getElementById("setting-value").value = "";
-        }
-
-        showStatus("Настройката е изтрита.");
-        await loadSettings();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    async function saveSetting() {
-      try {
-        const key = document.getElementById("setting-key").value.trim();
-        const value = document.getElementById("setting-value").value;
-
-        await api("/api/settings/upsert", {
-          method: "POST",
-          body: JSON.stringify({ key, value })
-        }, true);
-
-        showStatus("Настройката е запазена.");
-        await loadSettings();
-      } catch (e) {
-        if (e.message.includes("Невалидна парола")) logout();
-        showStatus(e.message, "error");
-      }
-    }
-
-    function formatMoney(value) {
-      return Number(value || 0).toFixed(2);
-    }
-
-    function eurToBgnClient(eur) {
-      return (Number(eur || 0) * 1.95583).toFixed(2);
-    }
-
-    function resetPriceForm() {
-      document.getElementById("price-item-id").value = "";
-      document.getElementById("price-category").value = "";
-      document.getElementById("price-title").value = "";
-      document.getElementById("price-description").value = "";
-      document.getElementById("price-image").value = "";
-      document.getElementById("price-eur").value = "";
-      document.getElementById("price-bgn-preview").value = "";
-      document.getElementById("price-status").value = "active";
-      document.getElementById("price-sort-order").value = 0;
-    }
-
-    function editPriceItem(id) {
-      const item = priceItemsCache.find(x => Number(x.id) === Number(id));
-      if (!item) return;
-
-      document.getElementById("price-item-id").value = item.id;
-      document.getElementById("price-category").value = item.category || "";
-      document.getElementById("price-title").value = item.title || "";
-      document.getElementById("price-description").value = item.description || "";
-      document.getElementById("price-image").value = item.image || "";
-      document.getElementById("price-eur").value = item.price_eur || "";
-      document.getElementById("price-bgn-preview").value = formatMoney(item.price_bgn || 0);
-      document.getElementById("price-status").value = item.status || "active";
-      document.getElementById("price-sort-order").value = item.sort_order || 0;
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     async function loadPriceItems() {
@@ -1504,6 +1412,35 @@
         if (e.message.includes("Невалидна парола")) logout();
         showStatus(e.message, "error");
       }
+    }
+
+    function resetPriceForm() {
+      document.getElementById("price-item-id").value = "";
+      document.getElementById("price-category").value = "";
+      document.getElementById("price-title").value = "";
+      document.getElementById("price-description").value = "";
+      document.getElementById("price-image").value = "";
+      document.getElementById("price-eur").value = "";
+      document.getElementById("price-bgn-preview").value = "";
+      document.getElementById("price-status").value = "active";
+      document.getElementById("price-sort-order").value = 0;
+    }
+
+    function editPriceItem(id) {
+      const item = priceItemsCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+
+      document.getElementById("price-item-id").value = item.id;
+      document.getElementById("price-category").value = item.category || "";
+      document.getElementById("price-title").value = item.title || "";
+      document.getElementById("price-description").value = item.description || "";
+      document.getElementById("price-image").value = item.image || "";
+      document.getElementById("price-eur").value = item.price_eur || "";
+      document.getElementById("price-bgn-preview").value = formatMoney(item.price_bgn || 0);
+      document.getElementById("price-status").value = item.status || "active";
+      document.getElementById("price-sort-order").value = item.sort_order || 0;
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     async function savePriceItem() {
@@ -1559,15 +1496,244 @@
       }
     }
 
+    async function loadBooks() {
+      try {
+        const items = await api("/api/books", {}, true);
+        booksCache = items || [];
+
+        const list = document.getElementById("books-list");
+        list.innerHTML = "";
+
+        (items || []).forEach(item => {
+          const el = document.createElement("div");
+          el.className = "item";
+          el.innerHTML = `
+            <strong>${item.title || "Без заглавие"}</strong>
+            <div class="muted">
+              ID: ${item.id}<br>
+              Автор: ${item.author || "-"}<br>
+              EUR: €${formatMoney(item.price_eur)}<br>
+              BGN: ${formatMoney(item.price_bgn)} лв.<br>
+              Статус: ${item.status || "-"}<br>
+              Категория: ${item.category || "-"}<br>
+              Година: ${item.published_year || "-"}<br>
+              Акцент: ${item.is_featured ? "Да" : "Не"}<br>
+              Подредба: ${item.sort_order || 0}
+            </div>
+            <div class="actions-row">
+              <button class="btn-info btn-small" onclick="editBook(${item.id})">Редактирай</button>
+              <button class="btn-danger btn-small" onclick="deleteBook(${item.id})">Изтрий</button>
+            </div>
+          `;
+          list.appendChild(el);
+        });
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    function resetBookForm() {
+      document.getElementById("book-id").value = "";
+      document.getElementById("book-title").value = "";
+      document.getElementById("book-author").value = "";
+      document.getElementById("book-subtitle").value = "";
+      document.getElementById("book-description").value = "";
+      document.getElementById("book-cover-image").value = "";
+      document.getElementById("book-price-eur").value = "";
+      document.getElementById("book-price-bgn").value = "";
+      document.getElementById("book-dual-currency-until").value = "2026-08-08";
+      document.getElementById("book-status").value = "draft";
+      document.getElementById("book-category").value = "";
+      document.getElementById("book-isbn").value = "";
+      document.getElementById("book-pages").value = "0";
+      document.getElementById("book-published-year").value = "";
+      document.getElementById("book-order-link").value = "";
+      document.getElementById("book-contact-link").value = "";
+      document.getElementById("book-sort-order").value = "0";
+      document.getElementById("book-is-featured").value = "0";
+    }
+
+    function editBook(id) {
+      const item = booksCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+
+      document.getElementById("book-id").value = item.id || "";
+      document.getElementById("book-title").value = item.title || "";
+      document.getElementById("book-author").value = item.author || "";
+      document.getElementById("book-subtitle").value = item.subtitle || "";
+      document.getElementById("book-description").value = item.description || "";
+      document.getElementById("book-cover-image").value = item.cover_image || "";
+      document.getElementById("book-price-eur").value = item.price_eur || "";
+      document.getElementById("book-price-bgn").value = item.price_bgn || "";
+      document.getElementById("book-dual-currency-until").value = item.dual_currency_until || "2026-08-08";
+      document.getElementById("book-status").value = item.status || "draft";
+      document.getElementById("book-category").value = item.category || "";
+      document.getElementById("book-isbn").value = item.isbn || "";
+      document.getElementById("book-pages").value = item.pages || 0;
+      document.getElementById("book-published-year").value = item.published_year || "";
+      document.getElementById("book-order-link").value = item.order_link || "";
+      document.getElementById("book-contact-link").value = item.contact_link || "";
+      document.getElementById("book-sort-order").value = item.sort_order || 0;
+      document.getElementById("book-is-featured").value = item.is_featured ? "1" : "0";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function saveBook() {
+      try {
+        const id = document.getElementById("book-id").value.trim();
+
+        const payload = {
+          title: document.getElementById("book-title").value.trim(),
+          author: document.getElementById("book-author").value.trim(),
+          subtitle: document.getElementById("book-subtitle").value.trim(),
+          description: document.getElementById("book-description").value.trim(),
+          cover_image: document.getElementById("book-cover-image").value.trim(),
+          price_eur: Number(document.getElementById("book-price-eur").value || 0),
+          price_bgn: Number(document.getElementById("book-price-bgn").value || 0),
+          dual_currency_until: document.getElementById("book-dual-currency-until").value,
+          status: document.getElementById("book-status").value,
+          category: document.getElementById("book-category").value.trim(),
+          isbn: document.getElementById("book-isbn").value.trim(),
+          pages: Number(document.getElementById("book-pages").value || 0),
+          published_year: Number(document.getElementById("book-published-year").value || 0),
+          order_link: document.getElementById("book-order-link").value.trim(),
+          contact_link: document.getElementById("book-contact-link").value.trim(),
+          sort_order: Number(document.getElementById("book-sort-order").value || 0),
+          is_featured: Number(document.getElementById("book-is-featured").value || 0)
+        };
+
+        if (!payload.title) {
+          showStatus("Липсва заглавие.", "error");
+          return;
+        }
+
+        if (id) {
+          await api("/api/update-book", {
+            method: "POST",
+            body: JSON.stringify({ id: Number(id), ...payload })
+          }, true);
+          showStatus("Книгата е редактирана.");
+        } else {
+          await api("/api/add-book", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          }, true);
+          showStatus("Книгата е добавена.");
+        }
+
+        resetBookForm();
+        await loadBooks();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function deleteBook(id) {
+      if (!confirm("Сигурен ли си?")) return;
+
+      try {
+        await api("/api/delete-book", {
+          method: "POST",
+          body: JSON.stringify({ id })
+        }, true);
+
+        showStatus("Книгата е изтрита.");
+        resetBookForm();
+        await loadBooks();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function loadSettings() {
+      try {
+        const items = await api("/api/settings");
+        settingsCache = items || [];
+
+        const list = document.getElementById("settings-list");
+        list.innerHTML = "";
+
+        items.forEach(item => {
+          const safeKey = String(item.key || "").replace(/'/g, "\\'");
+
+          const el = document.createElement("div");
+          el.className = "item";
+          el.innerHTML = `
+            <strong>${item.key}</strong>
+            <div class="muted">${item.value || ""}</div>
+            <div class="actions-row">
+              <button class="btn-info btn-small" onclick="editSetting(${item.id})">Зареди във формата</button>
+              <button class="btn-danger btn-small" onclick="deleteSetting('${safeKey}')">Изтрий</button>
+            </div>
+          `;
+          list.appendChild(el);
+        });
+      } catch (e) {
+        showStatus(e.message, "error");
+      }
+    }
+
+    function editSetting(id) {
+      const item = settingsCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+
+      document.getElementById("setting-key").value = item.key || "";
+      document.getElementById("setting-value").value = item.value || "";
+    }
+
+    async function deleteSetting(key) {
+      if (!confirm(`Сигурен ли си, че искаш да изтриеш setting: ${key}?`)) return;
+
+      try {
+        await api("/api/settings/delete", {
+          method: "POST",
+          body: JSON.stringify({ key })
+        }, true);
+
+        if (document.getElementById("setting-key").value.trim() === key) {
+          document.getElementById("setting-key").value = "";
+          document.getElementById("setting-value").value = "";
+        }
+
+        showStatus("Настройката е изтрита.");
+        await loadSettings();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function saveSetting() {
+      try {
+        const key = document.getElementById("setting-key").value.trim();
+        const value = document.getElementById("setting-value").value;
+
+        await api("/api/settings/upsert", {
+          method: "POST",
+          body: JSON.stringify({ key, value })
+        }, true);
+
+        showStatus("Настройката е запазена.");
+        await loadSettings();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
     async function refreshAll() {
-	await loadProgramMovies();
-	await loadShowtimes();
-	await loadPremiereMovies();
-	await loadPremiereEvents();
-	await loadPriceItems();
-	await loadBooks();
-	await loadSettings();
-	}
+      await loadProgramMovies();
+      await loadShowtimes();
+      await loadPremiereMovies();
+      await loadPremiereEvents();
+      await loadPriceItems();
+      await loadBooks();
+      await loadSettings();
+    }
 
     document.getElementById("admin-password").addEventListener("keydown", (e) => {
       if (e.key === "Enter") login();
@@ -1581,159 +1747,7 @@
         }
       }
     });
-	
-	function resetBookForm() {
-  document.getElementById("book-id").value = "";
-  document.getElementById("book-title").value = "";
-  document.getElementById("book-author").value = "";
-  document.getElementById("book-subtitle").value = "";
-  document.getElementById("book-description").value = "";
-  document.getElementById("book-cover-image").value = "";
-  document.getElementById("book-price-eur").value = "";
-  document.getElementById("book-price-bgn").value = "";
-  document.getElementById("book-dual-currency-until").value = "2026-08-08";
-  document.getElementById("book-status").value = "draft";
-  document.getElementById("book-category").value = "";
-  document.getElementById("book-isbn").value = "";
-  document.getElementById("book-pages").value = "0";
-  document.getElementById("book-published-at").value = "";
-  document.getElementById("book-order-link").value = "";
-  document.getElementById("book-contact-link").value = "";
-  document.getElementById("book-sort-order").value = "0";
-  document.getElementById("book-is-featured").value = "0";
-}
 
-function editBook(id) {
-  const item = booksCache.find(x => Number(x.id) === Number(id));
-  if (!item) return;
-
-  document.getElementById("book-id").value = item.id || "";
-  document.getElementById("book-title").value = item.title || "";
-  document.getElementById("book-author").value = item.author || "";
-  document.getElementById("book-subtitle").value = item.subtitle || "";
-  document.getElementById("book-description").value = item.description || "";
-  document.getElementById("book-cover-image").value = item.cover_image || "";
-  document.getElementById("book-price-eur").value = item.price_eur || "";
-  document.getElementById("book-price-bgn").value = item.price_bgn || "";
-  document.getElementById("book-dual-currency-until").value = item.dual_currency_until || "2026-08-08";
-  document.getElementById("book-status").value = item.status || "draft";
-  document.getElementById("book-category").value = item.category || "";
-  document.getElementById("book-isbn").value = item.isbn || "";
-  document.getElementById("book-pages").value = item.pages || 0;
-  document.getElementById("book-published-at").value = item.published_at || "";
-  document.getElementById("book-order-link").value = item.order_link || "";
-  document.getElementById("book-contact-link").value = item.contact_link || "";
-  document.getElementById("book-sort-order").value = item.sort_order || 0;
-  document.getElementById("book-is-featured").value = item.is_featured ? "1" : "0";
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function loadBooks() {
-  try {
-    const items = await api("/api/books", {}, true);
-    booksCache = items || [];
-
-    const list = document.getElementById("books-list");
-    list.innerHTML = "";
-
-    (items || []).forEach(item => {
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `
-        <strong>${item.title || "Без заглавие"}</strong>
-        <div class="muted">
-          ID: ${item.id}<br>
-          Автор: ${item.author || "-"}<br>
-          EUR: €${formatMoney(item.price_eur)}<br>
-          BGN: ${formatMoney(item.price_bgn)} лв.<br>
-          Статус: ${item.status || "-"}<br>
-          Категория: ${item.category || "-"}<br>
-          Акцент: ${item.is_featured ? "Да" : "Не"}<br>
-          Подредба: ${item.sort_order || 0}
-        </div>
-        <div class="actions-row">
-          <button class="btn-info btn-small" onclick="editBook(${item.id})">Редактирай</button>
-          <button class="btn-danger btn-small" onclick="deleteBook(${item.id})">Изтрий</button>
-        </div>
-      `;
-      list.appendChild(el);
-    });
-  } catch (e) {
-    if (e.message.includes("Невалидна парола")) logout();
-    showStatus(e.message, "error");
-  }
-}
-
-async function saveBook() {
-  try {
-    const id = document.getElementById("book-id").value.trim();
-
-    const payload = {
-      title: document.getElementById("book-title").value.trim(),
-      author: document.getElementById("book-author").value.trim(),
-      subtitle: document.getElementById("book-subtitle").value.trim(),
-      description: document.getElementById("book-description").value.trim(),
-      cover_image: document.getElementById("book-cover-image").value.trim(),
-      price_eur: Number(document.getElementById("book-price-eur").value || 0),
-      price_bgn: Number(document.getElementById("book-price-bgn").value || 0),
-      dual_currency_until: document.getElementById("book-dual-currency-until").value,
-      status: document.getElementById("book-status").value,
-      category: document.getElementById("book-category").value.trim(),
-      isbn: document.getElementById("book-isbn").value.trim(),
-      pages: Number(document.getElementById("book-pages").value || 0),
-      published_at: document.getElementById("book-published-at").value,
-      order_link: document.getElementById("book-order-link").value.trim(),
-      contact_link: document.getElementById("book-contact-link").value.trim(),
-      sort_order: Number(document.getElementById("book-sort-order").value || 0),
-      is_featured: Number(document.getElementById("book-is-featured").value || 0)
-    };
-
-    if (!payload.title) {
-      showStatus("Липсва заглавие.", "error");
-      return;
-    }
-
-    if (id) {
-      await api("/api/update-book", {
-        method: "POST",
-        body: JSON.stringify({ id: Number(id), ...payload })
-      }, true);
-      showStatus("Книгата е редактирана.");
-    } else {
-      await api("/api/add-book", {
-        method: "POST",
-        body: JSON.stringify(payload)
-      }, true);
-      showStatus("Книгата е добавена.");
-    }
-
-    resetBookForm();
-    await loadBooks();
-  } catch (e) {
-    if (e.message.includes("Невалидна парола")) logout();
-    showStatus(e.message, "error");
-  }
-}
-
-async function deleteBook(id) {
-  if (!confirm("Сигурен ли си?")) return;
-
-  try {
-    await api("/api/delete-book", {
-      method: "POST",
-      body: JSON.stringify({ id })
-    }, true);
-
-    showStatus("Книгата е изтрита.");
-    resetBookForm();
-    await loadBooks();
-  } catch (e) {
-    if (e.message.includes("Невалидна парола")) logout();
-    showStatus(e.message, "error");
-  }
-}
-	
     autoLogin();
   </script>
 </body>
