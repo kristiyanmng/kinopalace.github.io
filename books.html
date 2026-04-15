@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Книги</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .books-hero{
+      padding:40px 0 24px;
+    }
+
+    .books-hero h1{
+      margin:0 0 10px;
+      font-size:42px;
+      line-height:1.15;
+    }
+
+    .books-hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:17px;
+      line-height:1.6;
+      max-width:760px;
+    }
+
+    .books-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+      padding-bottom:20px;
+    }
+
+    .book-card{
+      background:rgba(17,24,39,.95);
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 16px 40px rgba(0,0,0,.28);
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
+
+    .book-cover{
+      width:100%;
+      aspect-ratio:4 / 5;
+      object-fit:cover;
+      display:block;
+      background:#0f172a;
+    }
+
+    .book-body{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      flex:1;
+    }
+
+    .book-title{
+      margin:0 0 8px;
+      font-size:24px;
+      line-height:1.25;
+    }
+
+    .book-author{
+      margin:0 0 12px;
+      color:#fde68a;
+      font-size:15px;
+      font-weight:800;
+    }
+
+    .book-subtitle{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .book-meta{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.7;
+      margin-bottom:12px;
+    }
+
+    .book-description{
+      color:var(--text);
+      font-size:14px;
+      line-height:1.65;
+      margin:0 0 14px;
+      flex:1;
+    }
+
+    .book-price{
+      display:flex;
+      align-items:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .book-price-eur{
+      font-size:24px;
+      font-weight:900;
+      color:#86efac;
+    }
+
+    .book-price-bgn{
+      font-size:14px;
+      font-weight:800;
+      color:#cbd5e1;
+      opacity:.95;
+    }
+
+    .book-status{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:14px;
+      width:max-content;
+    }
+
+    .book-status.available{
+      background:rgba(34,197,94,.14);
+      color:#86efac;
+    }
+
+    .book-status.out_of_stock{
+      background:rgba(239,68,68,.14);
+      color:#fca5a5;
+    }
+
+    .book-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:auto;
+    }
+
+    .book-btn{
+      flex:1;
+      min-width:140px;
+      padding:11px 14px;
+      border:none;
+      border-radius:12px;
+      font-weight:800;
+      font-size:14px;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .book-btn.primary{
+      background:linear-gradient(135deg, #f97316, #f59e0b);
+      color:#fff;
+    }
+
+    .book-btn.secondary{
+      background:#334155;
+      color:#fff;
+    }
+
+    .book-empty{
+      grid-column:1 / -1;
+      padding:28px;
+      border-radius:20px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      text-align:center;
+      color:#cbd5e1;
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    @media (max-width:760px){
+      .books-hero h1{
+        font-size:26px;
+      }
+
+      .books-hero p{
+        font-size:15px;
+      }
+
+      .book-title{
+        font-size:20px;
+      }
+
+      .book-price-eur{
+        font-size:21px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <a href="index.html" class="logo">
+        <img src="Blue White Business ID Card.png" alt="Palace Кино" />
+      </a>
+
+      <div class="nav-wrap">
+        <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+        <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">☰</label>
+
+        <nav>
+          <a href="index.html">Програма</a>
+          <a href="premieres.html">Премиери в България</a>
+          <a href="prices.html">Цени</a>
+          <a href="books.html">Книги</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="books-hero">
+      <h1>Книги</h1>
+      <p>
+        Издания, свързани с киното и културата. Наличните книги са показани по-долу с актуални цени.
+      </p>
+    </section>
+
+    <section id="books-grid" class="books-grid">
+      Зареждане...
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Официалният сайт на кино Palace:
+      <a href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">НАЧАЛО</a>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
+    let booksData = [];
+
+    loadBooks();
+
+    async function loadBooks() {
+      try {
+        const res = await fetch(`${API_BASE}/api/export-books`, { cache: "no-store" });
+
+        if (!res.ok) {
+          throw new Error("Грешка при зареждане");
+        }
+
+        const data = await res.json();
+        booksData = data.books || [];
+        renderBooks();
+      } catch (e) {
+        console.error(e);
+        document.getElementById("books-grid").innerHTML = `
+          <div class="book-empty">
+            В момента се прави подобрение по страницата с книги. Моля, опитайте отново по-късно.
+          </div>
+        `;
+      }
+    }
+
+    function formatMoney(value) {
+      return Number(value || 0).toFixed(2);
+    }
+
+    function renderStatus(status) {
+      if (status === "out_of_stock") {
+        return `<span class="book-status out_of_stock">Изчерпана</span>`;
+      }
+      return `<span class="book-status available">Налична</span>`;
+    }
+
+    function renderPrice(book) {
+      const eur = `<span class="book-price-eur">€${formatMoney(book.price_eur)}</span>`;
+      const bgn = book.show_bgn && book.price_bgn !== null
+        ? `<span class="book-price-bgn">${formatMoney(book.price_bgn)} лв.</span>`
+        : "";
+
+      return `
+        <div class="book-price">
+          ${eur}
+          ${bgn}
+        </div>
+      `;
+    }
+
+    function renderButtons(book) {
+      const buttons = [];
+
+      if (book.order_link) {
+        buttons.push(`
+          <a class="book-btn primary" href="${book.order_link}" target="_blank" rel="noopener noreferrer">
+            Поръчай
+          </a>
+        `);
+      }
+
+      if (book.contact_link) {
+        buttons.push(`
+          <a class="book-btn secondary" href="${book.contact_link}" target="_blank" rel="noopener noreferrer">
+            Запитване
+          </a>
+        `);
+      }
+
+      if (!buttons.length) {
+        buttons.push(`
+          <a class="book-btn secondary" href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">
+            Повече информация
+          </a>
+        `);
+      }
+
+      return `<div class="book-actions">${buttons.join("")}</div>`;
+    }
+
+    function renderBooks() {
+      const grid = document.getElementById("books-grid");
+
+      if (!booksData.length) {
+        grid.innerHTML = `
+          <div class="book-empty">
+            В момента няма налични книги за показване.
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = "";
+
+      booksData.forEach(book => {
+        const article = document.createElement("article");
+        article.className = "book-card";
+
+        article.innerHTML = `
+          <img class="book-cover" src="${book.cover_image || ""}" alt="${book.title || "Книга"}">
+          <div class="book-body">
+            <h2 class="book-title">${book.title || "Без заглавие"}</h2>
+            <div class="book-author">${book.author || "Без автор"}</div>
+            ${book.subtitle ? `<div class="book-subtitle">${book.subtitle}</div>` : ""}
+
+            <div class="book-meta">
+              ${book.category ? `<div><strong>Категория:</strong> ${book.category}</div>` : ""}
+              ${book.pages ? `<div><strong>Страници:</strong> ${book.pages}</div>` : ""}
+              ${book.isbn ? `<div><strong>ISBN:</strong> ${book.isbn}</div>` : ""}
+              ${book.published_at ? `<div><strong>Издадена:</strong> ${book.published_at}</div>` : ""}
+            </div>
+
+            ${renderStatus(book.status)}
+            ${renderPrice(book)}
+
+            <p class="book-description">${book.description || ""}</p>
+
+            ${renderButtons(book)}
+          </div>
+        `;
+
+        grid.appendChild(article);
+      });
+    }
+  </script>
+</body>
+</html>
