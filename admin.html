@@ -16,6 +16,7 @@
       --accent2:#f97316;
       --danger:#ef4444;
       --info:#38bdf8;
+      --success:#22c55e;
     }
 
     *{box-sizing:border-box}
@@ -28,7 +29,7 @@
     }
 
     .container{
-      width:min(1320px, 94%);
+      width:min(1380px, 94%);
       margin:0 auto;
       padding:24px 0 60px;
     }
@@ -106,7 +107,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
       gap:18px;
     }
 
@@ -121,7 +122,7 @@
     .muted{
       color:var(--muted);
       font-size:14px;
-      line-height:1.5;
+      line-height:1.55;
       word-break:break-word;
     }
 
@@ -172,6 +173,11 @@
     .btn-info{
       background:var(--info);
       color:#001018;
+    }
+
+    .btn-success{
+      background:var(--success);
+      color:#fff;
     }
 
     .btn-logout{
@@ -254,23 +260,41 @@
       font-size:13px;
       color:#fcd34d;
       font-weight:700;
+      line-height:1.5;
     }
 
-    .select-search{
-      margin-bottom:10px;
+    .helper{
+      margin-top:8px;
+      font-size:13px;
+      color:#93c5fd;
+      line-height:1.55;
     }
 
-    select[size]{
-      min-height:260px;
-      overflow:auto;
+    .select-tall{
+      min-height:220px;
       padding:8px;
+    }
+
+    .select-medium{
+      min-height:180px;
+      padding:8px;
+    }
+
+    .mono{
+      font-family:Consolas, Monaco, monospace;
+      font-size:13px;
+    }
+
+    .bulk-box{
+      min-height:180px;
     }
 
     @media (max-width:760px){
       .row{grid-template-columns:1fr}
       h1{font-size:28px}
-      select[size]{
-        min-height:220px;
+      .select-tall,
+      .select-medium{
+        min-height:160px;
       }
     }
   </style>
@@ -294,6 +318,8 @@
         <a href="index.html">← Обратно към сайта</a>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
           <a href="premieres.html">Премиери</a>
+          <a href="prices.html">Цени</a>
+          <a href="books.html">Книги</a>
           <button class="btn-logout" onclick="logout()">Изход</button>
         </div>
       </div>
@@ -369,8 +395,8 @@
             <input id="showtime-id" type="hidden" />
 
             <label>Филм</label>
-            <input id="showtime-movie-search" class="select-search" type="text" placeholder="Търси филм..." />
-            <select id="showtime-movie" size="10"></select>
+            <select id="showtime-movie" class="select-tall" size="10"></select>
+            <div class="helper">Виждаш повече филми наведнъж и скролваш нормално.</div>
 
             <div class="row">
               <div>
@@ -408,7 +434,32 @@
               <button class="btn-secondary" onclick="resetShowtimeForm()">Изчисти</button>
             </div>
 
-            <div class="note">Тук създаваш само програмни прожекции.</div>
+            <div class="note">Тук добавяш единична прожекция.</div>
+          </div>
+
+          <div class="card">
+            <h2>Масово добавяне на прожекции</h2>
+
+            <label>Филм</label>
+            <select id="bulk-showtime-movie" class="select-medium" size="8"></select>
+
+            <label>Редове за импорт</label>
+            <textarea id="bulk-showtime-lines" class="bulk-box mono" placeholder="2026-08-01 | 18:30 | Зала 1 | 0 | 1
+2026-08-01 | 21:00 | VIP Зала | 1 | 1
+2026-08-02 | 16:00 | Зала 2 | 0 | 0"></textarea>
+
+            <div class="helper">
+              Формат на ред:<br>
+              <strong>дата | час | зала | 3D | дублиран</strong><br>
+              Пример: <strong>2026-08-01 | 18:30 | Зала 1 | 0 | 1</strong>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn-success" onclick="saveBulkShowtimes()">Добави всички редове</button>
+              <button class="btn-secondary" onclick="document.getElementById('bulk-showtime-lines').value=''">Изчисти редовете</button>
+            </div>
+
+            <div class="note">Това е правилният начин. Не цъкаш 20 пъти за 20 прожекции.</div>
           </div>
 
           <div class="card">
@@ -497,8 +548,8 @@
             <input id="premiere-event-id" type="hidden" />
 
             <label>Премиерен филм</label>
-            <input id="premiere-movie-search" class="select-search" type="text" placeholder="Търси премиерен филм..." />
-            <select id="premiere-event-movie" size="10"></select>
+            <select id="premiere-event-movie" class="select-medium" size="8"></select>
+            <div class="helper">Виждаш повече филми наведнъж.</div>
 
             <label>Дата</label>
             <input id="premiere-event-date" type="date" />
@@ -761,6 +812,7 @@
 
     function showStatus(message, type = "ok", targetId = "status") {
       const el = document.getElementById(targetId);
+      if (!el) return;
       el.className = `status show ${type}`;
       el.textContent = message;
       setTimeout(() => {
@@ -895,52 +947,25 @@
       return (Number(eur || 0) * 1.95583).toFixed(2);
     }
 
-    function fillProgramMovieSelect(filter = "") {
-      const select = document.getElementById("showtime-movie");
-      const currentValue = select.value;
-      select.innerHTML = "";
+    function fillProgramMovieSelects() {
+      const selects = [
+        document.getElementById("showtime-movie"),
+        document.getElementById("bulk-showtime-movie")
+      ].filter(Boolean);
 
-      const normalizedFilter = String(filter || "").trim().toLowerCase();
-
-      const filtered = programMoviesCache.filter(item => {
-        const text = `${item.id} ${item.title || ""}`.toLowerCase();
-        return text.includes(normalizedFilter);
+      selects.forEach(select => {
+        const currentValue = select.value;
+        select.innerHTML = "";
+        programMoviesCache.forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.id;
+          opt.textContent = `${item.id} - ${item.title}`;
+          select.appendChild(opt);
+        });
+        if ([...select.options].some(opt => opt.value === currentValue)) {
+          select.value = currentValue;
+        }
       });
-
-      filtered.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.id;
-        opt.textContent = `${item.id} - ${item.title}`;
-        select.appendChild(opt);
-      });
-
-      if (currentValue) {
-        select.value = currentValue;
-      }
-    }
-
-    function fillPremiereMovieSelect(filter = "") {
-      const select = document.getElementById("premiere-event-movie");
-      const currentValue = select.value;
-      select.innerHTML = "";
-
-      const normalizedFilter = String(filter || "").trim().toLowerCase();
-
-      const filtered = premiereMoviesCache.filter(item => {
-        const text = `${item.id} ${item.title || ""}`.toLowerCase();
-        return text.includes(normalizedFilter);
-      });
-
-      filtered.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.id;
-        opt.textContent = `${item.id} - ${item.title}`;
-        select.appendChild(opt);
-      });
-
-      if (currentValue) {
-        select.value = currentValue;
-      }
     }
 
     async function loadProgramMovies() {
@@ -948,7 +973,7 @@
         const items = await api("/api/program-movies");
         programMoviesCache = items || [];
         renderProgramMovies(items || []);
-        fillProgramMovieSelect(document.getElementById("showtime-movie-search")?.value || "");
+        fillProgramMovieSelects();
       } catch (e) {
         showStatus(e.message, "error");
       }
@@ -1009,7 +1034,6 @@
       document.getElementById("program-category").value = item.category || "";
       document.getElementById("program-status").value = item.status || "active";
       document.getElementById("program-sort-order").value = item.sort_order || 0;
-
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1122,8 +1146,6 @@
       document.getElementById("showtime-hall").value = "Зала 1";
       document.getElementById("showtime-is3d").value = "0";
       document.getElementById("showtime-isdubbed").value = "0";
-      document.getElementById("showtime-movie-search").value = "";
-      fillProgramMovieSelect("");
     }
 
     function editShowtime(id) {
@@ -1154,8 +1176,8 @@
           is_dubbed: Number(document.getElementById("showtime-isdubbed").value)
         };
 
-        if (!payload.movie_id) {
-          showStatus("Избери филм.", "error");
+        if (!payload.movie_id || !payload.date || !payload.scheduled_time) {
+          showStatus("Попълни филм, дата и час.", "error");
           return;
         }
 
@@ -1174,6 +1196,57 @@
         }
 
         resetShowtimeForm();
+        await loadShowtimes();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function saveBulkShowtimes() {
+      try {
+        const movieId = Number(document.getElementById("bulk-showtime-movie").value);
+        const raw = document.getElementById("bulk-showtime-lines").value.trim();
+
+        if (!movieId) {
+          showStatus("Избери филм за масовото добавяне.", "error");
+          return;
+        }
+
+        if (!raw) {
+          showStatus("Няма въведени редове.", "error");
+          return;
+        }
+
+        const lines = raw.split("\n").map(x => x.trim()).filter(Boolean);
+        let successCount = 0;
+
+        for (const line of lines) {
+          const parts = line.split("|").map(x => x.trim());
+
+          if (parts.length < 5) {
+            throw new Error(`Невалиден ред: ${line}`);
+          }
+
+          const payload = {
+            movie_id: movieId,
+            date: parts[0],
+            scheduled_time: parts[1],
+            hall: parts[2] || "Зала 1",
+            is_3d: Number(parts[3] || 0),
+            is_dubbed: Number(parts[4] || 0)
+          };
+
+          await api("/api/showtimes-v2", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          }, true);
+
+          successCount++;
+        }
+
+        document.getElementById("bulk-showtime-lines").value = "";
+        showStatus(`Добавени прожекции: ${successCount}`);
         await loadShowtimes();
       } catch (e) {
         if (e.message.includes("Невалидна парола")) logout();
@@ -1203,9 +1276,26 @@
         const items = await api("/api/premiere-movies");
         premiereMoviesCache = items || [];
         renderPremiereMovies(items || []);
-        fillPremiereMovieSelect(document.getElementById("premiere-movie-search")?.value || "");
+        fillPremiereMovieSelect();
       } catch (e) {
         showStatus(e.message, "error");
+      }
+    }
+
+    function fillPremiereMovieSelect() {
+      const select = document.getElementById("premiere-event-movie");
+      const currentValue = select.value;
+      select.innerHTML = "";
+
+      premiereMoviesCache.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = `${item.id} - ${item.title}`;
+        select.appendChild(opt);
+      });
+
+      if ([...select.options].some(opt => opt.value === currentValue)) {
+        select.value = currentValue;
       }
     }
 
@@ -1364,8 +1454,6 @@
       document.getElementById("premiere-event-date").value = "";
       document.getElementById("premiere-event-status").value = "scheduled";
       document.getElementById("premiere-event-notes").value = "";
-      document.getElementById("premiere-movie-search").value = "";
-      fillPremiereMovieSelect("");
     }
 
     function editPremiereEvent(id) {
@@ -1392,8 +1480,8 @@
           notes: document.getElementById("premiere-event-notes").value.trim()
         };
 
-        if (!payload.premiere_movie_id) {
-          showStatus("Избери премиерен филм.", "error");
+        if (!payload.premiere_movie_id || !payload.premiere_date) {
+          showStatus("Попълни премиерен филм и дата.", "error");
           return;
         }
 
@@ -1511,6 +1599,11 @@
           status: document.getElementById("price-status").value,
           sort_order: Number(document.getElementById("price-sort-order").value || 0)
         };
+
+        if (!payload.category || !payload.title) {
+          showStatus("Попълни категория и име.", "error");
+          return;
+        }
 
         if (id) {
           await api("/api/price-items/update", {
@@ -1800,14 +1893,6 @@
         if (preview) {
           preview.value = eurToBgnClient(e.target.value);
         }
-      }
-
-      if (e.target && e.target.id === "showtime-movie-search") {
-        fillProgramMovieSelect(e.target.value);
-      }
-
-      if (e.target && e.target.id === "premiere-movie-search") {
-        fillPremiereMovieSelect(e.target.value);
       }
     });
 
