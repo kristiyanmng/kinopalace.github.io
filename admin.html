@@ -256,9 +256,22 @@
       font-weight:700;
     }
 
+    .select-search{
+      margin-bottom:10px;
+    }
+
+    select[size]{
+      min-height:260px;
+      overflow:auto;
+      padding:8px;
+    }
+
     @media (max-width:760px){
       .row{grid-template-columns:1fr}
       h1{font-size:28px}
+      select[size]{
+        min-height:220px;
+      }
     }
   </style>
 </head>
@@ -356,7 +369,8 @@
             <input id="showtime-id" type="hidden" />
 
             <label>Филм</label>
-            <select id="showtime-movie"></select>
+            <input id="showtime-movie-search" class="select-search" type="text" placeholder="Търси филм..." />
+            <select id="showtime-movie" size="10"></select>
 
             <div class="row">
               <div>
@@ -483,7 +497,8 @@
             <input id="premiere-event-id" type="hidden" />
 
             <label>Премиерен филм</label>
-            <select id="premiere-event-movie"></select>
+            <input id="premiere-movie-search" class="select-search" type="text" placeholder="Търси премиерен филм..." />
+            <select id="premiere-event-movie" size="10"></select>
 
             <label>Дата</label>
             <input id="premiere-event-date" type="date" />
@@ -880,26 +895,63 @@
       return (Number(eur || 0) * 1.95583).toFixed(2);
     }
 
-    async function loadProgramMovies() {
-      try {
-        const items = await api("/api/program-movies");
-        programMoviesCache = items || [];
-        renderProgramMovies(items || []);
-        fillProgramMovieSelect();
-      } catch (e) {
-        showStatus(e.message, "error");
-      }
-    }
-
-    function fillProgramMovieSelect() {
+    function fillProgramMovieSelect(filter = "") {
       const select = document.getElementById("showtime-movie");
+      const currentValue = select.value;
       select.innerHTML = "";
-      programMoviesCache.forEach(item => {
+
+      const normalizedFilter = String(filter || "").trim().toLowerCase();
+
+      const filtered = programMoviesCache.filter(item => {
+        const text = `${item.id} ${item.title || ""}`.toLowerCase();
+        return text.includes(normalizedFilter);
+      });
+
+      filtered.forEach(item => {
         const opt = document.createElement("option");
         opt.value = item.id;
         opt.textContent = `${item.id} - ${item.title}`;
         select.appendChild(opt);
       });
+
+      if (currentValue) {
+        select.value = currentValue;
+      }
+    }
+
+    function fillPremiereMovieSelect(filter = "") {
+      const select = document.getElementById("premiere-event-movie");
+      const currentValue = select.value;
+      select.innerHTML = "";
+
+      const normalizedFilter = String(filter || "").trim().toLowerCase();
+
+      const filtered = premiereMoviesCache.filter(item => {
+        const text = `${item.id} ${item.title || ""}`.toLowerCase();
+        return text.includes(normalizedFilter);
+      });
+
+      filtered.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = `${item.id} - ${item.title}`;
+        select.appendChild(opt);
+      });
+
+      if (currentValue) {
+        select.value = currentValue;
+      }
+    }
+
+    async function loadProgramMovies() {
+      try {
+        const items = await api("/api/program-movies");
+        programMoviesCache = items || [];
+        renderProgramMovies(items || []);
+        fillProgramMovieSelect(document.getElementById("showtime-movie-search")?.value || "");
+      } catch (e) {
+        showStatus(e.message, "error");
+      }
     }
 
     function renderProgramMovies(items) {
@@ -1070,6 +1122,8 @@
       document.getElementById("showtime-hall").value = "Зала 1";
       document.getElementById("showtime-is3d").value = "0";
       document.getElementById("showtime-isdubbed").value = "0";
+      document.getElementById("showtime-movie-search").value = "";
+      fillProgramMovieSelect("");
     }
 
     function editShowtime(id) {
@@ -1099,6 +1153,11 @@
           is_3d: Number(document.getElementById("showtime-is3d").value),
           is_dubbed: Number(document.getElementById("showtime-isdubbed").value)
         };
+
+        if (!payload.movie_id) {
+          showStatus("Избери филм.", "error");
+          return;
+        }
 
         if (id) {
           await api("/api/showtimes-v2/update", {
@@ -1144,21 +1203,10 @@
         const items = await api("/api/premiere-movies");
         premiereMoviesCache = items || [];
         renderPremiereMovies(items || []);
-        fillPremiereMovieSelect();
+        fillPremiereMovieSelect(document.getElementById("premiere-movie-search")?.value || "");
       } catch (e) {
         showStatus(e.message, "error");
       }
-    }
-
-    function fillPremiereMovieSelect() {
-      const select = document.getElementById("premiere-event-movie");
-      select.innerHTML = "";
-      premiereMoviesCache.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.id;
-        opt.textContent = `${item.id} - ${item.title}`;
-        select.appendChild(opt);
-      });
     }
 
     function renderPremiereMovies(items) {
@@ -1316,6 +1364,8 @@
       document.getElementById("premiere-event-date").value = "";
       document.getElementById("premiere-event-status").value = "scheduled";
       document.getElementById("premiere-event-notes").value = "";
+      document.getElementById("premiere-movie-search").value = "";
+      fillPremiereMovieSelect("");
     }
 
     function editPremiereEvent(id) {
@@ -1341,6 +1391,11 @@
           status: document.getElementById("premiere-event-status").value,
           notes: document.getElementById("premiere-event-notes").value.trim()
         };
+
+        if (!payload.premiere_movie_id) {
+          showStatus("Избери премиерен филм.", "error");
+          return;
+        }
 
         if (id) {
           await api("/api/premieres-v2/update", {
@@ -1745,6 +1800,14 @@
         if (preview) {
           preview.value = eurToBgnClient(e.target.value);
         }
+      }
+
+      if (e.target && e.target.id === "showtime-movie-search") {
+        fillProgramMovieSelect(e.target.value);
+      }
+
+      if (e.target && e.target.id === "premiere-movie-search") {
+        fillPremiereMovieSelect(e.target.value);
       }
     });
 
