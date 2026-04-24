@@ -1283,14 +1283,14 @@ footer a:hover{
   font-size: 14px;
 }
 .time {
-  min-width: 92px;
-  min-height: 82px;
-  padding: 12px 14px;
+  min-width: 80px;
+  min-height: 70px;
+  padding: 10px;
+  border-radius: 20px;
 }
 
 .time-value {
-  font-size: 21px;
-  line-height: 1.1;
+  font-size: 18px;
 }
 
 .hall-label {
