@@ -43,6 +43,19 @@ header{
   backdrop-filter:blur(10px);
 }
 
+.day-tab.empty-day,
+.day-tab:disabled {
+  opacity: 0.35;
+  filter: grayscale(1);
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.day-tab.empty-day:hover,
+.day-tab:disabled:hover {
+  transform: none;
+}
+
 .topbar{
   display:flex;
   justify-content:space-between;
