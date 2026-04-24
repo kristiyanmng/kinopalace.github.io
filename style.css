@@ -1260,3 +1260,34 @@ footer a:hover{
 .schedule-hours{
   align-items:flex-start;
 }
+
+.movie-prices {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #e5e7eb;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.movie-prices strong {
+  color: #facc15;
+}
+
+.time {
+  min-width: 92px;
+  min-height: 82px;
+  padding: 12px 14px;
+}
+
+.time-value {
+  font-size: 21px;
+  line-height: 1.1;
+}
+
+.hall-label {
+  font-size: 13px;
+  line-height: 1.2;
+}
