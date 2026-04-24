@@ -240,15 +240,21 @@
         const hall = item.hall || "Зала 1";
 
         return {
-          id: item.id ?? null,
-          time: item.time || item.scheduled_time || "",
-          scheduled_time: item.scheduled_time || item.time || "",
-          hall,
-          type: item.type || (/vip/i.test(hall) ? "vip" : "standard"),
-          iso_date: item.iso_date || fallbackIsoDate || "",
-          is_3d: !!item.is_3d,
-          is_dubbed: !!item.is_dubbed
-        };
+  id: item.id ?? null,
+  time: item.time || item.scheduled_time || "",
+  scheduled_time: item.scheduled_time || item.time || "",
+  hall,
+  type: item.type || (/vip/i.test(hall) ? "vip" : "standard"),
+  iso_date: item.iso_date || fallbackIsoDate || "",
+  is_3d: !!item.is_3d,
+  is_dubbed: !!item.is_dubbed,
+
+  price_standard_eur: Number(item.price_standard_eur || 0),
+  price_reduced_eur: Number(item.price_reduced_eur || 0),
+  price_standard_bgn: item.price_standard_bgn === null ? null : Number(item.price_standard_bgn || 0),
+  price_reduced_bgn: item.price_reduced_bgn === null ? null : Number(item.price_reduced_bgn || 0),
+  show_bgn: !!item.show_bgn
+};
       }).filter(item => item.time);
     }
 
