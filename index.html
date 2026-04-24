@@ -494,7 +494,7 @@ const firstPricedTime = movie.visibleTimes.find(item =>
 const priceHtml = movie.visibleTimes[0]?.price_standard_eur
   ? `
     <div class="price-chip">
-      <span>Билети:</span>
+      <span>Билети:</span><br>
       <em>Стандартен билет €${Number(movie.visibleTimes[0].price_standard_eur).toFixed(2)}</em>
       <em>Намален билет €${Number(movie.visibleTimes[0].price_reduced_eur).toFixed(2)}</em>
     </div>
