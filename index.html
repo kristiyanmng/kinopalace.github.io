@@ -491,12 +491,15 @@ const firstPricedTime = movie.visibleTimes.find(item =>
   Number(item.price_reduced_eur || 0) > 0
 );
 
-const pricesHtml = firstPricedTime ? `
-  <div class="movie-prices">
-  <span>€6.00</span>
-  <span class="muted">/ €5.00 намален</span>
-</div>
-` : "";
+const priceHtml = movie.visibleTimes[0]?.price_standard_eur
+  ? `
+    <div class="price-chip">
+      <span>Билети:</span>
+      <strong>€${Number(movie.visibleTimes[0].price_standard_eur).toFixed(2)}</strong>
+      <em>намален €${Number(movie.visibleTimes[0].price_reduced_eur).toFixed(2)}</em>
+    </div>
+  `
+  : "";
 
         const countdownHtml = movie.showNextCountdown && movie.nextCountdown
           ? `
@@ -553,7 +556,7 @@ const pricesHtml = firstPricedTime ? `
   </div>
 </div>
 
-${pricesHtml}
+${priceHtml}
 
 ${countdownHtml}
 
