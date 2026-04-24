@@ -473,12 +473,34 @@
         card.className = "card";
         card.setAttribute("data-movie-index", movie._id);
 
-        const timesHtml = movie.visibleTimes.map(item => `
-          <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}">
-            <span class="time-value">${item.scheduled_time || item.time}</span>
-            <small class="hall-label">${item.hall || ""}</small>
-          </span>
-        `).join("");
+        const timesHtml = movie.visibleTimes.map(item => {
+  const standardPrice = item.price_standard_eur
+    ? `<small class="hall-label">Стандартен: €${Number(item.price_standard_eur).toFixed(2)}</small>`
+    : "";
+
+  const reducedPrice = item.price_reduced_eur
+    ? `<small class="hall-label">Намален: €${Number(item.price_reduced_eur).toFixed(2)}</small>`
+    : "";
+
+  const standardBgn = item.show_bgn && item.price_standard_bgn
+    ? `<small class="hall-label">${Number(item.price_standard_bgn).toFixed(2)} лв.</small>`
+    : "";
+
+  const reducedBgn = item.show_bgn && item.price_reduced_bgn
+    ? `<small class="hall-label">${Number(item.price_reduced_bgn).toFixed(2)} лв.</small>`
+    : "";
+
+  return `
+    <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}">
+      <span class="time-value">${item.scheduled_time || item.time}</span>
+      <small class="hall-label">${item.hall || ""}</small>
+      ${standardPrice}
+      ${standardBgn}
+      ${reducedPrice}
+      ${reducedBgn}
+    </span>
+  `;
+}).join("");
 
         const countdownHtml = movie.showNextCountdown && movie.nextCountdown
           ? `
