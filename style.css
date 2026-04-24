@@ -1300,4 +1300,63 @@ footer a:hover{
     font-style: normal;
     font-weight: 800;
   }
+
+
+.ticket-prices{
+  margin-top:22px;
+  padding:18px 22px;
+  border-radius:22px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  display:grid;
+  gap:10px;
+}
+
+.ticket-prices-title{
+  color:#cbd5e1;
+  font-weight:900;
+  font-size:22px;
+  margin-bottom:2px;
+}
+
+.ticket-price-line{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  font-size:21px;
+  line-height:1.25;
+}
+
+.ticket-price-label{
+  color:#facc15;
+  font-weight:900;
+}
+
+.ticket-price-value{
+  color:#f8fafc;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+@media (max-width:760px){
+  .ticket-prices{
+    padding:16px 18px;
+  }
+
+  .ticket-prices-title{
+    font-size:20px;
+  }
+
+  .ticket-price-line{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:2px;
+    font-size:20px;
+  }
+
+  .ticket-price-value{
+    white-space:normal;
+  }
+}
 }
