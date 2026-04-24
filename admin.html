@@ -411,7 +411,18 @@
 
             <label>Зала</label>
             <input id="showtime-hall" type="text" value="Зала 1" />
-
+			
+			<div class="row">
+  <div>
+    <label>Стандартен билет EUR</label>
+    <input id="showtime-price-standard" type="number" step="0.01" placeholder="8.00" />
+  </div>
+  <div>
+    <label>Намален билет EUR</label>
+    <input id="showtime-price-reduced" type="number" step="0.01" placeholder="6.50" />
+  </div>
+</div>
+			
             <div class="row">
               <div>
                 <label>3D</label>
@@ -450,7 +461,7 @@
 
             <div class="helper">
               Формат на ред:<br>
-              <strong>дата | час | зала | 3D | дублиран</strong><br>
+              <strong>дата | час | зала | 3D | дублиран | стандартен EUR | намален EUR</strong><br>
               Пример: <strong>2026-08-01 | 18:30 | Зала 1 | 0 | 1</strong>
             </div>
 
@@ -1128,7 +1139,9 @@
             ID: ${item.id}<br>
             ${item.date} • ${item.scheduled_time}<br>
             ${item.hall || "Зала 1"}<br>
-            3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}
+            3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}<br>
+Стандартен билет: €${formatMoney(item.price_standard_eur)}<br>
+Намален билет: €${formatMoney(item.price_reduced_eur)}
           </div>
           <div class="actions-row">
             <button class="btn-info btn-small" onclick="editShowtime(${item.id})">Редактирай</button>
@@ -1144,6 +1157,8 @@
       document.getElementById("showtime-date").value = "";
       document.getElementById("showtime-time").value = "";
       document.getElementById("showtime-hall").value = "Зала 1";
+	  document.getElementById("showtime-price-standard").value = "";
+document.getElementById("showtime-price-reduced").value = "";
       document.getElementById("showtime-is3d").value = "0";
       document.getElementById("showtime-isdubbed").value = "0";
     }
@@ -1157,6 +1172,8 @@
       document.getElementById("showtime-date").value = item.date || "";
       document.getElementById("showtime-time").value = item.scheduled_time || "";
       document.getElementById("showtime-hall").value = item.hall || "Зала 1";
+	  document.getElementById("showtime-price-standard").value = item.price_standard_eur || "";
+document.getElementById("showtime-price-reduced").value = item.price_reduced_eur || "";
       document.getElementById("showtime-is3d").value = item.is_3d ? "1" : "0";
       document.getElementById("showtime-isdubbed").value = item.is_dubbed ? "1" : "0";
 
@@ -1168,13 +1185,15 @@
         const id = document.getElementById("showtime-id").value.trim();
 
         const payload = {
-          movie_id: Number(document.getElementById("showtime-movie").value),
-          date: document.getElementById("showtime-date").value,
-          scheduled_time: document.getElementById("showtime-time").value,
-          hall: document.getElementById("showtime-hall").value.trim(),
-          is_3d: Number(document.getElementById("showtime-is3d").value),
-          is_dubbed: Number(document.getElementById("showtime-isdubbed").value)
-        };
+  movie_id: Number(document.getElementById("showtime-movie").value),
+  date: document.getElementById("showtime-date").value,
+  scheduled_time: document.getElementById("showtime-time").value,
+  hall: document.getElementById("showtime-hall").value.trim(),
+  is_3d: Number(document.getElementById("showtime-is3d").value),
+  is_dubbed: Number(document.getElementById("showtime-isdubbed").value),
+  price_standard_eur: Number(document.getElementById("showtime-price-standard").value || 0),
+  price_reduced_eur: Number(document.getElementById("showtime-price-reduced").value || 0)
+};
 
         if (!payload.movie_id || !payload.date || !payload.scheduled_time) {
           showStatus("Попълни филм, дата и час.", "error");
@@ -1224,18 +1243,20 @@
         for (const line of lines) {
           const parts = line.split("|").map(x => x.trim());
 
-          if (parts.length < 5) {
+          if (parts.length < 7) {
             throw new Error(`Невалиден ред: ${line}`);
           }
 
           const payload = {
-            movie_id: movieId,
-            date: parts[0],
-            scheduled_time: parts[1],
-            hall: parts[2] || "Зала 1",
-            is_3d: Number(parts[3] || 0),
-            is_dubbed: Number(parts[4] || 0)
-          };
+  movie_id: movieId,
+  date: parts[0],
+  scheduled_time: parts[1],
+  hall: parts[2] || "Зала 1",
+  is_3d: Number(parts[3] || 0),
+  is_dubbed: Number(parts[4] || 0),
+  price_standard_eur: Number(parts[5] || 0),
+  price_reduced_eur: Number(parts[6] || 0)
+};
 
           await api("/api/showtimes-v2", {
             method: "POST",
