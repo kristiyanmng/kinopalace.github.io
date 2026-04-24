@@ -286,11 +286,9 @@
     }
 
     function getVisibleDays() {
-      return (scheduleData?.days || []).filter(day =>
-        isFutureOrToday(day.iso_date) &&
-        Array.isArray(day.movies) &&
-        day.movies.some(movie => Array.isArray(movie.times) && movie.times.length > 0)
-      );
+  return (scheduleData?.days || []).filter(day =>
+    isFutureOrToday(day.iso_date)
+  );
     }
 
     function setTodayAsActive() {
@@ -323,7 +321,10 @@
       };
 
       visibleDays.forEach((day, index) => {
-        const hasMovies = day.movies && day.movies.length > 0;
+        const hasMovies =
+  !day.disabled &&
+  Array.isArray(day.movies) &&
+  day.movies.some(movie => Array.isArray(movie.times) && movie.times.length > 0);
         const mobileLabel = window.innerWidth <= 760
           ? (shortDays[day.label] || day.label)
           : day.label;
@@ -340,14 +341,15 @@
         `;
 
         if (!hasMovies) {
-          btn.disabled = true;
-        } else {
-          btn.addEventListener("click", () => {
-            activeDayIndex = index;
-            renderDays();
-            renderMovies();
-          });
-        }
+  btn.disabled = true;
+  btn.title = "Няма прожекции за тази дата";
+} else {
+  btn.addEventListener("click", () => {
+    activeDayIndex = index;
+    renderDays();
+    renderMovies();
+  });
+}
 
         strip.appendChild(btn);
       });
