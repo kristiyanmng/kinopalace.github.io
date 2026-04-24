@@ -1246,3 +1246,17 @@ footer a:hover{
     height:220px;
   }
 }
+
+.time{
+  min-width:110px;
+  gap:2px;
+}
+
+.time .hall-label{
+  white-space:normal;
+  text-align:center;
+}
+
+.schedule-hours{
+  align-items:flex-start;
+}
