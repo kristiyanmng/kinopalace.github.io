@@ -493,16 +493,9 @@ const firstPricedTime = movie.visibleTimes.find(item =>
 
 const pricesHtml = firstPricedTime ? `
   <div class="movie-prices">
-    ${Number(firstPricedTime.price_standard_eur || 0) > 0 ? `
-      <div><strong>Стандартен билет:</strong> €${Number(firstPricedTime.price_standard_eur).toFixed(2)}
-      ${firstPricedTime.show_bgn && firstPricedTime.price_standard_bgn ? ` / ${Number(firstPricedTime.price_standard_bgn).toFixed(2)} лв.` : ""}</div>
-    ` : ""}
-
-    ${Number(firstPricedTime.price_reduced_eur || 0) > 0 ? `
-      <div><strong>Намален билет:</strong> €${Number(firstPricedTime.price_reduced_eur).toFixed(2)}
-      ${firstPricedTime.show_bgn && firstPricedTime.price_reduced_bgn ? ` / ${Number(firstPricedTime.price_reduced_bgn).toFixed(2)} лв.` : ""}</div>
-    ` : ""}
-  </div>
+  <span>€6.00</span>
+  <span class="muted">/ €5.00 намален</span>
+</div>
 ` : "";
 
         const countdownHtml = movie.showNextCountdown && movie.nextCountdown
