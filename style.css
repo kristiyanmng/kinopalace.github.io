@@ -1261,102 +1261,66 @@ footer a:hover{
   align-items:flex-start;
 }
 
-.hall-label {
-  font-size: 13px;
-  line-height: 1.2;
+.hall-label{
+  font-size:13px;
+  line-height:1.2;
 }
 
-.price-chip {
-  display: none;
+.price-chip{
+  display:none;
 }
 
-@media (max-width: 760px) {
-  .price-chip {
-    margin-top: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.08);
-    color: #e5e7eb;
-    font-size: 14px;
-    flex-wrap: wrap;
-  }
-
-  .price-chip span {
-    color: #94a3b8;
-    font-weight: 800;
-  }
-
-  .price-chip strong {
-    color: #fff;
-  }
-
-  .price-chip em {
-    color: #facc15;
-    font-style: normal;
-    font-weight: 800;
-  }
-
-
+/* БИЛЕТИ */
 .ticket-prices{
-  margin-top:22px;
-  padding:18px 22px;
-  border-radius:22px;
-  background:rgba(255,255,255,.06);
+  margin-top:18px;
+  padding:16px 18px;
+  border-radius:20px;
+  background:rgba(255,255,255,.055);
   border:1px solid rgba(255,255,255,.10);
   display:grid;
-  gap:10px;
+  gap:8px;
 }
 
 .ticket-prices-title{
   color:#cbd5e1;
   font-weight:900;
-  font-size:22px;
-  margin-bottom:2px;
+  font-size:20px;
 }
 
 .ticket-price-line{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
-  font-size:21px;
-  line-height:1.25;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:2px;
 }
 
 .ticket-price-label{
   color:#facc15;
   font-weight:900;
+  font-size:20px;
+  line-height:1.2;
 }
 
 .ticket-price-value{
   color:#f8fafc;
   font-weight:800;
-  white-space:nowrap;
+  font-size:18px;
+  line-height:1.2;
 }
 
 @media (max-width:760px){
   .ticket-prices{
-    padding:16px 18px;
+    padding:16px;
   }
 
   .ticket-prices-title{
     font-size:20px;
   }
 
-  .ticket-price-line{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:2px;
+  .ticket-price-label{
     font-size:20px;
   }
 
   .ticket-price-value{
-    white-space:normal;
+    font-size:18px;
   }
-}
 }
