@@ -1261,39 +1261,35 @@ footer a:hover{
   align-items:flex-start;
 }
 
-.movie-prices {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.06);
-  font-size: 16px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.movie-prices span:first-child {
-  font-weight: 700;
-  color: #fff;
-}
-
-.movie-prices .muted {
-  opacity: 0.6;
-  font-size: 14px;
-}
-.time {
-  min-width: 80px;
-  min-height: 70px;
-  padding: 10px;
-  border-radius: 20px;
-}
-
-.time-value {
-  font-size: 18px;
-}
-
 .hall-label {
   font-size: 13px;
   line-height: 1.2;
+}
+
+.price-chip {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #e5e7eb;
+  font-size: 15px;
+}
+
+.price-chip span {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.price-chip strong {
+  color: #fff;
+}
+
+.price-chip em {
+  color: #facc15;
+  font-style: normal;
+  font-weight: 700;
 }
