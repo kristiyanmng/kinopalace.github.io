@@ -1149,6 +1149,15 @@ footer a:hover{
   flex-direction:column;
 }
 
+.day-tab.disabled-day,
+.date-tab.disabled-day {
+  opacity: 0.35;
+  filter: grayscale(1);
+  cursor: not-allowed;
+  pointer-events: none;
+  border-style: dashed;
+}
+
 .price-card-image-wrap{
   width:100%;
   height:260px; /* ⬅️ по-голяма зона */
