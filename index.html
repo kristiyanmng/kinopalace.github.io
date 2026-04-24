@@ -491,7 +491,7 @@ const firstPricedTime = movie.visibleTimes.find(item =>
   Number(item.price_reduced_eur || 0) > 0
 );
 
-const pricesHtml = firstPricedTime
+const priceHtml = firstPricedTime
   ? `
     <div class="ticket-prices">
       <div class="ticket-prices-title">Билети:</div>
