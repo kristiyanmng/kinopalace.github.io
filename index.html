@@ -251,8 +251,8 @@
 
   price_standard_eur: Number(item.price_standard_eur || 0),
   price_reduced_eur: Number(item.price_reduced_eur || 0),
-  price_standard_bgn: item.price_standard_bgn === null ? null : Number(item.price_standard_bgn || 0),
-  price_reduced_bgn: item.price_reduced_bgn === null ? null : Number(item.price_reduced_bgn || 0),
+  price_standard_bgn: item.price_standard_bgn,
+  price_reduced_bgn: item.price_reduced_bgn,
   show_bgn: !!item.show_bgn
 };
       }).filter(item => item.time);
@@ -479,34 +479,31 @@
         card.className = "card";
         card.setAttribute("data-movie-index", movie._id);
 
-        const timesHtml = movie.visibleTimes.map(item => {
-  const standardPrice = item.price_standard_eur
-    ? `<small class="hall-label">Стандартен: €${Number(item.price_standard_eur).toFixed(2)}</small>`
-    : "";
+const timesHtml = movie.visibleTimes.map(item => `
+  <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}">
+    <span class="time-value">${item.scheduled_time || item.time}</span>
+    <small class="hall-label">${item.hall || ""}</small>
+  </span>
+`).join("");
 
-  const reducedPrice = item.price_reduced_eur
-    ? `<small class="hall-label">Намален: €${Number(item.price_reduced_eur).toFixed(2)}</small>`
-    : "";
+const firstPricedTime = movie.visibleTimes.find(item =>
+  Number(item.price_standard_eur || 0) > 0 ||
+  Number(item.price_reduced_eur || 0) > 0
+);
 
-  const standardBgn = item.show_bgn && item.price_standard_bgn
-    ? `<small class="hall-label">${Number(item.price_standard_bgn).toFixed(2)} лв.</small>`
-    : "";
+const pricesHtml = firstPricedTime ? `
+  <div class="movie-prices">
+    ${Number(firstPricedTime.price_standard_eur || 0) > 0 ? `
+      <div><strong>Стандартен билет:</strong> €${Number(firstPricedTime.price_standard_eur).toFixed(2)}
+      ${firstPricedTime.show_bgn && firstPricedTime.price_standard_bgn ? ` / ${Number(firstPricedTime.price_standard_bgn).toFixed(2)} лв.` : ""}</div>
+    ` : ""}
 
-  const reducedBgn = item.show_bgn && item.price_reduced_bgn
-    ? `<small class="hall-label">${Number(item.price_reduced_bgn).toFixed(2)} лв.</small>`
-    : "";
-
-  return `
-    <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}">
-      <span class="time-value">${item.scheduled_time || item.time}</span>
-      <small class="hall-label">${item.hall || ""}</small>
-      ${standardPrice}
-      ${standardBgn}
-      ${reducedPrice}
-      ${reducedBgn}
-    </span>
-  `;
-}).join("");
+    ${Number(firstPricedTime.price_reduced_eur || 0) > 0 ? `
+      <div><strong>Намален билет:</strong> €${Number(firstPricedTime.price_reduced_eur).toFixed(2)}
+      ${firstPricedTime.show_bgn && firstPricedTime.price_reduced_bgn ? ` / ${Number(firstPricedTime.price_reduced_bgn).toFixed(2)} лв.` : ""}</div>
+    ` : ""}
+  </div>
+` : "";
 
         const countdownHtml = movie.showNextCountdown && movie.nextCountdown
           ? `
@@ -556,14 +553,16 @@
             </div>
 
             <div class="times">
-              <div class="schedule-group">
-                <div class="schedule-hours">
-                  ${timesHtml}
-                </div>
-              </div>
-            </div>
+  <div class="schedule-group">
+    <div class="schedule-hours">
+      ${timesHtml}
+    </div>
+  </div>
+</div>
 
-            ${countdownHtml}
+${pricesHtml}
+
+${countdownHtml}
 
             <span class="badge">Категория: ${movie.category || "Няма информация"}</span>
           </div>
