@@ -646,6 +646,33 @@ ${countdownHtml}
     window.addEventListener("focus", () => {
       checkVersion();
     });
+
+    const toggleBtn = document.getElementById("theme-toggle");
+
+// зарежда запазената тема
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "light") {
+  document.body.classList.add("light");
+  toggleBtn.textContent = "☀️";
+} else {
+  toggleBtn.textContent = "🌙";
+}
+
+// клик
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("light");
+
+  const isLight = document.body.classList.contains("light");
+
+  if (isLight) {
+    localStorage.setItem("theme", "light");
+    toggleBtn.textContent = "☀️";
+  } else {
+    localStorage.setItem("theme", "dark");
+    toggleBtn.textContent = "🌙";
+  }
+});
   </script>
 </body>
 </html>
