@@ -597,15 +597,9 @@ nav a:hover{
 }
 
 .next-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:4px 8px;
-  border-radius:6px;
-  background:rgba(245,158,11,.16);
-  color:#fcd34d;
-  font-size:12px;
-  font-weight:800;
+  background:#f3f4f6;
+  color:#374151;
+  font-size:11px;
 }
 
 .next-time{
@@ -615,9 +609,14 @@ nav a:hover{
 }
 
 .next-countdown-text{
-  color:#fef3c7;
+  color:#374151;
   font-size:13px;
   font-weight:700;
+}
+
+.next-time{
+  color:#111827;
+  font-weight:800;
 }
 
 /* TAGS */
@@ -1282,7 +1281,7 @@ footer a:hover{
   }
 }
 
-/* Ticket price box: compact rounded chips */
+/* БИЛЕТИ */
 .ticket-prices{
   width:100%;
   margin-top:14px;
@@ -1316,48 +1315,25 @@ footer a:hover{
   border-radius:999px;
   background:rgba(245,158,11,.12);
   border:1px solid rgba(245,158,11,.28);
+}
+
+.ticket-price-label,
+.ticket-price-value{
+  font-weight:900;
   font-size:13px;
   line-height:1.1;
 }
 
 .ticket-price-label{
   color:#facc15;
-  font-weight:900;
-  font-size:13px;
-  line-height:1.1;
 }
 
 .ticket-price-value{
   color:#fff;
-  font-weight:900;
-  font-size:13px;
-  line-height:1.1;
   white-space:nowrap;
 }
 
-@media (max-width:760px){
-  .ticket-prices{
-    padding:12px;
-    gap:8px;
-  }
-
-  .ticket-prices-title{
-    font-size:14px;
-  }
-
-  .ticket-price-line{
-    min-width:168px;
-    padding:7px 12px;
-    gap:12px;
-  }
-
-  .ticket-price-label,
-  .ticket-price-value{
-    font-size:13px;
-  }
-}
-
-/* Theme toggle */
+/* THEME BUTTON */
 .theme-toggle{
   width:42px;
   height:42px;
@@ -1378,7 +1354,49 @@ footer a:hover{
   border-color:rgba(245,158,11,.45);
 }
 
-/* Light mode variables */
+/* NEXT COUNTDOWN - DARK */
+.next-countdown{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(245,158,11,.08);
+  border:1px solid rgba(245,158,11,.18);
+}
+
+.next-countdown-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:6px;
+}
+
+.next-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:4px 8px;
+  border-radius:6px;
+  background:rgba(245,158,11,.16);
+  color:#fcd34d;
+  font-size:12px;
+  font-weight:800;
+}
+
+.next-time{
+  color:#fde68a;
+  font-size:13px;
+  font-weight:800;
+}
+
+.next-countdown-text{
+  color:#fef3c7;
+  font-size:13px;
+  font-weight:700;
+}
+
+/* LIGHT MODE */
 body.light{
   --bg:#ffffff;
   --bg2:#f3f4f6;
@@ -1492,6 +1510,24 @@ body.light .ticket-price-value{
   color:#111827;
 }
 
+body.light .next-countdown{
+  background:#f8fafc;
+  border-color:rgba(0,0,0,.08);
+}
+
+body.light .next-badge{
+  background:#e5e7eb;
+  color:#374151;
+}
+
+body.light .next-countdown-text{
+  color:#374151;
+}
+
+body.light .next-time{
+  color:#111827;
+}
+
 body.light footer{
   color:#475569;
   border-top-color:rgba(0,0,0,.08);
@@ -1510,8 +1546,24 @@ body.light footer a{
   body.light nav a{
     border-bottom-color:rgba(0,0,0,.08);
   }
-}
 
-.menu-checkbox:checked + .menu-toggle + nav{
-  display:flex;
+  .ticket-prices{
+    padding:12px;
+    gap:8px;
+  }
+
+  .ticket-prices-title{
+    font-size:14px;
+  }
+
+  .ticket-price-line{
+    min-width:168px;
+    padding:7px 12px;
+    gap:12px;
+  }
+
+  .ticket-price-label,
+  .ticket-price-value{
+    font-size:13px;
+  }
 }
