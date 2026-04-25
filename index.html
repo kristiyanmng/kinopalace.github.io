@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Кино Програма</title>
   <link rel="icon" type="image/png" href="Blue White Business ID Card.png" />
-  <button id="theme-toggle" class="theme-toggle">🌙</button>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -648,31 +647,22 @@ ${countdownHtml}
       checkVersion();
     });
 
-    const toggleBtn = document.getElementById("theme-toggle");
-
-// зарежда запазената тема
-const savedTheme = localStorage.getItem("theme");
+   const toggleBtn = document.getElementById("theme-toggle");
+const savedTheme = localStorage.getItem("theme") || "dark";
 
 if (savedTheme === "light") {
   document.body.classList.add("light");
   toggleBtn.textContent = "☀️";
 } else {
+  document.body.classList.remove("light");
   toggleBtn.textContent = "🌙";
 }
 
-// клик
 toggleBtn.addEventListener("click", () => {
-  document.body.classList.toggle("light");
+  const isLight = document.body.classList.toggle("light");
 
-  const isLight = document.body.classList.contains("light");
-
-  if (isLight) {
-    localStorage.setItem("theme", "light");
-    toggleBtn.textContent = "☀️";
-  } else {
-    localStorage.setItem("theme", "dark");
-    toggleBtn.textContent = "🌙";
-  }
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+  toggleBtn.textContent = isLight ? "☀️" : "🌙";
 });
   </script>
 </body>
