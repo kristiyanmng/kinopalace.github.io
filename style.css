@@ -1720,16 +1720,16 @@ body.light .day-tab:disabled::after{
 /* МОБИЛНО */
 @media (max-width:760px){
   .time{
-    min-width:88px !important;
-    min-height:48px !important;
+    min-width:68px !important;
+    min-height:37px !important;
     padding:6px 10px !important;
   }
 
   .time-value{
-    font-size:17px !important;
+    font-size:12px !important;
   }
 
   .time .hall-label{
-    font-size:11px !important;
+    font-size:9px !important;
   }
 }
