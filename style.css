@@ -1674,9 +1674,17 @@ body.light .day-tab.empty-day:hover{
   border-color:#cbd5e1;
 }
 
-body.light .day-tab.empty-day::after{
-  content:"—";
-  display:block;
-  font-size:12px;
-  margin-top:2px;
+/* HAMBURGER MENU - LIGHT MODE */
+body.light .menu-toggle{
+  color:#111827 !important;
+  background:#ffffff !important;
+  border-color:rgba(0,0,0,.18) !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+/* маха тирето от празните дни */
+body.light .day-tab.empty-day::after,
+body.light .day-tab:disabled::after{
+  content:none !important;
+  display:none !important;
 }
