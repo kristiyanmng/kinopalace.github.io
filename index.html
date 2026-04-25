@@ -492,20 +492,27 @@ const firstPricedTime = movie.visibleTimes.find(item =>
   Number(item.price_reduced_eur || 0) > 0
 );
 
-const priceHtml = firstPricedTime
+const hasStandardPrice = Number(movie.visibleTimes[0]?.price_standard_eur || 0) > 0;
+const hasReducedPrice = Number(movie.visibleTimes[0]?.price_reduced_eur || 0) > 0;
+
+const priceHtml = (hasStandardPrice || hasReducedPrice)
   ? `
     <div class="ticket-prices">
       <div class="ticket-prices-title">Билети:</div>
 
-      <div class="ticket-price-line">
-        <span class="ticket-price-label">Стандартен</span>
-        <span class="ticket-price-value">€${Number(firstPricedTime.price_standard_eur).toFixed(2)}</span>
-      </div>
+      ${hasStandardPrice ? `
+        <div class="ticket-price-line">
+          <span class="ticket-price-label">Стандартен</span>
+          <span class="ticket-price-value">€${Number(movie.visibleTimes[0].price_standard_eur).toFixed(2)}</span>
+        </div>
+      ` : ""}
 
-      <div class="ticket-price-line">
-        <span class="ticket-price-label">Намален</span>
-        <span class="ticket-price-value">€${Number(firstPricedTime.price_reduced_eur).toFixed(2)}</span>
-      </div>
+      ${hasReducedPrice ? `
+        <div class="ticket-price-line">
+          <span class="ticket-price-label">Намален</span>
+          <span class="ticket-price-value">€${Number(movie.visibleTimes[0].price_reduced_eur).toFixed(2)}</span>
+        </div>
+      ` : ""}
     </div>
   `
   : "";
