@@ -581,10 +581,10 @@ nav a:hover{
 /* NEXT COUNTDOWN */
 .next-countdown{
   margin-top:14px;
-  padding:10px 12px;
-  border-radius:12px;
-  background:rgba(245,158,11,.08);
-  border:1px solid rgba(245,158,11,.18);
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(0,0,0,.04);
+  border:1px solid rgba(0,0,0,.08);
 }
 
 .next-countdown-header{
