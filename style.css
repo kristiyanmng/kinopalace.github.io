@@ -1688,3 +1688,14 @@ body.light .day-tab:disabled::after{
   content:none !important;
   display:none !important;
 }
+
+.footer-content{
+  text-align:center;
+  display:grid;
+  gap:10px;
+}
+
+.copyright{
+  font-size:13px;
+  color:var(--muted);
+}
