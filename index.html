@@ -44,11 +44,17 @@
   </main>
 
   <footer>
-    <div class="container">
+  <div class="container footer-content">
+    <div>
       Официалният сайт на кино Palace:
       <a href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">НАЧАЛО</a>
     </div>
-  </footer>
+
+    <div class="copyright">
+      Всички права запазени ® Кино Palace © <span id="year"></span> · Powered and designed by Kristiyan Markov.
+    </div>
+  </div>
+</footer>
 
   <div id="trailerModal" class="modal" onclick="outsideClose(event)">
     <div class="modal-content">
@@ -665,6 +671,7 @@ toggleBtn.addEventListener("click", () => {
   localStorage.setItem("theme", isLight ? "light" : "dark");
   toggleBtn.textContent = isLight ? "☀️" : "🌙";
 });
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
