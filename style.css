@@ -1733,3 +1733,21 @@ body.light .day-tab:disabled::after{
     font-size:9px !important;
   }
 }
+
+body.light .price-card-price{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+body.light .price-card-price .bgn{
+  font-size:14px;
+  color:#6b7280;
+}
+
+body.light .price-card-price{
+  background:#fff7ed;
+  padding:8px 12px;
+  border-radius:10px;
+  display:inline-block;
+}
