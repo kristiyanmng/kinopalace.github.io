@@ -1567,3 +1567,69 @@ body.light footer a{
     font-size:13px;
   }
 }
+
+/* ПО-МАЛКИ КРЪГЧЕТА ЗА ЧАСОВЕТЕ */
+.schedule-hours{
+  gap:8px;
+}
+
+.time{
+  min-width:82px !important;
+  min-height:56px;
+  padding:7px 12px !important;
+  border-radius:999px;
+  font-size:13px !important;
+  gap:2px;
+}
+
+.time-value{
+  font-size:17px !important;
+  font-weight:900;
+  line-height:1.05;
+}
+
+.time .hall-label{
+  font-size:11px !important;
+  font-weight:800;
+  margin-top:3px;
+  line-height:1.1;
+  text-align:center;
+}
+
+/* МОБИЛНО */
+@media (max-width:760px){
+  .schedule-hours{
+    gap:8px;
+  }
+
+  .time{
+    min-width:112px !important;
+    min-height:58px;
+    padding:7px 12px !important;
+  }
+
+  .time-value{
+    font-size:18px !important;
+  }
+
+  .time .hall-label{
+    font-size:12px !important;
+  }
+}
+
+/* МНОГО МАЛКИ ТЕЛЕФОНИ */
+@media (max-width:420px){
+  .time{
+    min-width:105px !important;
+    min-height:54px;
+    padding:6px 10px !important;
+  }
+
+  .time-value{
+    font-size:17px !important;
+  }
+
+  .time .hall-label{
+    font-size:11px !important;
+  }
+}
