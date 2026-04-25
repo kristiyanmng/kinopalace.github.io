@@ -235,11 +235,17 @@
   </main>
 
   <footer>
-    <div class="container">
+  <div class="container footer-content">
+    <div>
       Официалният сайт на кино Palace:
       <a href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">НАЧАЛО</a>
     </div>
-  </footer>
+
+    <div class="copyright">
+      Всички права запазени ® Кино Palace © <span id="year"></span> · Powered and designed by Kristiyan Markov.
+    </div>
+  </div>
+</footer>
 
   <script>
     const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
@@ -393,6 +399,7 @@
         grid.appendChild(article);
       });
     }
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
