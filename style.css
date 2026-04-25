@@ -1356,3 +1356,96 @@ body.light .theme-toggle{
   color:#111;
   border-color:rgba(0,0,0,.1);
 }
+
+body.light header{
+  background:rgba(255,255,255,.88);
+}
+
+body.light .card,
+body.light .price-card,
+body.light .premiere,
+body.light .maintenance-box{
+  background:#ffffff;
+  border-color:rgba(0,0,0,.08);
+  box-shadow:0 12px 30px rgba(0,0,0,.10);
+}
+
+body.light .meta,
+body.light .muted,
+body.light .price-card-description{
+  color:#475569;
+}
+
+body.light nav a{
+  color:#111827;
+}
+
+body.light nav a:hover{
+  color:#f97316;
+}
+
+body.light .day-tab{
+  background:#ffffff;
+  border-color:rgba(0,0,0,.10);
+  color:#111827;
+}
+
+body.light .day-tab.active{
+  background:#fff7ed;
+  border-color:#fb923c;
+  color:#c2410c;
+}
+
+body.light .day-tab.empty-day{
+  background:#f3f4f6;
+  color:#9ca3af;
+  border-color:rgba(0,0,0,.06);
+}
+
+body.light .standard-time{
+  background:#fff7ed;
+  border-color:#fdba74;
+  color:#9a3412;
+}
+
+body.light .vip-time{
+  background:#eff6ff;
+  border-color:#93c5fd;
+  color:#1d4ed8;
+}
+
+body.light .badge{
+  background:#fff7ed;
+  color:#c2410c;
+}
+
+body.light .ticket-prices{
+  background:#f8fafc;
+  border-color:rgba(0,0,0,.08);
+}
+
+body.light .ticket-prices-title{
+  color:#334155;
+}
+
+body.light .ticket-price-line{
+  background:#ffffff;
+  border-color:rgba(0,0,0,.08);
+}
+
+body.light .ticket-price-label{
+  color:#c2410c;
+}
+
+body.light .ticket-price-value{
+  color:#111827;
+}
+
+body.light footer{
+  color:#475569;
+  border-top-color:rgba(0,0,0,.08);
+}
+
+body.light .modal-content iframe{
+  background:#000;
+}
