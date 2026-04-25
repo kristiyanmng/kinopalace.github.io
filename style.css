@@ -1273,38 +1273,41 @@ footer a:hover{
 /* БИЛЕТИ */
 .ticket-prices{
   margin-top:18px;
-  padding:16px 18px;
-  border-radius:20px;
-  background:rgba(255,255,255,.055);
-  border:1px solid rgba(255,255,255,.10);
-  display:grid;
-  gap:8px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 .ticket-prices-title{
   color:#cbd5e1;
   font-weight:900;
-  font-size:20px;
-}
-
-.ticket-price-line{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:2px;
-}
-
-.ticket-price-label{
-  color:#facc15;
-  font-weight:900;
-  font-size:20px;
-  line-height:1.2;
-}
-
-.ticket-price-value{
-  color:#f8fafc;
-  font-weight:800;
   font-size:18px;
-  line-height:1.2;
+}
+
+/* ВСЯКА ЦЕНА = КРЪГЛО КАПСУЛЧЕ */
+.ticket-price-line{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 14px;
+  border-radius:999px;
+
+  background:rgba(245,158,11,.15);
+  border:1px solid rgba(245,158,11,.35);
+
+  font-size:15px;
+}
+
+/* ЛЯВА ЧАСТ */
+.ticket-price-label{
+  color:#fde68a;
+  font-weight:800;
+}
+
+/* ДЯСНА ЧАСТ */
+.ticket-price-value{
+  color:#fff;
+  font-weight:900;
 }
 
 @media (max-width:760px){
