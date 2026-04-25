@@ -1699,3 +1699,37 @@ body.light .day-tab:disabled::after{
   font-size:13px;
   color:var(--muted);
 }
+
+/* ПО-МАЛКИ ЧАСОВЕ */
+.time{
+  min-width:96px !important;
+  min-height:46px !important;
+  padding:6px 10px !important;
+  border-radius:999px !important;
+}
+
+.time-value{
+  font-size:16px !important;
+}
+
+.time .hall-label{
+  font-size:11px !important;
+  margin-top:2px !important;
+}
+
+/* МОБИЛНО */
+@media (max-width:760px){
+  .time{
+    min-width:104px !important;
+    min-height:48px !important;
+    padding:6px 10px !important;
+  }
+
+  .time-value{
+    font-size:17px !important;
+  }
+
+  .time .hall-label{
+    font-size:11px !important;
+  }
+}
