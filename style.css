@@ -1633,3 +1633,9 @@ body.light footer a{
     font-size:11px !important;
   }
 }
+
+@media (max-width:760px){
+  .menu-checkbox:checked ~ nav{
+    display:flex !important;
+  }
+}
