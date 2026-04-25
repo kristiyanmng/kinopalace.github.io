@@ -1639,3 +1639,44 @@ body.light footer a{
     display:flex !important;
   }
 }
+
+/* EMPTY DAYS – DARK */
+.day-tab.empty-day,
+.day-tab:disabled{
+  background:rgba(255,255,255,.03);
+  border:1px dashed rgba(255,255,255,.15);
+  color:rgba(255,255,255,.35);
+  opacity:0.6;
+  cursor:not-allowed;
+}
+
+.day-tab.empty-day:hover{
+  transform:none;
+  border-color:rgba(255,255,255,.15);
+}
+
+/* EMPTY DAYS – LIGHT (ТУК ТИ Е ПРОБЛЕМЪТ) */
+body.light .day-tab.empty-day,
+body.light .day-tab:disabled{
+  background:#e5e7eb;          /* по-тъмен сив */
+  border:1px dashed #cbd5e1;   /* ясно различим */
+  color:#9ca3af;               /* избледнял текст */
+  opacity:1;
+}
+
+body.light .day-tab.empty-day .day-label,
+body.light .day-tab.empty-day .day-date{
+  color:#9ca3af;
+}
+
+body.light .day-tab.empty-day:hover{
+  transform:none;
+  border-color:#cbd5e1;
+}
+
+body.light .day-tab.empty-day::after{
+  content:"—";
+  display:block;
+  font-size:12px;
+  margin-top:2px;
+}
