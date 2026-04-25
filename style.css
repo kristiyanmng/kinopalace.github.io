@@ -1511,3 +1511,7 @@ body.light footer a{
     border-bottom-color:rgba(0,0,0,.08);
   }
 }
+
+.menu-checkbox:checked + .menu-toggle + nav{
+  display:flex;
+}
