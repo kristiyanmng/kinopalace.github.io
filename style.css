@@ -389,10 +389,9 @@ nav a:hover{
 
 .poster{
   width:100%;
-  aspect-ratio:16 / 10;
+  height:260px; /* фиксирана височина */
   object-fit:cover;
-  display:block;
-  background:#0f172a;
+  object-position:top; /* показва горната част (по-важна) */
 }
 
 .card-body{
