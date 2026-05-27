@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>График служители</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container" style="padding:30px 0;">
+    <h1>График служители</h1>
+
+    <div id="status" style="margin:15px 0;color:#facc15;font-weight:800;"></div>
+
+    <section class="card" style="padding:18px;margin-bottom:20px;">
+      <h2>Добави служител</h2>
+
+      <label>Име</label>
+      <input id="employee-name" type="text" />
+
+      <label>Телефон</label>
+      <input id="employee-phone" type="text" />
+
+      <label>PIN</label>
+      <input id="employee-pin" type="text" />
+
+      <button onclick="saveEmployee()" class="trailer-btn" style="margin-top:14px;">Запази служител</button>
+    </section>
+
+    <section class="card" style="padding:18px;margin-bottom:20px;">
+      <h2>Добави смяна</h2>
+
+      <label>Служител</label>
+      <select id="shift-employee"></select>
+
+      <label>Дата</label>
+      <input id="shift-date" type="date" />
+
+      <label>Начален час</label>
+      <input id="shift-start" type="time" />
+
+      <label>Краен час</label>
+      <input id="shift-end" type="time" />
+
+      <label>Позиция</label>
+      <input id="shift-role" type="text" placeholder="Каса / Бар / Зала" />
+
+      <label>Бележка</label>
+      <textarea id="shift-note"></textarea>
+
+      <button onclick="saveShift()" class="trailer-btn" style="margin-top:14px;">Запази смяна</button>
+    </section>
+
+    <section class="card" style="padding:18px;margin-bottom:20px;">
+      <h2>Служители</h2>
+      <div id="employees-list"></div>
+    </section>
+
+    <section class="card" style="padding:18px;">
+      <h2>Смени</h2>
+      <div id="shifts-list"></div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
+    const STORAGE_KEY = "kinopalace_admin_key_v2";
+
+    let employees = [];
+    let shifts = [];
+
+    function adminKey() {
+      return localStorage.getItem(STORAGE_KEY) || prompt("Въведи админ парола:");
+    }
+
+    function saveAdminKey(key) {
+      localStorage.setItem(STORAGE_KEY, key);
+    }
+
+    function status(msg) {
+      document.getElementById("status").textContent = msg;
+    }
+
+    async function api(path, options = {}) {
+      let key = localStorage.getItem(STORAGE_KEY);
+
+      if (!key) {
+        key = prompt("Въведи админ парола:");
+        if (!key) throw new Error("Липсва парола");
+        saveAdminKey(key);
+      }
+
+      const res = await fetch(API_BASE + path, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": key,
+          ...(options.headers || {})
+        }
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        if (data.error === "Невалидна парола") {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+        throw new Error(data.error || "Грешка");
+      }
+
+      return data;
+    }
+
+    async function loadEmployees() {
+      employees = await api("/api/employees");
+      renderEmployees();
+      fillEmployeeSelect();
+    }
+
+    async function loadShifts() {
+      shifts = await api("/api/work-shifts");
+      renderShifts();
+    }
+
+    function fillEmployeeSelect() {
+      const select = document.getElementById("shift-employee");
+      select.innerHTML = "";
+
+      employees.forEach(e => {
+        const opt = document.createElement("option");
+        opt.value = e.id;
+        opt.textContent = `${e.name} (${e.pin})`;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderEmployees() {
+      const box = document.getElementById("employees-list");
+      box.innerHTML = "";
+
+      employees.forEach(e => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.style.margin = "10px 0";
+        div.innerHTML = `
+          <strong>${e.name}</strong><br>
+          Телефон: ${e.phone || "-"}<br>
+          PIN: ${e.pin}<br>
+          Статус: ${e.status}
+          <br><br>
+          <button onclick="deleteEmployee(${e.id})">Изтрий</button>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    function renderShifts() {
+      const box = document.getElementById("shifts-list");
+      box.innerHTML = "";
+
+      shifts.forEach(s => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.style.margin = "10px 0";
+        div.innerHTML = `
+          <strong>${s.employee_name}</strong><br>
+          ${s.work_date} • ${s.start_time} - ${s.end_time}<br>
+          Позиция: ${s.role || "-"}<br>
+          Бележка: ${s.note || "-"}
+          <br><br>
+          <button onclick="deleteShift(${s.id})">Изтрий</button>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    async function saveEmployee() {
+      try {
+        const payload = {
+          name: document.getElementById("employee-name").value.trim(),
+          phone: document.getElementById("employee-phone").value.trim(),
+          pin: document.getElementById("employee-pin").value.trim(),
+          status: "active"
+        };
+
+        if (!payload.name || !payload.pin) {
+          status("Попълни име и PIN.");
+          return;
+        }
+
+        await api("/api/employees", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        document.getElementById("employee-name").value = "";
+        document.getElementById("employee-phone").value = "";
+        document.getElementById("employee-pin").value = "";
+
+        status("Служителят е добавен.");
+        await loadEmployees();
+      } catch (e) {
+        status(e.message);
+      }
+    }
+
+    async function saveShift() {
+      try {
+        const payload = {
+          employee_id: Number(document.getElementById("shift-employee").value),
+          work_date: document.getElementById("shift-date").value,
+          start_time: document.getElementById("shift-start").value,
+          end_time: document.getElementById("shift-end").value,
+          role: document.getElementById("shift-role").value.trim(),
+          note: document.getElementById("shift-note").value.trim()
+        };
+
+        if (!payload.employee_id || !payload.work_date || !payload.start_time || !payload.end_time) {
+          status("Попълни служител, дата, начален и краен час.");
+          return;
+        }
+
+        await api("/api/work-shifts", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        document.getElementById("shift-date").value = "";
+        document.getElementById("shift-start").value = "";
+        document.getElementById("shift-end").value = "";
+        document.getElementById("shift-role").value = "";
+        document.getElementById("shift-note").value = "";
+
+        status("Смяната е добавена.");
+        await loadShifts();
+      } catch (e) {
+        status(e.message);
+      }
+    }
+
+    async function deleteEmployee(id) {
+      if (!confirm("Да изтрия ли служителя и смените му?")) return;
+
+      await api("/api/employees/delete", {
+        method: "POST",
+        body: JSON.stringify({ id })
+      });
+
+      status("Служителят е изтрит.");
+      await loadEmployees();
+      await loadShifts();
+    }
+
+    async function deleteShift(id) {
+      if (!confirm("Да изтрия ли смяната?")) return;
+
+      await api("/api/work-shifts/delete", {
+        method: "POST",
+        body: JSON.stringify({ id })
+      });
+
+      status("Смяната е изтрита.");
+      await loadShifts();
+    }
+
+    async function init() {
+      try {
+        await loadEmployees();
+        await loadShifts();
+      } catch (e) {
+        status(e.message);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
