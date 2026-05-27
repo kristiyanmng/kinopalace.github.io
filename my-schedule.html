@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Моят график</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container" style="padding:30px 0;">
+    <h1>Моят график</h1>
+
+    <section id="login-box" class="card" style="padding:18px;margin-bottom:20px;">
+      <h2>Вход за служител</h2>
+
+      <label>Име</label>
+      <input id="employee-name" type="text" />
+
+      <label>PIN</label>
+      <input id="employee-pin" type="password" />
+
+      <button class="trailer-btn" style="margin-top:14px;" onclick="loginEmployee()">Вход</button>
+    </section>
+
+    <section id="schedule-box" class="card" style="padding:18px;display:none;">
+      <h2 id="employee-title">График</h2>
+      <button onclick="logoutEmployee()" style="margin:10px 0;">Изход</button>
+      <div id="shifts-list"></div>
+    </section>
+
+    <div id="status" style="margin-top:15px;color:#facc15;font-weight:800;"></div>
+  </main>
+
+  <script>
+    const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
+    const EMPLOYEE_SESSION = "kinopalace_employee_session";
+
+    function status(msg) {
+      document.getElementById("status").textContent = msg;
+    }
+
+    function formatDateBG(iso) {
+      if (!iso) return "";
+      const parts = String(iso).split("-");
+      if (parts.length !== 3) return iso;
+      return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+
+    async function loginEmployee() {
+      try {
+        const name = document.getElementById("employee-name").value.trim();
+        const pin = document.getElementById("employee-pin").value.trim();
+
+        if (!name || !pin) {
+          status("Попълни име и PIN.");
+          return;
+        }
+
+        const res = await fetch(API_BASE + "/api/employee-login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name, pin })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Грешка при вход");
+        }
+
+        localStorage.setItem(EMPLOYEE_SESSION, JSON.stringify({
+          employee_id: data.employee.id,
+          name: data.employee.name,
+          pin
+        }));
+
+        await loadMyShifts();
+      } catch (e) {
+        status(e.message);
+      }
+    }
+
+    async function loadMyShifts() {
+      try {
+        const session = JSON.parse(localStorage.getItem(EMPLOYEE_SESSION) || "null");
+
+        if (!session?.employee_id || !session?.pin) {
+          return;
+        }
+
+        const params = new URLSearchParams({
+          employee_id: session.employee_id,
+          pin: session.pin
+        });
+
+        const res = await fetch(API_BASE + "/api/my-shifts?" + params.toString(), {
+          cache: "no-store"
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Грешка при зареждане");
+        }
+
+        document.getElementById("login-box").style.display = "none";
+        document.getElementById("schedule-box").style.display = "block";
+        document.getElementById("employee-title").textContent = `График: ${data.employee.name}`;
+
+        renderShifts(data.shifts || []);
+        status("");
+      } catch (e) {
+        localStorage.removeItem(EMPLOYEE_SESSION);
+        document.getElementById("login-box").style.display = "block";
+        document.getElementById("schedule-box").style.display = "none";
+        status(e.message);
+      }
+    }
+
+    function renderShifts(shifts) {
+      const box = document.getElementById("shifts-list");
+      box.innerHTML = "";
+
+      if (!shifts.length) {
+        box.innerHTML = `<p class="muted">Нямаш предстоящи смени.</p>`;
+        return;
+      }
+
+      shifts.forEach(s => {
+        const div = document.createElement("div");
+        div className = "item";
+        div.style.margin = "10px 0";
+        div.style.padding = "14px";
+        div.style.border = "1px solid rgba(255,255,255,.10)";
+        div.style.borderRadius = "14px";
+
+        div.innerHTML = `
+          <strong>${formatDateBG(s.work_date)}</strong><br>
+          ${s.start_time} - ${s.end_time}<br>
+          Позиция: ${s.role || "-"}<br>
+          Бележка: ${s.note || "-"}
+        `;
+
+        box.appendChild(div);
+      });
+    }
+
+    function logoutEmployee() {
+      localStorage.removeItem(EMPLOYEE_SESSION);
+      location.reload();
+    }
+
+    loadMyShifts();
+  </script>
+</body>
+</html>
