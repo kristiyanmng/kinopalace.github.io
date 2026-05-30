@@ -199,12 +199,13 @@ function renderPremieres() {
 
         <div class="date">Премиера: ${movie.date || "-"}</div>
 
-        <div class="meta">
-          <div><strong>Времетраене:</strong> ${movie.duration || "Няма информация"}</div>
-          <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
-          <div class="version-row"><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
-          <div><strong>Категория:</strong> ${movie.category || "Няма информация"}</div>
-        </div>
+       <div class="meta">
+  <div><strong>Времетраене:</strong> ${movie.duration || "Няма информация"}</div>
+  <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
+  <div class="version-row"><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
+  <div><strong>Категория:</strong> ${movie.category || "Няма информация"}</div>
+  <div><strong>Разпространител:</strong> ${movie.distributor || "Няма информация"}</div>
+</div>
 
         <p>${movie.description || ""}</p>
 
