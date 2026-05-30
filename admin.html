@@ -368,6 +368,20 @@
             <label>Категория</label>
             <input id="program-category" type="text" />
 
+            <label>Разпространител</label>
+            <select id="program-distributor">
+              <option value="">Избери разпространител</option>
+              <option value="Alexandra Films">Alexandra Films</option>
+              <option value="Forum Film Bulgaria">Forum Film Bulgaria</option>
+              <option value="Pro Films">Pro Films</option>
+              <option value="A Plus Films">A Plus Films</option>
+              <option value="Disney Bulgaria">Disney Bulgaria</option>
+              <option value="Warner Bros. Bulgaria">Warner Bros. Bulgaria</option>
+              <option value="Universal Pictures Bulgaria">Universal Pictures Bulgaria</option>
+              <option value="Sony Pictures Bulgaria">Sony Pictures Bulgaria</option>
+              <option value="Друг">Друг</option>
+            </select>
+
             <div class="row">
               <div>
                 <label>Статус</label>
@@ -531,6 +545,20 @@
 
             <label>Категория</label>
             <input id="premiere-category" type="text" />
+
+            <label>Разпространител</label>
+            <select id="premiere-distributor">
+              <option value="">Избери разпространител</option>
+              <option value="Alexandra Films">Alexandra Films</option>
+              <option value="Forum Film Bulgaria">Forum Film Bulgaria</option>
+              <option value="Pro Films">Pro Films</option>
+              <option value="A Plus Films">A Plus Films</option>
+              <option value="Disney Bulgaria">Disney Bulgaria</option>
+              <option value="Warner Bros. Bulgaria">Warner Bros. Bulgaria</option>
+              <option value="Universal Pictures Bulgaria">Universal Pictures Bulgaria</option>
+              <option value="Sony Pictures Bulgaria">Sony Pictures Bulgaria</option>
+              <option value="Друг">Друг</option>
+            </select>
 
             <div class="row">
               <div>
@@ -1002,6 +1030,7 @@
             Жанр: ${item.genre || "-"}<br>
             Продължителност: ${item.duration || 0} мин<br>
             Версия: ${item.version || "-"}<br>
+            Разпространител: ${item.distributor || "-"}<br>
             Статус: ${item.status || "-"}<br>
             Подредба: ${item.sort_order || 0}
           </div>
@@ -1024,6 +1053,7 @@
       document.getElementById("program-version").value = "";
       document.getElementById("program-trailer").value = "";
       document.getElementById("program-category").value = "";
+      document.getElementById("program-distributor").value = "";
       document.getElementById("program-status").value = "active";
       document.getElementById("program-sort-order").value = 0;
     }
@@ -1041,6 +1071,7 @@
       document.getElementById("program-version").value = item.version || "";
       document.getElementById("program-trailer").value = item.trailer || "";
       document.getElementById("program-category").value = item.category || "";
+      document.getElementById("program-distributor").value = item.distributor || "";
       document.getElementById("program-status").value = item.status || "active";
       document.getElementById("program-sort-order").value = item.sort_order || 0;
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1059,6 +1090,7 @@
           version: document.getElementById("program-version").value.trim(),
           trailer: document.getElementById("program-trailer").value.trim(),
           category: document.getElementById("program-category").value.trim(),
+          distributor: document.getElementById("program-distributor").value,
           status: document.getElementById("program-status").value,
           sort_order: Number(document.getElementById("program-sort-order").value || 0)
         };
@@ -1332,6 +1364,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
             Жанр: ${item.genre || "-"}<br>
             Продължителност: ${item.duration || 0} мин<br>
             Версия: ${item.version || "-"}<br>
+            Разпространител: ${item.distributor || "-"}<br>
             Статус: ${item.status || "-"}<br>
             Подредба: ${item.sort_order || 0}
           </div>
@@ -1354,6 +1387,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("premiere-version").value = "";
       document.getElementById("premiere-trailer").value = "";
       document.getElementById("premiere-category").value = "";
+      document.getElementById("premiere-distributor").value = "";
       document.getElementById("premiere-movie-status").value = "active";
       document.getElementById("premiere-sort-order").value = 0;
     }
@@ -1371,6 +1405,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("premiere-version").value = item.version || "";
       document.getElementById("premiere-trailer").value = item.trailer || "";
       document.getElementById("premiere-category").value = item.category || "";
+      document.getElementById("premiere-distributor").value = item.distributor || "";
       document.getElementById("premiere-movie-status").value = item.status || "active";
       document.getElementById("premiere-sort-order").value = item.sort_order || 0;
 
@@ -1390,6 +1425,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
           version: document.getElementById("premiere-version").value.trim(),
           trailer: document.getElementById("premiere-trailer").value.trim(),
           category: document.getElementById("premiere-category").value.trim(),
+          distributor: document.getElementById("premiere-distributor").value,
           status: document.getElementById("premiere-movie-status").value,
           sort_order: Number(document.getElementById("premiere-sort-order").value || 0)
         };
