@@ -331,6 +331,7 @@
         <button class="tab-btn" onclick="setView('prices', event)">Цени</button>
         <button class="tab-btn" onclick="setView('books', event)">Книги</button>
         <button class="tab-btn" onclick="setView('settings', event)">Настройки</button>
+        <button class="tab-btn" onclick="setView('distributors', event)">Разпространители</button>
       </div>
 
       <section id="view-program" class="view active">
@@ -820,6 +821,49 @@
           </div>
         </div>
       </section>
+
+
+      <section id="view-distributors" class="view">
+        <div class="grid">
+          <div class="card">
+            <h2>Разпространител</h2>
+            <input id="distributor-id" type="hidden" />
+
+            <label>Име</label>
+            <input id="distributor-name" type="text" placeholder="Напр. Forum Film Bulgaria" />
+
+            <div class="row">
+              <div>
+                <label>Статус</label>
+                <select id="distributor-status">
+                  <option value="active">active</option>
+                  <option value="inactive">inactive</option>
+                </select>
+              </div>
+              <div>
+                <label>Подредба</label>
+                <input id="distributor-sort-order" type="number" value="0" />
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn" onclick="saveDistributor()">Запази</button>
+              <button class="btn-secondary" onclick="resetDistributorForm()">Изчисти</button>
+            </div>
+
+            <div class="note">Тези разпространители автоматично ще се появяват в падащите списъци при програмен и премиерен филм.</div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <h2>Списък с разпространители</h2>
+              <button class="btn-secondary" onclick="loadDistributors()">Обнови</button>
+            </div>
+            <div id="distributors-list" class="list"></div>
+          </div>
+        </div>
+      </section>
+
     </div>
   </div>
 
@@ -834,6 +878,7 @@
     let settingsCache = [];
     let priceItemsCache = [];
     let booksCache = [];
+    let distributorsCache = [];
 
     function getAdminKey() {
       return localStorage.getItem(STORAGE_KEY) || "";
@@ -909,6 +954,9 @@
       if (name === "settings") {
         loadSettings();
       }
+      if (name === "distributors") {
+        loadDistributors();
+      }
     }
 
     async function login() {
@@ -982,6 +1030,146 @@
 
     function eurToBgnClient(eur) {
       return (Number(eur || 0) * 1.95583).toFixed(2);
+    }
+
+    function fillDistributorSelects() {
+      const selects = [
+        document.getElementById("program-distributor"),
+        document.getElementById("premiere-distributor")
+      ].filter(Boolean);
+
+      selects.forEach(select => {
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">Избери разпространител</option>';
+
+        distributorsCache
+          .filter(item => (item.status || "active") === "active")
+          .forEach(item => {
+            const opt = document.createElement("option");
+            opt.value = item.name;
+            opt.textContent = item.name;
+            select.appendChild(opt);
+          });
+
+        if ([...select.options].some(opt => opt.value === currentValue)) {
+          select.value = currentValue;
+        }
+      });
+    }
+
+    async function loadDistributors() {
+      try {
+        const items = await api("/api/distributors/admin", {}, true);
+        distributorsCache = items || [];
+        renderDistributors(distributorsCache);
+        fillDistributorSelects();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    function renderDistributors(items) {
+      const list = document.getElementById("distributors-list");
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      if (!items.length) {
+        list.innerHTML = '<div class="muted">Все още няма добавени разпространители.</div>';
+        return;
+      }
+
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <strong>${item.name || "Без име"}</strong>
+          <div class="muted">
+            ID: ${item.id}<br>
+            Статус: ${item.status || "active"}<br>
+            Подредба: ${item.sort_order || 0}
+          </div>
+          <div class="actions-row">
+            <button class="btn-info btn-small" onclick="editDistributor(${item.id})">Редактирай</button>
+            <button class="btn-danger btn-small" onclick="deleteDistributor(${item.id})">Изтрий</button>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    function resetDistributorForm() {
+      document.getElementById("distributor-id").value = "";
+      document.getElementById("distributor-name").value = "";
+      document.getElementById("distributor-status").value = "active";
+      document.getElementById("distributor-sort-order").value = 0;
+    }
+
+    function editDistributor(id) {
+      const item = distributorsCache.find(x => Number(x.id) === Number(id));
+      if (!item) return;
+
+      document.getElementById("distributor-id").value = item.id;
+      document.getElementById("distributor-name").value = item.name || "";
+      document.getElementById("distributor-status").value = item.status || "active";
+      document.getElementById("distributor-sort-order").value = item.sort_order || 0;
+      setView("distributors");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function saveDistributor() {
+      try {
+        const id = document.getElementById("distributor-id").value.trim();
+        const payload = {
+          name: document.getElementById("distributor-name").value.trim(),
+          status: document.getElementById("distributor-status").value,
+          sort_order: Number(document.getElementById("distributor-sort-order").value || 0)
+        };
+
+        if (!payload.name) {
+          showStatus("Попълни име на разпространител.", "error");
+          return;
+        }
+
+        if (id) {
+          await api("/api/distributors/update", {
+            method: "POST",
+            body: JSON.stringify({ id: Number(id), ...payload })
+          }, true);
+          showStatus("Разпространителят е редактиран.");
+        } else {
+          await api("/api/distributors", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          }, true);
+          showStatus("Разпространителят е добавен.");
+        }
+
+        resetDistributorForm();
+        await loadDistributors();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    async function deleteDistributor(id) {
+      if (!confirm("Сигурен ли си, че искаш да изтриеш този разпространител?")) return;
+
+      try {
+        await api("/api/distributors/delete", {
+          method: "POST",
+          body: JSON.stringify({ id })
+        }, true);
+
+        showStatus("Разпространителят е изтрит.");
+        resetDistributorForm();
+        await loadDistributors();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
     }
 
     function fillProgramMovieSelects() {
@@ -1929,6 +2117,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
     }
 
     async function refreshAll() {
+      await loadDistributors();
       await loadProgramMovies();
       await loadShowtimes();
       await loadPremiereMovies();
