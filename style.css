@@ -652,8 +652,9 @@ background:#0f172a;
 
 .premiere{
   display:grid;
-  grid-template-columns:220px 1fr;
-  gap:18px;
+  grid-template-columns:280px 1fr;
+  gap:20px;
+  align-items:start;
   background:rgba(17,24,39,.95);
   border:1px solid var(--line);
   border-radius:20px;
@@ -663,6 +664,7 @@ background:#0f172a;
 
 .premiere > img{
   width:100%;
+  max-width:280px;
   height:auto;
   object-fit:contain;
   display:block;
@@ -1072,14 +1074,14 @@ footer a:hover{
     padding:4px 0 14px;
   }
 
-  .premiere{
-    grid-template-columns:1fr;
-  }
+ .premiere{
+  grid-template-columns:1fr;
+}
 
-.premiere img{
+.premiere > img{
   width:100%;
+  max-width:none;
   height:auto;
-  max-height:none;
   object-fit:contain;
 }
 
