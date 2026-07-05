@@ -132,12 +132,12 @@ function isFutureOrToday(isoDate) {
 function getPremiereStatusLabel(status) {
   const map = {
     scheduled: "Очаква се",
-    published: "Публикувана",
-    cancelled: "Отменена"
+    arrived: "Пристигнал за разпространяване",
+    published: "Публикуван",
+    cancelled: "Отменен"
   };
   return map[status] || status;
 }
-
 function getPremiereStatusClass(status) {
   const map = {
     scheduled: "premiere-status-scheduled",
