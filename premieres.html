@@ -141,12 +141,13 @@ function getPremiereStatusLabel(status) {
 function getPremiereStatusClass(status) {
   const map = {
     scheduled: "premiere-status-scheduled",
+    arrived: "premiere-status-arrived",
     published: "premiere-status-published",
     cancelled: "premiere-status-cancelled"
   };
+
   return map[status] || "premiere-status-scheduled";
 }
-
 function renderPremieres() {
   const container = document.getElementById("premieres-container");
 
