@@ -672,12 +672,6 @@ background:#0f172a;
   align-self:start;
 }
 
-.premiere-status-arrived{
-    background:#0ea5e9;
-    color:#fff;
-    border:1px solid rgba(14,165,233,.35);
-}
-
 .dubbed-icon{
   width:22px !important;
   height:22px !important;
@@ -728,6 +722,12 @@ background:#0f172a;
   background:rgba(245,158,11,.14);
   color:#fcd34d;
   border:1px solid rgba(245,158,11,.26);
+}
+
+.premiere-status-arrived{
+    background:#0ea5e9;
+    color:#fff;
+    border:1px solid rgba(14,165,233,.35);
 }
 
 .premiere-status-published{
