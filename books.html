@@ -296,14 +296,10 @@
 
     function renderPrice(book) {
       const eur = `<span class="book-price-eur">€${formatMoney(book.price_eur)}</span>`;
-      const bgn = book.show_bgn && book.price_bgn !== null
-        ? `<span class="book-price-bgn">${formatMoney(book.price_bgn)} лв.</span>`
-        : "";
 
       return `
         <div class="book-price">
           ${eur}
-          ${bgn}
         </div>
       `;
     }
