@@ -488,12 +488,37 @@
         card.className = "card";
         card.setAttribute("data-movie-index", movie._id);
 
-const timesHtml = movie.visibleTimes.map(item => `
-  <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}">
-    <span class="time-value">${item.scheduled_time || item.time}</span>
-    <small class="hall-label">${item.hall || ""}</small>
-  </span>
-`).join("");
+const timesHtml = movie.visibleTimes.map(item => {
+  let formatLabel = "";
+
+  if (item.is_3d && item.is_dubbed) {
+    formatLabel = "3D ДУБЛ.";
+  } else if (item.is_3d && !item.is_dubbed) {
+    formatLabel = "3D СУБТ.";
+  } else if (!item.is_3d && item.is_dubbed) {
+    formatLabel = "2D ДУБЛ.";
+  } else {
+    formatLabel = "2D СУБТ.";
+  }
+
+  return `
+    <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}">
+      
+      <span class="showtime-format">
+        ${formatLabel}
+      </span>
+
+      <span class="time-value">
+        ${item.scheduled_time || item.time}
+      </span>
+
+      <small class="hall-label">
+        ${item.hall || ""}
+      </small>
+
+    </span>
+  `;
+}).join("");
 
 const firstPricedTime = movie.visibleTimes.find(item =>
   Number(item.price_standard_eur || 0) > 0 ||
