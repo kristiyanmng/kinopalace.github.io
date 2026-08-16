@@ -297,6 +297,44 @@
         min-height:160px;
       }
     }
+	  /* FIX: четими падащи менюта */
+select {
+  background-color: #1e293b;
+  color: #f8fafc;
+  color-scheme: dark;
+}
+
+select option {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+select option:checked {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+select option:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+/* При светла тема */
+body.light select {
+  background-color: #ffffff;
+  color: #111827;
+  color-scheme: light;
+}
+
+body.light select option {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+body.light select option:checked {
+  background-color: #2563eb;
+  color: #ffffff;
+}
   </style>
 </head>
 <body>
