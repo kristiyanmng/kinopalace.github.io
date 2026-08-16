@@ -360,9 +360,6 @@
               </div>
             </div>
 
-            <label>Версия</label>
-            <input id="program-version" type="text" />
-
             <label>Трейлър URL</label>
             <input id="program-trailer" type="text" />
 
@@ -438,17 +435,18 @@
 			
             <div class="row">
               <div>
-                <label>3D</label>
-                <select id="showtime-is3d">
-                  <option value="0">Не</option>
-                  <option value="1">Да</option>
+                <label>Формат</label>
+                <select id="showtime-format">
+                  <option value="2D">2D</option>
+                  <option value="3D">3D</option>
                 </select>
               </div>
               <div>
-                <label>Дублиран</label>
-                <select id="showtime-isdubbed">
-                  <option value="0">Не</option>
-                  <option value="1">Да</option>
+                <label>Език / версия</label>
+                <select id="showtime-language">
+                  <option value="subtitled">Субтитриран</option>
+                  <option value="dubbed">Дублиран</option>
+                  <option value="original">Оригинална версия</option>
                 </select>
               </div>
             </div>
@@ -468,14 +466,14 @@
             <select id="bulk-showtime-movie" class="select-medium" size="8"></select>
 
             <label>Редове за импорт</label>
-            <textarea id="bulk-showtime-lines" class="bulk-box mono" placeholder="2026-08-01 | 18:30 | Зала 1 | 0 | 1
-2026-08-01 | 21:00 | VIP Зала | 1 | 1
-2026-08-02 | 16:00 | Зала 2 | 0 | 0"></textarea>
+            <textarea id="bulk-showtime-lines" class="bulk-box mono" placeholder="2026-08-17 | 18:30 | Зала 1 | 2D | dubbed | 8.00 | 6.50
+2026-08-17 | 21:00 | VIP Зала | 3D | subtitled | 10.00 | 8.00
+2026-08-18 | 16:00 | Зала 2 | 2D | original | 8.00 | 6.50"></textarea>
 
             <div class="helper">
               Формат на ред:<br>
-              <strong>дата | час | зала | 3D | дублиран | стандартен EUR | намален EUR</strong><br>
-              Пример: <strong>2026-08-01 | 18:30 | Зала 1 | 0 | 1</strong>
+              <strong>дата | час | зала | 2D/3D | dubbed/subtitled/original | стандартен EUR | намален EUR</strong><br>
+              Пример: <strong>2026-08-17 | 18:30 | Зала 1 | 3D | dubbed | 8.00 | 6.50</strong>
             </div>
 
             <div class="actions-row">
@@ -484,6 +482,33 @@
             </div>
 
             <div class="note">Това е правилният начин. Не цъкаш 20 пъти за 20 прожекции.</div>
+          </div>
+
+          <div class="card">
+            <h2>Копиране на цял ден</h2>
+
+            <label>Копирай програмата от дата</label>
+            <input id="copy-source-date" type="date" />
+
+            <label>Към дати</label>
+            <textarea id="copy-target-dates" class="mono" placeholder="2026-08-18
+2026-08-19
+2026-08-20"></textarea>
+            <div class="helper">Въведи по една дата на ред. Можеш да поставиш програмата на колкото дни искаш.</div>
+
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+              <input id="copy-replace-existing" type="checkbox" style="width:auto;" />
+              Замени съществуващата програма на избраните дни
+            </label>
+
+            <div class="note">
+              Ако „Замени“ не е отметнато, съществуващите еднакви прожекции ще бъдат пропуснати и няма да се дублират.
+            </div>
+
+            <div class="actions-row">
+              <button class="btn-success" onclick="copyShowtimeDay()">Копирай деня</button>
+              <button class="btn-secondary" onclick="resetCopyDayForm()">Изчисти</button>
+            </div>
           </div>
 
           <div class="card">
@@ -645,16 +670,8 @@
             <label>Снимка URL</label>
             <input id="price-image" type="text" />
 
-            <div class="row">
-              <div>
-                <label>Цена EUR</label>
-                <input id="price-eur" type="number" step="0.01" />
-              </div>
-              <div>
-                <label>Цена BGN</label>
-                <input id="price-bgn-preview" type="text" disabled />
-              </div>
-            </div>
+            <label>Цена EUR</label>
+            <input id="price-eur" type="number" step="0.01" />
 
             <div class="row">
               <div>
@@ -675,7 +692,6 @@
               <button class="btn-secondary" onclick="resetPriceForm()">Изчисти</button>
             </div>
 
-            <div class="note">Левовата цена е preview. Основната цена се пази в EUR.</div>
           </div>
 
           <div class="card">
@@ -713,17 +729,6 @@
               <div>
                 <label>Цена EUR</label>
                 <input id="book-price-eur" type="number" step="0.01" />
-              </div>
-              <div>
-                <label>Цена BGN</label>
-                <input id="book-price-bgn" type="number" step="0.01" />
-              </div>
-            </div>
-
-            <div class="row">
-              <div>
-                <label>Двойно показване до</label>
-                <input id="book-dual-currency-until" type="date" value="2026-08-08" />
               </div>
               <div>
                 <label>Статус</label>
@@ -1029,8 +1034,20 @@
       return Number(value || 0).toFixed(2);
     }
 
-    function eurToBgnClient(eur) {
-      return (Number(eur || 0) * 1.95583).toFixed(2);
+    function normalizeLanguageInput(value) {
+      const v = String(value || "").trim().toLowerCase();
+
+      if (["dubbed", "dub", "дублиран", "дубл", "дуб"].includes(v)) return "dubbed";
+      if (["original", "orig", "оригинален", "оригинална", "ориг"].includes(v)) return "original";
+      return "subtitled";
+    }
+
+    function showtimeLanguageLabel(languageType, isDubbed = false) {
+      const type = languageType || (isDubbed ? "dubbed" : "subtitled");
+
+      if (type === "dubbed") return "Дублиран";
+      if (type === "original") return "Оригинална версия";
+      return "Субтитриран";
     }
 
     function fillDistributorSelects() {
@@ -1218,7 +1235,6 @@
             ID: ${item.id}<br>
             Жанр: ${item.genre || "-"}<br>
             Продължителност: ${item.duration || 0} мин<br>
-            Версия: ${item.version || "-"}<br>
             Разпространител: ${item.distributor || "-"}<br>
             Статус: ${item.status || "-"}<br>
             Подредба: ${item.sort_order || 0}
@@ -1239,7 +1255,6 @@
       document.getElementById("program-image").value = "";
       document.getElementById("program-genre").value = "";
       document.getElementById("program-duration").value = "";
-      document.getElementById("program-version").value = "";
       document.getElementById("program-trailer").value = "";
       document.getElementById("program-category").value = "";
       document.getElementById("program-distributor").value = "";
@@ -1257,7 +1272,6 @@
       document.getElementById("program-image").value = item.image || "";
       document.getElementById("program-genre").value = item.genre || "";
       document.getElementById("program-duration").value = item.duration || "";
-      document.getElementById("program-version").value = item.version || "";
       document.getElementById("program-trailer").value = item.trailer || "";
       document.getElementById("program-category").value = item.category || "";
       document.getElementById("program-distributor").value = item.distributor || "";
@@ -1276,7 +1290,7 @@
           image: document.getElementById("program-image").value.trim(),
           genre: document.getElementById("program-genre").value.trim(),
           duration: Number(document.getElementById("program-duration").value || 0),
-          version: document.getElementById("program-version").value.trim(),
+          version: "",
           trailer: document.getElementById("program-trailer").value.trim(),
           category: document.getElementById("program-category").value.trim(),
           distributor: document.getElementById("program-distributor").value,
@@ -1358,7 +1372,7 @@
             ID: ${item.id}<br>
             ${item.date} • ${item.scheduled_time}<br>
             ${item.hall || "Зала 1"}<br>
-            3D: ${item.is_3d ? "Да" : "Не"} • Дублиран: ${item.is_dubbed ? "Да" : "Не"}<br>
+            Формат: ${item.is_3d ? "3D" : "2D"} • ${showtimeLanguageLabel(item.language_type, item.is_dubbed)}<br>
 Стандартен билет: €${formatMoney(item.price_standard_eur)}<br>
 Намален билет: €${formatMoney(item.price_reduced_eur)}
           </div>
@@ -1378,8 +1392,8 @@
       document.getElementById("showtime-hall").value = "Зала 1";
 	  document.getElementById("showtime-price-standard").value = "";
 document.getElementById("showtime-price-reduced").value = "";
-      document.getElementById("showtime-is3d").value = "0";
-      document.getElementById("showtime-isdubbed").value = "0";
+      document.getElementById("showtime-format").value = "2D";
+      document.getElementById("showtime-language").value = "subtitled";
     }
 
     function editShowtime(id) {
@@ -1393,8 +1407,9 @@ document.getElementById("showtime-price-reduced").value = "";
       document.getElementById("showtime-hall").value = item.hall || "Зала 1";
 	  document.getElementById("showtime-price-standard").value = item.price_standard_eur || "";
 document.getElementById("showtime-price-reduced").value = item.price_reduced_eur || "";
-      document.getElementById("showtime-is3d").value = item.is_3d ? "1" : "0";
-      document.getElementById("showtime-isdubbed").value = item.is_dubbed ? "1" : "0";
+      document.getElementById("showtime-format").value = item.is_3d ? "3D" : "2D";
+      document.getElementById("showtime-language").value =
+        item.language_type || (item.is_dubbed ? "dubbed" : "subtitled");
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -1408,8 +1423,9 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
   date: document.getElementById("showtime-date").value,
   scheduled_time: document.getElementById("showtime-time").value,
   hall: document.getElementById("showtime-hall").value.trim(),
-  is_3d: Number(document.getElementById("showtime-is3d").value),
-  is_dubbed: Number(document.getElementById("showtime-isdubbed").value),
+  is_3d: document.getElementById("showtime-format").value === "3D" ? 1 : 0,
+  language_type: document.getElementById("showtime-language").value,
+  is_dubbed: document.getElementById("showtime-language").value === "dubbed" ? 1 : 0,
   price_standard_eur: Number(document.getElementById("showtime-price-standard").value || 0),
   price_reduced_eur: Number(document.getElementById("showtime-price-reduced").value || 0)
 };
@@ -1471,8 +1487,9 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
   date: parts[0],
   scheduled_time: parts[1],
   hall: parts[2] || "Зала 1",
-  is_3d: Number(parts[3] || 0),
-  is_dubbed: Number(parts[4] || 0),
+  is_3d: String(parts[3] || "2D").toUpperCase() === "3D" ? 1 : 0,
+  language_type: normalizeLanguageInput(parts[4]),
+  is_dubbed: normalizeLanguageInput(parts[4]) === "dubbed" ? 1 : 0,
   price_standard_eur: Number(parts[5] || 0),
   price_reduced_eur: Number(parts[6] || 0)
 };
@@ -1487,6 +1504,69 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
 
         document.getElementById("bulk-showtime-lines").value = "";
         showStatus(`Добавени прожекции: ${successCount}`);
+        await loadShowtimes();
+      } catch (e) {
+        if (e.message.includes("Невалидна парола")) logout();
+        showStatus(e.message, "error");
+      }
+    }
+
+    function resetCopyDayForm() {
+      document.getElementById("copy-source-date").value = "";
+      document.getElementById("copy-target-dates").value = "";
+      document.getElementById("copy-replace-existing").checked = false;
+    }
+
+    async function copyShowtimeDay() {
+      try {
+        const sourceDate = document.getElementById("copy-source-date").value;
+        const rawTargets = document.getElementById("copy-target-dates").value;
+
+        const targetDates = [...new Set(
+          rawTargets
+            .split(/[\n,;]+/)
+            .map(x => x.trim())
+            .filter(Boolean)
+        )];
+
+        if (!sourceDate) {
+          showStatus("Избери дата, от която да копираш.", "error");
+          return;
+        }
+
+        if (!targetDates.length) {
+          showStatus("Въведи поне една целева дата.", "error");
+          return;
+        }
+
+        if (targetDates.includes(sourceDate)) {
+          showStatus("Началната дата не може да бъде и целева дата.", "error");
+          return;
+        }
+
+        const replaceExisting = document.getElementById("copy-replace-existing").checked;
+
+        if (replaceExisting) {
+          const ok = confirm(
+            "ВНИМАНИЕ: Съществуващите прожекции на целевите дати ще бъдат изтрити и заменени. Продължаваме ли?"
+          );
+          if (!ok) return;
+        }
+
+        const result = await api("/api/showtimes-v2/copy-day", {
+          method: "POST",
+          body: JSON.stringify({
+            source_date: sourceDate,
+            target_dates: targetDates,
+            replace_existing: replaceExisting
+          })
+        }, true);
+
+        showStatus(
+          `Готово. Копирани: ${result.copied || 0}. Пропуснати дубликати: ${result.skipped || 0}.`
+        );
+
+        resetCopyDayForm();
         await loadShowtimes();
       } catch (e) {
         if (e.message.includes("Невалидна парола")) logout();
@@ -1552,7 +1632,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
             ID: ${item.id}<br>
             Жанр: ${item.genre || "-"}<br>
             Продължителност: ${item.duration || 0} мин<br>
-            Версия: ${item.version || "-"}<br>
             Разпространител: ${item.distributor || "-"}<br>
             Статус: ${item.status || "-"}<br>
             Подредба: ${item.sort_order || 0}
@@ -1784,7 +1863,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
             <div class="muted">
               Категория: ${item.category || ""}<br>
               EUR: €${formatMoney(item.price_eur)}<br>
-              BGN: ${item.price_bgn !== null && item.price_bgn !== undefined ? formatMoney(item.price_bgn) + " лв" : "скрито"}<br>
               Статус: ${item.status || "-"}<br>
               Подредба: ${item.sort_order || 0}
             </div>
@@ -1808,7 +1886,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("price-description").value = "";
       document.getElementById("price-image").value = "";
       document.getElementById("price-eur").value = "";
-      document.getElementById("price-bgn-preview").value = "";
       document.getElementById("price-status").value = "active";
       document.getElementById("price-sort-order").value = 0;
     }
@@ -1823,7 +1900,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("price-description").value = item.description || "";
       document.getElementById("price-image").value = item.image || "";
       document.getElementById("price-eur").value = item.price_eur || "";
-      document.getElementById("price-bgn-preview").value = formatMoney(item.price_bgn || 0);
       document.getElementById("price-status").value = item.status || "active";
       document.getElementById("price-sort-order").value = item.sort_order || 0;
 
@@ -1905,7 +1981,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
               ID: ${item.id}<br>
               Автор: ${item.author || "-"}<br>
               EUR: €${formatMoney(item.price_eur)}<br>
-              BGN: ${formatMoney(item.price_bgn)} лв.<br>
               Статус: ${item.status || "-"}<br>
               Категория: ${item.category || "-"}<br>
               Година: ${item.published_year || "-"}<br>
@@ -1933,8 +2008,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("book-description").value = "";
       document.getElementById("book-cover-image").value = "";
       document.getElementById("book-price-eur").value = "";
-      document.getElementById("book-price-bgn").value = "";
-      document.getElementById("book-dual-currency-until").value = "2026-08-08";
       document.getElementById("book-status").value = "draft";
       document.getElementById("book-category").value = "";
       document.getElementById("book-isbn").value = "";
@@ -1957,8 +2030,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("book-description").value = item.description || "";
       document.getElementById("book-cover-image").value = item.cover_image || "";
       document.getElementById("book-price-eur").value = item.price_eur || "";
-      document.getElementById("book-price-bgn").value = item.price_bgn || "";
-      document.getElementById("book-dual-currency-until").value = item.dual_currency_until || "2026-08-08";
       document.getElementById("book-status").value = item.status || "draft";
       document.getElementById("book-category").value = item.category || "";
       document.getElementById("book-isbn").value = item.isbn || "";
@@ -1983,8 +2054,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
           description: document.getElementById("book-description").value.trim(),
           cover_image: document.getElementById("book-cover-image").value.trim(),
           price_eur: Number(document.getElementById("book-price-eur").value || 0),
-          price_bgn: Number(document.getElementById("book-price-bgn").value || 0),
-          dual_currency_until: document.getElementById("book-dual-currency-until").value,
           status: document.getElementById("book-status").value,
           category: document.getElementById("book-category").value.trim(),
           isbn: document.getElementById("book-isbn").value.trim(),
@@ -2130,15 +2199,6 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
 
     document.getElementById("admin-password").addEventListener("keydown", (e) => {
       if (e.key === "Enter") login();
-    });
-
-    document.addEventListener("input", (e) => {
-      if (e.target && e.target.id === "price-eur") {
-        const preview = document.getElementById("price-bgn-preview");
-        if (preview) {
-          preview.value = eurToBgnClient(e.target.value);
-        }
-      }
     });
 
     autoLogin();
