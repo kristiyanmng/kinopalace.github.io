@@ -84,10 +84,12 @@ async function loadPremieres() {
   } catch (e) {
     console.error(e);
     document.getElementById("premieres-container").innerHTML = `
-      <div style="padding:28px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;">
-        <h2 style="margin:0 0 12px;color:#fff;">В момента се прави подобрение по страницата</h2>
-        <p style="margin:0;color:#cbd5e1;font-size:18px;line-height:1.6;">
-          Надяваме се възможно най-скоро да възстановим достъпа до премиерите.
+      <div class="maintenance-box">
+        <div class="maintenance-icon">🎬</div>
+        <h2>В момента се прави подобрение по страницата</h2>
+        <p>
+          Надяваме се възможно най-скоро
+          да възстановим достъпа до премиерите.
         </p>
       </div>
     `;
