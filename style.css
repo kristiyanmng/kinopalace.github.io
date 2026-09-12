@@ -662,14 +662,56 @@ background:#0f172a;
   box-shadow:0 16px 40px rgba(0,0,0,.28);
 }
 
-.premiere > img{
+.premiere-poster-wrap{
+  position:relative;
   width:100%;
   max-width:280px;
+  align-self:start;
+  background:#0f172a;
+}
+
+.premiere-poster-wrap > img{
+  width:100%;
   height:auto;
   object-fit:contain;
   display:block;
   background:#0f172a;
-  align-self:start;
+}
+
+.premiere-promo-badge{
+  position:absolute;
+  top:14px;
+  left:14px;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  max-width:calc(100% - 28px);
+  padding:8px 12px;
+  border-radius:999px;
+  color:#fff;
+  font-size:12px;
+  line-height:1.15;
+  font-weight:900;
+  letter-spacing:.15px;
+  text-align:center;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+  backdrop-filter:blur(5px);
+}
+
+.premiere-promo-preview{
+  background:linear-gradient(135deg,#7c3aed,#a855f7);
+  border:1px solid rgba(255,255,255,.25);
+}
+
+.premiere-promo-tickets{
+  background:linear-gradient(135deg,#16a34a,#22c55e);
+  border:1px solid rgba(255,255,255,.25);
+}
+
+.premiere-promo-preview-tickets{
+  background:linear-gradient(135deg,#7c3aed,#f97316);
+  border:1px solid rgba(255,255,255,.28);
 }
 
 .dubbed-icon{
@@ -1084,11 +1126,22 @@ footer a:hover{
   grid-template-columns:1fr;
 }
 
-.premiere > img{
-  width:100%;
+.premiere-poster-wrap{
   max-width:none;
+}
+
+.premiere-poster-wrap > img{
+  width:100%;
   height:auto;
   object-fit:contain;
+}
+
+.premiere-promo-badge{
+  top:12px;
+  left:12px;
+  max-width:calc(100% - 24px);
+  font-size:11px;
+  padding:7px 10px;
 }
 
   .modal{
