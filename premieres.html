@@ -99,7 +99,8 @@ function normalizePremieresData(data) {
     premieres: (data?.premieres || []).map(item => ({
       ...item,
       iso_date: item.iso_date || bgToISO(item.date),
-      status: item.status || "scheduled"
+      status: item.status || "scheduled",
+      promo_badge: item.promo_badge || ""
     }))
   };
 }
@@ -138,6 +139,7 @@ function getPremiereStatusLabel(status) {
   };
   return map[status] || status;
 }
+
 function getPremiereStatusClass(status) {
   const map = {
     scheduled: "premiere-status-scheduled",
@@ -148,6 +150,25 @@ function getPremiereStatusClass(status) {
 
   return map[status] || "premiere-status-scheduled";
 }
+
+function getPromoBadgeLabel(value) {
+  const map = {
+    preview: "Предпремиера",
+    tickets: "Билетите са в продажба",
+    preview_tickets: "Предпремиера · Билетите са в продажба"
+  };
+  return map[value] || "";
+}
+
+function getPromoBadgeClass(value) {
+  const map = {
+    preview: "premiere-promo-preview",
+    tickets: "premiere-promo-tickets",
+    preview_tickets: "premiere-promo-preview-tickets"
+  };
+  return map[value] || "";
+}
+
 function renderPremieres() {
   const container = document.getElementById("premieres-container");
 
@@ -168,8 +189,8 @@ function renderPremieres() {
 
     const hasDubbed = String(movie.version || "").toLowerCase().includes("дублиран");
     const speakerIcon = hasDubbed
-  ? ` <img src="speaker.png" alt="Дублиран" class="dubbed-icon">`
-  : "";
+      ? ` <img src="speaker.png" alt="Дублиран" class="dubbed-icon">`
+      : "";
 
     const versionFormatted = String(movie.version || "")
       .replace(/3D/g, '<span class="tag-3d">3D</span>');
@@ -190,8 +211,17 @@ function renderPremieres() {
       </span>
     `;
 
+    const promoLabel = getPromoBadgeLabel(movie.promo_badge);
+    const promoBadge = promoLabel
+      ? `<span class="premiere-promo-badge ${getPromoBadgeClass(movie.promo_badge)}">${promoLabel}</span>`
+      : "";
+
     el.innerHTML = `
-      <img src="${movie.poster || ""}" alt="${movie.title || ""}">
+      <div class="premiere-poster-wrap">
+        <img src="${movie.poster || ""}" alt="${movie.title || ""}">
+        ${promoBadge}
+      </div>
+
       <div class="premiere-body">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
           <h3>${movie.title || "Без заглавие"}</h3>
@@ -200,13 +230,13 @@ function renderPremieres() {
 
         <div class="date">Премиера: ${movie.date || "-"}</div>
 
-       <div class="meta">
-  <div><strong>Времетраене:</strong> ${movie.duration || "Няма информация"}</div>
-  <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
-  <div class="version-row"><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
-  <div><strong>Категория:</strong> ${movie.category || "Няма информация"}</div>
-  <div><strong>Разпространител:</strong> ${movie.distributor || "Няма информация"}</div>
-</div>
+        <div class="meta">
+          <div><strong>Времетраене:</strong> ${movie.duration || "Няма информация"}</div>
+          <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
+          <div class="version-row"><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
+          <div><strong>Категория:</strong> ${movie.category || "Няма информация"}</div>
+          <div><strong>Разпространител:</strong> ${movie.distributor || "Няма информация"}</div>
+        </div>
 
         <p>${movie.description || ""}</p>
 
@@ -257,7 +287,8 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("focus", () => {
   loadPremieres();
 });
-  const toggleBtn = document.getElementById("theme-toggle");
+
+const toggleBtn = document.getElementById("theme-toggle");
 const savedTheme = localStorage.getItem("theme") || "dark";
 
 if (savedTheme === "light") {
@@ -274,7 +305,8 @@ toggleBtn.addEventListener("click", () => {
   localStorage.setItem("theme", isLight ? "light" : "dark");
   toggleBtn.textContent = isLight ? "☀️" : "🌙";
 });
-  document.getElementById("year").textContent = new Date().getFullYear();
+
+document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 
 </body>
