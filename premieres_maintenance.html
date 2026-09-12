@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Премиери</title>
+  <link rel="icon" type="image/png" href="Blue White Business ID Card.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+    <div class="container topbar">
+      <a href="index.html" class="logo">
+        <img src="Blue White Business ID Card.png" alt="Palace Кино" />
+      </a>
+
+      <div class="nav-wrap">
+        <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+        <button id="theme-toggle" class="theme-toggle" type="button">🌙</button>
+        <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">☰</label>
+
+        <nav>
+          <a href="index.html">Начало / Програма</a>
+          <a href="premieres.html">Очаквайте скоро</a>
+          <a href="prices.html">Цени</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+<main class="container">
+  <section class="hero">
+    <h1>Премиери в България</h1>
+  </section>
+
+  <div id="premieres-container" class="premiere-list">
+    Зареждане...
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-content">
+    <div>
+      Официалният сайт на кино Palace:
+      <a href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">НАЧАЛО</a>
+    </div>
+
+    <div class="copyright">
+      Всички права запазени ® Кино Palace © <span id="year"></span> · Powered and designed by Kristiyan Markov.
+    </div>
+  </div>
+</footer>
+
+<div id="trailerModal" class="modal" onclick="outsideClose(event)">
+  <div class="modal-content">
+    <button class="close" onclick="closeTrailer()" aria-label="Затвори трейлъра">×</button>
+    <iframe
+      id="trailerFrame"
+      src=""
+      title="Трейлър"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+<script>
+const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
+let premieresData = null;
+
+loadPremieres();
+
+async function loadPremieres() {
+  try {
+    const res = await fetch(`${API_BASE}/api/export-premieres`, { cache: "no-store" });
+
+    if (!res.ok) throw new Error("Грешка при зареждане");
+
+    const data = await res.json();
+    premieresData = normalizePremieresData(data);
+    renderPremieres();
+  } catch (e) {
+    console.error(e);
+    document.getElementById("premieres-container").innerHTML = `
+      <div class="maintenance-box">
+        <div class="maintenance-icon">🎬</div>
+        <h2>В момента се прави подобрение по страницата</h2>
+        <p>
+          Надяваме се възможно най-скоро
+          да възстановим достъпа до премиерите.
+        </p>
+      </div>
+    `;
+  }
+}
+
+function normalizePremieresData(data) {
+  return {
+    premieres: (data?.premieres || []).map(item => ({
+      ...item,
+      iso_date: item.iso_date || bgToISO(item.date),
+      status: item.status || "scheduled",
+      promo_badge: item.promo_badge || ""
+    }))
+  };
+}
+
+function bgToISO(dayDate) {
+  if (!dayDate) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dayDate)) return dayDate;
+
+  const [day, month, yearMaybe] = String(dayDate).split(".");
+  const year = yearMaybe || String(new Date().getFullYear());
+
+  if (!day || !month) return "";
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function parseISODate(isoDate) {
+  return new Date(`${isoDate}T00:00:00`);
+}
+
+function isFutureOrToday(isoDate) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const d = parseISODate(isoDate);
+  d.setHours(0, 0, 0, 0);
+
+  return d >= today;
+}
+
+function getPremiereStatusLabel(status) {
+  const map = {
+    scheduled: "Очаква се",
+    arrived: "Пристигнал за разпространяване",
+    published: "Публикуван",
+    cancelled: "Отменен"
+  };
+  return map[status] || status;
+}
+
+function getPremiereStatusClass(status) {
+  const map = {
+    scheduled: "premiere-status-scheduled",
+    arrived: "premiere-status-arrived",
+    published: "premiere-status-published",
+    cancelled: "premiere-status-cancelled"
+  };
+
+  return map[status] || "premiere-status-scheduled";
+}
+
+function getPromoBadgeLabel(value) {
+  const map = {
+    preview: "Предпремиера",
+    tickets: "Билетите са в продажба",
+    preview_tickets: "Предпремиера · Билетите са в продажба"
+  };
+  return map[value] || "";
+}
+
+function getPromoBadgeClass(value) {
+  const map = {
+    preview: "premiere-promo-preview",
+    tickets: "premiere-promo-tickets",
+    preview_tickets: "premiere-promo-preview-tickets"
+  };
+  return map[value] || "";
+}
+
+function renderPremieres() {
+  const container = document.getElementById("premieres-container");
+
+  const movies = (premieresData?.premieres || [])
+    .filter(movie => isFutureOrToday(movie.iso_date))
+    .sort((a, b) => parseISODate(a.iso_date) - parseISODate(b.iso_date));
+
+  if (movies.length === 0) {
+    container.innerHTML = '<p style="color:#fde68a;font-weight:700;">Няма предстоящи премиери.</p>';
+    return;
+  }
+
+  container.innerHTML = "";
+
+  movies.forEach(movie => {
+    const el = document.createElement("div");
+    el.className = "premiere";
+
+    const hasDubbed = String(movie.version || "").toLowerCase().includes("дублиран");
+    const speakerIcon = hasDubbed
+      ? ` <img src="speaker.png" alt="Дублиран" class="dubbed-icon">`
+      : "";
+
+    const versionFormatted = String(movie.version || "")
+      .replace(/3D/g, '<span class="tag-3d">3D</span>');
+
+    const safeTrailer = String(movie.trailer || "").replace(/'/g, "\\'");
+
+    const trailerButton = movie.trailer
+      ? `
+        <button class="trailer-btn" onclick="openTrailer('${safeTrailer}')">
+          ▶ Трейлър
+        </button>
+      `
+      : "";
+
+    const statusBadge = `
+      <span class="premiere-status ${getPremiereStatusClass(movie.status)}">
+        ${getPremiereStatusLabel(movie.status)}
+      </span>
+    `;
+
+    const promoLabel = getPromoBadgeLabel(movie.promo_badge);
+    const promoBadge = promoLabel
+      ? `<span class="premiere-promo-badge ${getPromoBadgeClass(movie.promo_badge)}">${promoLabel}</span>`
+      : "";
+
+    el.innerHTML = `
+      <div class="premiere-poster-wrap">
+        <img src="${movie.poster || ""}" alt="${movie.title || ""}">
+        ${promoBadge}
+      </div>
+
+      <div class="premiere-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+          <h3>${movie.title || "Без заглавие"}</h3>
+          ${statusBadge}
+        </div>
+
+        <div class="date">Премиера: ${movie.date || "-"}</div>
+
+        <div class="meta">
+          <div><strong>Времетраене:</strong> ${movie.duration || "Няма информация"}</div>
+          <div><strong>Жанр:</strong> ${movie.genre || "Няма информация"}</div>
+          <div class="version-row"><strong>Версия:</strong> ${versionFormatted || "Няма информация"}${speakerIcon}</div>
+          <div><strong>Категория:</strong> ${movie.category || "Няма информация"}</div>
+          <div><strong>Разпространител:</strong> ${movie.distributor || "Няма информация"}</div>
+        </div>
+
+        <p>${movie.description || ""}</p>
+
+        <div class="actions">
+          ${trailerButton}
+        </div>
+      </div>
+    `;
+
+    container.appendChild(el);
+  });
+}
+
+function openTrailer(url) {
+  if (!url) return;
+
+  const modal = document.getElementById("trailerModal");
+  const frame = document.getElementById("trailerFrame");
+  const separator = url.includes("?") ? "&" : "?";
+
+  frame.src = url + separator + "autoplay=1";
+  modal.classList.add("active");
+}
+
+function closeTrailer() {
+  const modal = document.getElementById("trailerModal");
+  const frame = document.getElementById("trailerFrame");
+
+  frame.src = "";
+  modal.classList.remove("active");
+}
+
+function outsideClose(event) {
+  const content = document.querySelector(".modal-content");
+  if (content && !content.contains(event.target)) {
+    closeTrailer();
+  }
+}
+
+setInterval(loadPremieres, 60000);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    loadPremieres();
+  }
+});
+
+window.addEventListener("focus", () => {
+  loadPremieres();
+});
+
+const toggleBtn = document.getElementById("theme-toggle");
+const savedTheme = localStorage.getItem("theme") || "dark";
+
+if (savedTheme === "light") {
+  document.body.classList.add("light");
+  toggleBtn.textContent = "☀️";
+} else {
+  document.body.classList.remove("light");
+  toggleBtn.textContent = "🌙";
+}
+
+toggleBtn.addEventListener("click", () => {
+  const isLight = document.body.classList.toggle("light");
+
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+  toggleBtn.textContent = isLight ? "☀️" : "🌙";
+});
+
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
