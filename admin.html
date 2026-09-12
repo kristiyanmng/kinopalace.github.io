@@ -663,6 +663,15 @@ body.light select option:checked {
 			<option value="cancelled">Отменен</option>
             </select>
 
+            <label>Етикет върху постера</label>
+            <select id="premiere-event-promo-badge">
+              <option value="">Без етикет</option>
+              <option value="preview">Предпремиера</option>
+              <option value="tickets">Билетите са в продажба</option>
+              <option value="preview_tickets">Предпремиера + билетите са в продажба</option>
+            </select>
+            <div class="helper">Този етикет се показва върху постера в страницата „Очаквайте скоро“.</div>
+
             <label>Бележки</label>
             <textarea id="premiere-event-notes"></textarea>
 
@@ -1086,6 +1095,15 @@ body.light select option:checked {
       if (type === "dubbed") return "Дублиран";
       if (type === "original") return "Оригинална версия";
       return "Субтитриран";
+    }
+
+    function premierePromoBadgeLabel(value) {
+      const map = {
+        preview: "Предпремиера",
+        tickets: "Билетите са в продажба",
+        preview_tickets: "Предпремиера + билетите са в продажба"
+      };
+      return map[value] || "Без етикет";
     }
 
     function fillDistributorSelects() {
@@ -1799,6 +1817,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
             ID: ${item.id}<br>
             Дата: ${formatDateBG(item.premiere_date)}<br>
             Статус: ${item.status || "-"}<br>
+            Етикет: ${premierePromoBadgeLabel(item.promo_badge)}<br>
             Бележки: ${item.notes || "-"}
           </div>
           <div class="actions-row">
@@ -1814,6 +1833,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("premiere-event-id").value = "";
       document.getElementById("premiere-event-date").value = "";
       document.getElementById("premiere-event-status").value = "scheduled";
+      document.getElementById("premiere-event-promo-badge").value = "";
       document.getElementById("premiere-event-notes").value = "";
     }
 
@@ -1825,6 +1845,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
       document.getElementById("premiere-event-movie").value = item.premiere_movie_id;
       document.getElementById("premiere-event-date").value = item.premiere_date || "";
       document.getElementById("premiere-event-status").value = item.status || "scheduled";
+      document.getElementById("premiere-event-promo-badge").value = item.promo_badge || "";
       document.getElementById("premiere-event-notes").value = item.notes || "";
 
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1838,6 +1859,7 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
           premiere_movie_id: Number(document.getElementById("premiere-event-movie").value),
           premiere_date: document.getElementById("premiere-event-date").value,
           status: document.getElementById("premiere-event-status").value,
+          promo_badge: document.getElementById("premiere-event-promo-badge").value,
           notes: document.getElementById("premiere-event-notes").value.trim()
         };
 
