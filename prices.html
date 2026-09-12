@@ -22,14 +22,8 @@ body{
   padding:20px;
 }
 
-h1{
-  margin-bottom:20px;
-}
-
-.category{
-  margin-top:34px;
-}
-
+h1{margin-bottom:20px;}
+.category{margin-top:34px;}
 .category h2{
   margin:0 0 14px;
   padding-bottom:10px;
@@ -55,11 +49,11 @@ h1{
 
 .price-card-image-wrap{
   width:100%;
-  height:260px; /* ⬅️ по-голяма зона */
+  height:260px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:10px; /* ⬅️ по-малко padding */
+  padding:10px;
   background:rgba(255,255,255,.02);
 }
 
@@ -71,10 +65,7 @@ h1{
   display:block;
 }
 
-.price-card-body{
-  padding:16px 16px 18px;
-}
-
+.price-card-body{padding:16px 16px 18px;}
 .price-card-title{
   margin:0 0 8px;
   font-size:18px;
@@ -97,13 +88,8 @@ h1{
   line-height:1.2;
 }
 
-.price-eur{
-  color:#fde68a;
-}
-
-.price-bgn{
-  color:#e5e7eb;
-}
+.price-eur{color:#fde68a;}
+.price-bgn{color:#e5e7eb;}
 
 .empty-box{
   background:#111827;
@@ -113,85 +99,48 @@ h1{
   color:#cbd5e1;
 }
 
-.error-box{
-  background:rgba(239,68,68,.08);
-  border:1px solid rgba(239,68,68,.20);
-  border-radius:18px;
-  padding:24px;
-  color:#fecaca;
+@media (max-width:760px){
+  .container{width:94%;padding:16px;}
+  h1{font-size:28px;}
+  .category h2{font-size:18px;}
+  .prices-grid{grid-template-columns:1fr;gap:16px;}
+  .price-card-image-wrap{height:200px;}
+  .price-card-title{font-size:17px;}
+  .price-card-description{font-size:14px;min-height:auto;}
+  .price{font-size:20px;}
 }
 
-@media (max-width: 760px){
-  .container{
-    width:94%;
-    padding:16px;
-  }
-
-  h1{
-    font-size:28px;
-  }
-
-  .category h2{
-    font-size:18px;
-  }
-
-  .prices-grid{
-    grid-template-columns:1fr;
-    gap:16px;
-  }
-
- .price-card-image-wrap{
-  height:200px;
-}
-
-  .price-card-title{
-    font-size:17px;
-  }
-
-  .price-card-description{
-    font-size:14px;
-    min-height:auto;
-  }
-
-  .price{
-    font-size:20px;
-  }
-}
-
-@media (min-width: 1200px){
-  .price-card-image-wrap{
-    height:210px;
-  }
+@media (min-width:1200px){
+  .price-card-image-wrap{height:210px;}
 }
 </style>
 </head>
-
 <body>
 
-  <header>
-    <div class="container topbar">
-      <a href="index.html" class="logo">
-        <img src="Blue White Business ID Card.png" alt="Palace Кино" />
-      </a>
+<header>
+  <div class="container topbar">
+    <a href="index.html" class="logo">
+      <img src="Blue White Business ID Card.png" alt="Palace Кино" />
+    </a>
 
-      <div class="nav-wrap">
-        <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
-        <button id="theme-toggle" class="theme-toggle" type="button">🌙</button>
-        <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">☰</label>
+    <div class="nav-wrap">
+      <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+      <button id="theme-toggle" class="theme-toggle" type="button">🌙</button>
+      <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">☰</label>
 
-        <nav>
-          <a href="index.html">Начало / Програма</a>
-          <a href="premieres.html">Очаквайте скоро</a>
-          <a href="prices.html">Цени</a>
-        </nav>
-      </div>
+      <nav>
+        <a href="index.html">Начало / Програма</a>
+        <a href="premieres.html">Очаквайте скоро</a>
+        <a href="prices.html">Цени</a>
+      </nav>
     </div>
-  </header>
-
-  <div class="container">
-    <h1>Цени</h1>
-    <div id="prices-container">Зареждане...</div>
   </div>
+</header>
+
+<div class="container">
+  <h1>Цени</h1>
+  <div id="prices-container">Зареждане...</div>
+</div>
 
 <footer>
   <div class="container footer-content">
@@ -205,6 +154,7 @@ h1{
     </div>
   </div>
 </footer>
+
 <script>
 const API = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
 
@@ -223,10 +173,7 @@ function showBGN() {
 async function loadPrices() {
   try {
     const res = await fetch(API + "/api/price-items", { cache: "no-store" });
-
-    if (!res.ok) {
-      throw new Error("Неуспешно зареждане на цените");
-    }
+    if (!res.ok) throw new Error("Неуспешно зареждане на цените");
 
     const data = await res.json();
     const container = document.getElementById("prices-container");
@@ -237,18 +184,14 @@ async function loadPrices() {
     }
 
     const grouped = {};
-
     data.forEach(item => {
       if (item.status !== "active") return;
-
       const cat = item.category || "Други";
-
       if (!grouped[cat]) grouped[cat] = [];
       grouped[cat].push(item);
     });
 
     const categoryNames = Object.keys(grouped);
-
     if (!categoryNames.length) {
       container.innerHTML = `<div class="empty-box">Няма активни артикули.</div>`;
       return;
@@ -285,11 +228,9 @@ async function loadPrices() {
               <p class="price-card-description">${item.description || ""}</p>
 
               <div class="price">
-                ${
-                  showBGN()
-                    ? `<span class="price-eur">€${eur}</span> <span class="price-bgn">/ ${bgn} лв</span>`
-                    : `<span class="price-eur">€${eur}</span>`
-                }
+                ${showBGN()
+                  ? `<span class="price-eur">€${eur}</span> <span class="price-bgn">/ ${bgn} лв</span>`
+                  : `<span class="price-eur">€${eur}</span>`}
               </div>
             </div>
           `;
@@ -304,14 +245,22 @@ async function loadPrices() {
 
   } catch (e) {
     console.error(e);
-    document.getElementById("prices-container").innerHTML =
-      `<div class="error-box">Грешка при зареждане.</div>`;
+    document.getElementById("prices-container").innerHTML = `
+      <div class="maintenance-box">
+        <div class="maintenance-icon">🎬</div>
+        <h2>В момента се прави подобрение по страницата</h2>
+        <p>
+          Надяваме се възможно най-скоро
+          да възстановим достъпа до цените.
+        </p>
+      </div>
+    `;
   }
 }
 
 loadPrices();
 
-  const toggleBtn = document.getElementById("theme-toggle");
+const toggleBtn = document.getElementById("theme-toggle");
 const savedTheme = localStorage.getItem("theme") || "dark";
 
 if (savedTheme === "light") {
@@ -324,11 +273,11 @@ if (savedTheme === "light") {
 
 toggleBtn.addEventListener("click", () => {
   const isLight = document.body.classList.toggle("light");
-
   localStorage.setItem("theme", isLight ? "light" : "dark");
   toggleBtn.textContent = isLight ? "☀️" : "🌙";
 });
-  document.getElementById("year").textContent = new Date().getFullYear();
+
+document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 
 </body>
