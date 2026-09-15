@@ -1814,3 +1814,73 @@ body.light .price-card-price{
   border-radius:10px;
   display:inline-block;
 }
+
+
+/* =========================
+   AVENGERS: DOOMSDAY COUNTDOWN
+   ========================= */
+.doomsday-banner{
+  width:100%;
+  position:relative;
+  z-index:60;
+  padding:8px 18px;
+  background:
+    radial-gradient(circle at 50% -80%, rgba(239,68,68,.34), transparent 58%),
+    linear-gradient(90deg, #130708 0%, #3b090d 50%, #130708 100%);
+  border-bottom:1px solid rgba(248,113,113,.32);
+  box-shadow:0 8px 28px rgba(0,0,0,.24);
+}
+.doomsday-content{
+  width:min(1180px, 92%);
+  margin:0 auto;
+  min-height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+  text-align:center;
+}
+.doomsday-logo{
+  display:block;
+  width:auto;
+  height:48px;
+  max-width:260px;
+  object-fit:contain;
+}
+.doomsday-right{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.doomsday-label{
+  color:#fca5a5;
+  font-size:11px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:1.4px;
+  white-space:nowrap;
+}
+.doomsday-timer{
+  color:#fde68a;
+  font-size:18px;
+  line-height:1.1;
+  font-weight:900;
+  letter-spacing:.35px;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+body.light .doomsday-banner{
+  background:
+    radial-gradient(circle at 50% -80%, rgba(239,68,68,.28), transparent 58%),
+    linear-gradient(90deg, #2a080b 0%, #641119 50%, #2a080b 100%);
+}
+@media (max-width:760px){
+  .doomsday-banner{padding:7px 10px;}
+  .doomsday-content{width:100%;min-height:58px;flex-direction:column;gap:4px;}
+  .doomsday-logo{height:35px;max-width:210px;}
+  .doomsday-right{gap:7px;}
+  .doomsday-label{font-size:9px;letter-spacing:.8px;}
+  .doomsday-timer{font-size:13px;}
+}

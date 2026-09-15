@@ -117,6 +117,17 @@ h1{margin-bottom:20px;}
 </head>
 <body>
 
+  <!-- AVENGERS: DOOMSDAY COUNTDOWN -->
+  <div class="doomsday-banner" id="doomsday-countdown">
+    <div class="doomsday-content">
+      <img class="doomsday-logo" src="https://lumiere-a.akamaihd.net/v1/images/image_2aea2259.png" alt="Avengers: Doomsday">
+      <div class="doomsday-right">
+        <span class="doomsday-label">ДО ПРЕМИЕРАТА</span>
+        <span class="doomsday-timer" id="doomsday-timer">Зареждане...</span>
+      </div>
+    </div>
+  </div>
+
 <header>
   <div class="container topbar">
     <a href="index.html" class="logo">
@@ -278,6 +289,44 @@ toggleBtn.addEventListener("click", () => {
 });
 
 document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+
+<script>
+(function () {
+  const timer = document.getElementById("doomsday-timer");
+  if (!timer) return;
+
+  /*
+    Премиера: 18 декември 2026 г., 00:00 ч. българско време.
+    На 18.12.2026 България е в EET (UTC+02:00).
+    Използването на абсолютен timezone offset прави брояча правилен
+    независимо в коя държава/часова зона е отворен сайтът.
+  */
+  const releaseDate = new Date("2026-12-18T00:00:00+02:00");
+
+  function updateDoomsdayCountdown() {
+    const diff = releaseDate.getTime() - Date.now();
+
+    if (diff <= 0) {
+      timer.textContent = "🎬 ВЕЧЕ Е ПО КИНАТА";
+      return;
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    timer.textContent =
+      `${days} ДНИ • ${String(hours).padStart(2, "0")} Ч • ` +
+      `${String(minutes).padStart(2, "0")} М • ${String(seconds).padStart(2, "0")} С`;
+  }
+
+  updateDoomsdayCountdown();
+  setInterval(updateDoomsdayCountdown, 1000);
+})();
 </script>
 
 </body>
