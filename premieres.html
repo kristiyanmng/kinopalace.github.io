@@ -9,13 +9,21 @@
 </head>
 <body>
 
+
   <!-- AVENGERS: DOOMSDAY COUNTDOWN -->
   <div class="doomsday-banner" id="doomsday-countdown">
     <div class="doomsday-content">
-      <img class="doomsday-logo" src="https://lumiere-a.akamaihd.net/v1/images/image_2aea2259.png" alt="Avengers: Doomsday">
-      <div class="doomsday-right">
-        <span class="doomsday-label">ДО ПРЕМИЕРАТА</span>
-        <span class="doomsday-timer" id="doomsday-timer">Зареждане...</span>
+      <img class="doomsday-logo"
+           src="https://lumiere-a.akamaihd.net/v1/images/image_2aea2259.png"
+           alt="Avengers: Doomsday">
+      <div class="doomsday-clock" aria-label="Avengers Doomsday countdown">
+        <div class="doomsday-unit"><strong id="dd-days">00</strong><span>DAYS</span></div>
+        <div class="doomsday-separator">:</div>
+        <div class="doomsday-unit"><strong id="dd-hours">00</strong><span>HOURS</span></div>
+        <div class="doomsday-separator">:</div>
+        <div class="doomsday-unit"><strong id="dd-minutes">00</strong><span>MINUTES</span></div>
+        <div class="doomsday-separator">:</div>
+        <div class="doomsday-unit"><strong id="dd-seconds">00</strong><span>SECONDS</span></div>
       </div>
     </div>
   </div>
@@ -325,79 +333,33 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 <script>
 (function () {
-  const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
-  const timer = document.getElementById("doomsday-timer");
-  if (!timer) return;
+  const daysEl = document.getElementById("dd-days");
+  const hoursEl = document.getElementById("dd-hours");
+  const minutesEl = document.getElementById("dd-minutes");
+  const secondsEl = document.getElementById("dd-seconds");
+  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
-  // 18.12.2026 00:00 in Bulgaria. On this date Sofia is UTC+02:00.
-  const releaseTimestamp = Date.parse("2026-12-18T00:00:00+02:00");
+  // 18 Dec 2026, 00:00 in Europe/Sofia.
+  // Bulgaria is UTC+02:00 on this date.
+  const releaseTime = Date.parse("2026-12-18T00:00:00+02:00");
 
-  let serverBaseMs = null;
-  let performanceBaseMs = null;
+  function render() {
+    const diff = Math.max(0, releaseTime - Date.now());
+    const total = Math.floor(diff / 1000);
 
-  async function syncWithServer() {
-    try {
-      // We use the existing Worker. The HTTP Date response header is generated
-      // server-side and is independent of the visitor's computer clock.
-      const response = await fetch(`${API_BASE}/api/public-version?_time=${Date.now()}`, {
-        method: "GET",
-        cache: "no-store"
-      });
+    const days = Math.floor(total / 86400);
+    const hours = Math.floor((total % 86400) / 3600);
+    const minutes = Math.floor((total % 3600) / 60);
+    const seconds = total % 60;
 
-      const dateHeader = response.headers.get("Date");
-      if (!dateHeader) throw new Error("Missing server Date header");
-
-      const parsed = Date.parse(dateHeader);
-      if (!Number.isFinite(parsed)) throw new Error("Invalid server Date header");
-
-      serverBaseMs = parsed;
-      performanceBaseMs = performance.now();
-    } catch (error) {
-      console.warn("Server time sync failed; using device clock temporarily.", error);
-      serverBaseMs = Date.now();
-      performanceBaseMs = performance.now();
-    }
+    daysEl.textContent = String(days).padStart(2, "0");
+    hoursEl.textContent = String(hours).padStart(2, "0");
+    minutesEl.textContent = String(minutes).padStart(2, "0");
+    secondsEl.textContent = String(seconds).padStart(2, "0");
   }
 
-  function nowMs() {
-    if (serverBaseMs === null || performanceBaseMs === null) return Date.now();
-    return serverBaseMs + (performance.now() - performanceBaseMs);
-  }
-
-  function updateDoomsdayCountdown() {
-    const diff = releaseTimestamp - nowMs();
-
-    if (diff <= 0) {
-      timer.textContent = "🎬 ВЕЧЕ Е ПО КИНАТА";
-      return;
-    }
-
-    const totalSeconds = Math.floor(diff / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    timer.textContent =
-      `${days} ДНИ • ${String(hours).padStart(2, "0")} Ч • ` +
-      `${String(minutes).padStart(2, "0")} М • ${String(seconds).padStart(2, "0")} С`;
-  }
-
-  async function start() {
-    await syncWithServer();
-    updateDoomsdayCountdown();
-    setInterval(updateDoomsdayCountdown, 1000);
-
-    // Re-sync every 10 minutes to prevent clock drift.
-    setInterval(syncWithServer, 10 * 60 * 1000);
-
-    // Re-sync when the visitor returns to the tab/device after sleep.
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) syncWithServer();
-    });
-  }
-
-  start();
+  render();
+  setInterval(render, 1000);
 })();
 </script>
 

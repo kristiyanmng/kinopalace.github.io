@@ -1823,64 +1823,69 @@ body.light .price-card-price{
   width:100%;
   position:relative;
   z-index:60;
-  padding:8px 18px;
+  padding:9px 18px;
   background:
-    radial-gradient(circle at 50% -80%, rgba(239,68,68,.34), transparent 58%),
-    linear-gradient(90deg, #130708 0%, #3b090d 50%, #130708 100%);
-  border-bottom:1px solid rgba(248,113,113,.32);
-  box-shadow:0 8px 28px rgba(0,0,0,.24);
+    radial-gradient(circle at 50% -120%, rgba(170,25,25,.38), transparent 58%),
+    linear-gradient(90deg,#0b0708 0%,#26090c 50%,#0b0708 100%);
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
 .doomsday-content{
-  width:min(1180px, 92%);
+  width:min(1180px,94%);
   margin:0 auto;
-  min-height:54px;
+  min-height:62px;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:28px;
-  text-align:center;
+  gap:36px;
 }
 .doomsday-logo{
   display:block;
   width:auto;
-  height:48px;
-  max-width:260px;
+  height:52px;
+  max-width:270px;
   object-fit:contain;
 }
-.doomsday-right{
+.doomsday-clock{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.doomsday-label{
-  color:#fca5a5;
-  font-size:11px;
-  line-height:1;
-  font-weight:900;
-  letter-spacing:1.4px;
-  white-space:nowrap;
-}
-.doomsday-timer{
-  color:#fde68a;
-  font-size:18px;
-  line-height:1.1;
-  font-weight:900;
-  letter-spacing:.35px;
-  white-space:nowrap;
+  gap:8px;
+  color:#fff;
   font-variant-numeric:tabular-nums;
 }
-body.light .doomsday-banner{
-  background:
-    radial-gradient(circle at 50% -80%, rgba(239,68,68,.28), transparent 58%),
-    linear-gradient(90deg, #2a080b 0%, #641119 50%, #2a080b 100%);
+.doomsday-unit{
+  min-width:54px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
-@media (max-width:760px){
-  .doomsday-banner{padding:7px 10px;}
-  .doomsday-content{width:100%;min-height:58px;flex-direction:column;gap:4px;}
-  .doomsday-logo{height:35px;max-width:210px;}
-  .doomsday-right{gap:7px;}
-  .doomsday-label{font-size:9px;letter-spacing:.8px;}
-  .doomsday-timer{font-size:13px;}
+.doomsday-unit strong{
+  font-size:24px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+.doomsday-unit span{
+  margin-top:6px;
+  color:rgba(255,255,255,.55);
+  font-size:8px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:1px;
+}
+.doomsday-separator{
+  padding-top:1px;
+  color:rgba(255,255,255,.45);
+  font-size:21px;
+  font-weight:700;
+}
+@media(max-width:760px){
+  .doomsday-banner{padding:8px 8px;}
+  .doomsday-content{width:100%;min-height:75px;flex-direction:column;gap:7px;}
+  .doomsday-logo{height:35px;max-width:205px;}
+  .doomsday-clock{gap:3px;}
+  .doomsday-unit{min-width:45px;}
+  .doomsday-unit strong{font-size:19px;}
+  .doomsday-unit span{margin-top:4px;font-size:6px;letter-spacing:.6px;}
+  .doomsday-separator{font-size:17px;}
 }
