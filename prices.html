@@ -294,19 +294,47 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 <script>
 (function () {
+  const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
   const timer = document.getElementById("doomsday-timer");
   if (!timer) return;
 
-  /*
-    Премиера: 18 декември 2026 г., 00:00 ч. българско време.
-    На 18.12.2026 България е в EET (UTC+02:00).
-    Използването на абсолютен timezone offset прави брояча правилен
-    независимо в коя държава/часова зона е отворен сайтът.
-  */
-  const releaseDate = new Date("2026-12-18T00:00:00+02:00");
+  // 18.12.2026 00:00 in Bulgaria. On this date Sofia is UTC+02:00.
+  const releaseTimestamp = Date.parse("2026-12-18T00:00:00+02:00");
+
+  let serverBaseMs = null;
+  let performanceBaseMs = null;
+
+  async function syncWithServer() {
+    try {
+      // We use the existing Worker. The HTTP Date response header is generated
+      // server-side and is independent of the visitor's computer clock.
+      const response = await fetch(`${API_BASE}/api/public-version?_time=${Date.now()}`, {
+        method: "GET",
+        cache: "no-store"
+      });
+
+      const dateHeader = response.headers.get("Date");
+      if (!dateHeader) throw new Error("Missing server Date header");
+
+      const parsed = Date.parse(dateHeader);
+      if (!Number.isFinite(parsed)) throw new Error("Invalid server Date header");
+
+      serverBaseMs = parsed;
+      performanceBaseMs = performance.now();
+    } catch (error) {
+      console.warn("Server time sync failed; using device clock temporarily.", error);
+      serverBaseMs = Date.now();
+      performanceBaseMs = performance.now();
+    }
+  }
+
+  function nowMs() {
+    if (serverBaseMs === null || performanceBaseMs === null) return Date.now();
+    return serverBaseMs + (performance.now() - performanceBaseMs);
+  }
 
   function updateDoomsdayCountdown() {
-    const diff = releaseDate.getTime() - Date.now();
+    const diff = releaseTimestamp - nowMs();
 
     if (diff <= 0) {
       timer.textContent = "🎬 ВЕЧЕ Е ПО КИНАТА";
@@ -324,8 +352,21 @@ document.getElementById("year").textContent = new Date().getFullYear();
       `${String(minutes).padStart(2, "0")} М • ${String(seconds).padStart(2, "0")} С`;
   }
 
-  updateDoomsdayCountdown();
-  setInterval(updateDoomsdayCountdown, 1000);
+  async function start() {
+    await syncWithServer();
+    updateDoomsdayCountdown();
+    setInterval(updateDoomsdayCountdown, 1000);
+
+    // Re-sync every 10 minutes to prevent clock drift.
+    setInterval(syncWithServer, 10 * 60 * 1000);
+
+    // Re-sync when the visitor returns to the tab/device after sleep.
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) syncWithServer();
+    });
+  }
+
+  start();
 })();
 </script>
 
