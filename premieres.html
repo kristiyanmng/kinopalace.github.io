@@ -6,27 +6,102 @@
   <title>Премиери</title>
   <link rel="icon" type="image/png" href="Blue White Business ID Card.png" />
   <link rel="stylesheet" href="style.css" />
+ <style>
+    /* =========================
+       GENRE DROPDOWN FILTER
+       ========================= */
+
+    .genre-filter-section{
+      margin:0 0 22px;
+      max-width:320px;
+    }
+
+    .genre-filter-title{
+      display:block;
+      margin:0 0 8px;
+      font-size:15px;
+      font-weight:900;
+      color:var(--text);
+    }
+
+    .genre-filter-select{
+      width:100%;
+      padding:11px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#1e293b;
+      color:#f8fafc;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      outline:none;
+      color-scheme:dark;
+    }
+
+    .genre-filter-select:hover,
+    .genre-filter-select:focus{
+      border-color:rgba(245,158,11,.55);
+    }
+
+    .genre-filter-select option{
+      background:#1e293b;
+      color:#f8fafc;
+    }
+
+    body.light .genre-filter-select{
+      background:#ffffff;
+      color:#111827;
+      border-color:rgba(0,0,0,.12);
+      color-scheme:light;
+    }
+
+    body.light .genre-filter-select option{
+      background:#ffffff;
+      color:#111827;
+    }
+
+    /* SHOWTIME FORMAT */
+    .showtime-format{
+      display:block;
+      font-size:10px;
+      font-weight:900;
+      line-height:1;
+      margin-bottom:3px;
+      letter-spacing:.3px;
+      opacity:.95;
+    }
+
+    @media (max-width:760px){
+      .genre-filter-section{
+        max-width:100%;
+        margin-bottom:16px;
+      }
+
+      .genre-filter-select{
+        font-size:13px;
+        padding:10px 12px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
 
   <!-- AVENGERS: DOOMSDAY COUNTDOWN -->
   <div class="doomsday-banner" id="doomsday-countdown">
     <div class="doomsday-content">
-      <img class="doomsday-logo"
-           src="https://lumiere-a.akamaihd.net/v1/images/image_2aea2259.png"
-           alt="Avengers: Doomsday">
+      <img class="doomsday-logo" src="https://lumiere-a.akamaihd.net/v1/images/image_2aea2259.png" alt="Avengers: Doomsday">
       <div class="doomsday-clock" aria-label="Avengers Doomsday countdown">
-        <div class="doomsday-unit"><strong id="dd-days">00</strong><span>DAYS</span></div>
-        <div class="doomsday-separator">:</div>
-        <div class="doomsday-unit"><strong id="dd-hours">00</strong><span>HOURS</span></div>
-        <div class="doomsday-separator">:</div>
-        <div class="doomsday-unit"><strong id="dd-minutes">00</strong><span>MINUTES</span></div>
-        <div class="doomsday-separator">:</div>
-        <div class="doomsday-unit"><strong id="dd-seconds">00</strong><span>SECONDS</span></div>
+        <div class="doomsday-unit"><strong id="dd-months">00</strong><span>MONTHS</span></div><div class="doomsday-separator">:</div>
+        <div class="doomsday-unit"><strong id="dd-days">00</strong><span>DAYS</span></div><div class="doomsday-separator">:</div>
+        <div class="doomsday-unit"><strong id="dd-hours">00</strong><span>HOURS</span></div><div class="doomsday-separator">:</div>
+        <div class="doomsday-unit"><strong id="dd-minutes">00</strong><span>MIN</span></div><div class="doomsday-separator">:</div>
+        <div class="doomsday-unit"><strong id="dd-seconds">00</strong><span>SEC</span></div>
       </div>
     </div>
   </div>
+
 
 <header>
     <div class="container topbar">
