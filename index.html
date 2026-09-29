@@ -641,7 +641,9 @@
 
               price_standard_eur: 0,
 
-              price_reduced_eur: 0
+              price_reduced_eur: 0,
+
+              price_fan_eur: 0
 
             };
           }
@@ -703,6 +705,11 @@
             price_reduced_eur:
               Number(
                 item.price_reduced_eur || 0
+              ),
+
+            price_fan_eur:
+              Number(
+                item.price_fan_eur || 0
               )
 
           };
@@ -1729,6 +1736,10 @@
                 Number(
                   item.price_reduced_eur || 0
                 ) > 0
+                ||
+                Number(
+                  item.price_fan_eur || 0
+                ) > 0
             );
 
 
@@ -1748,11 +1759,17 @@
             ) > 0;
 
 
+          const hasFanPrice =
+            Number(
+              firstPricedTime?.price_fan_eur || 0
+            ) > 0;
+
           const priceHtml =
 
             (
               hasStandardPrice ||
-              hasReducedPrice
+              hasReducedPrice ||
+              hasFanPrice
             )
 
             ?
@@ -1833,7 +1850,21 @@
                     ""
                 }
 
-              </div>
+              
+                ${
+                  hasFanPrice
+                    ? `
+                      <div class="ticket-price-line ticket-price-fan">
+                        <span class="ticket-price-label">Фен билет</span>
+                        <span class="ticket-price-value">
+                          €${Number(firstPricedTime.price_fan_eur).toFixed(2)}
+                        </span>
+                      </div>
+                    `
+                    : ""
+                }
+
+</div>
 
             `
 
