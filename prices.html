@@ -125,13 +125,15 @@ h1{margin-bottom:20px;}
            src="https://lumiere-a.akamaihd.net/v1/images/image_2aea2259.png"
            alt="Avengers: Doomsday">
       <div class="doomsday-clock" aria-label="Avengers Doomsday countdown">
+        <div class="doomsday-unit"><strong id="dd-months">00</strong><span>MONTHS</span></div>
+        <div class="doomsday-separator">:</div>
         <div class="doomsday-unit"><strong id="dd-days">00</strong><span>DAYS</span></div>
         <div class="doomsday-separator">:</div>
         <div class="doomsday-unit"><strong id="dd-hours">00</strong><span>HOURS</span></div>
         <div class="doomsday-separator">:</div>
-        <div class="doomsday-unit"><strong id="dd-minutes">00</strong><span>MINUTES</span></div>
+        <div class="doomsday-unit"><strong id="dd-minutes">00</strong><span>MIN</span></div>
         <div class="doomsday-separator">:</div>
-        <div class="doomsday-unit"><strong id="dd-seconds">00</strong><span>SECONDS</span></div>
+        <div class="doomsday-unit"><strong id="dd-seconds">00</strong><span>SEC</span></div>
       </div>
     </div>
   </div>
@@ -302,25 +304,55 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 <script>
 (function () {
+  const monthsEl = document.getElementById("dd-months");
   const daysEl = document.getElementById("dd-days");
   const hoursEl = document.getElementById("dd-hours");
   const minutesEl = document.getElementById("dd-minutes");
   const secondsEl = document.getElementById("dd-seconds");
-  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
-  // 18 Dec 2026, 00:00 in Europe/Sofia.
-  // Bulgaria is UTC+02:00 on this date.
-  const releaseTime = Date.parse("2026-12-18T00:00:00+02:00");
+  if (!monthsEl || !daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+  const releaseTime = Date.parse("2026-12-18T05:00:00Z");
+
+  function addUtcMonths(date, months) {
+    const d = new Date(date.getTime());
+    d.setUTCMonth(d.getUTCMonth() + months);
+    return d;
+  }
 
   function render() {
-    const diff = Math.max(0, releaseTime - Date.now());
-    const total = Math.floor(diff / 1000);
+    const now = new Date();
+
+    if (now.getTime() >= releaseTime) {
+      monthsEl.textContent = "00";
+      daysEl.textContent = "00";
+      hoursEl.textContent = "00";
+      minutesEl.textContent = "00";
+      secondsEl.textContent = "00";
+      return;
+    }
+
+    const end = new Date(releaseTime);
+
+    let months =
+      (end.getUTCFullYear() - now.getUTCFullYear()) * 12 +
+      (end.getUTCMonth() - now.getUTCMonth());
+
+    let anchor = addUtcMonths(now, months);
+
+    if (anchor.getTime() > releaseTime) {
+      months--;
+      anchor = addUtcMonths(now, months);
+    }
+
+    const total = Math.floor((releaseTime - anchor.getTime()) / 1000);
 
     const days = Math.floor(total / 86400);
     const hours = Math.floor((total % 86400) / 3600);
     const minutes = Math.floor((total % 3600) / 60);
     const seconds = total % 60;
 
+    monthsEl.textContent = String(months).padStart(2, "0");
     daysEl.textContent = String(days).padStart(2, "0");
     hoursEl.textContent = String(hours).padStart(2, "0");
     minutesEl.textContent = String(minutes).padStart(2, "0");
