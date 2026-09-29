@@ -470,6 +470,9 @@ body.light select option:checked {
     <input id="showtime-price-reduced" type="number" step="0.01" placeholder="6.50" />
   </div>
 </div>
+
+<label>Фен билет EUR</label>
+<input id="showtime-price-fan" type="number" step="0.01" min="0" placeholder="Остави празно, ако няма фен билет" />
 			
             <div class="row">
               <div>
@@ -504,14 +507,14 @@ body.light select option:checked {
             <select id="bulk-showtime-movie" class="select-medium" size="8"></select>
 
             <label>Редове за импорт</label>
-            <textarea id="bulk-showtime-lines" class="bulk-box mono" placeholder="2026-08-17 | 18:30 | Зала 1 | 2D | dubbed | 8.00 | 6.50
+            <textarea id="bulk-showtime-lines" class="bulk-box mono" placeholder="2026-08-17 | 18:30 | Зала 1 | 2D | dubbed | 8.00 | 6.50 | 12.00
 2026-08-17 | 21:00 | VIP Зала | 3D | subtitled | 10.00 | 8.00
 2026-08-18 | 16:00 | Зала 2 | 2D | original | 8.00 | 6.50"></textarea>
 
             <div class="helper">
               Формат на ред:<br>
-              <strong>дата | час | зала | 2D/3D | dubbed/subtitled/original | стандартен EUR | намален EUR</strong><br>
-              Пример: <strong>2026-08-17 | 18:30 | Зала 1 | 3D | dubbed | 8.00 | 6.50</strong>
+              <strong>дата | час | зала | 2D/3D | dubbed/subtitled/original | стандартен EUR | намален EUR | фен EUR (по желание)</strong><br>
+              Пример: <strong>2026-08-17 | 18:30 | Зала 1 | 3D | dubbed | 8.00 | 6.50 | 12.00</strong>
             </div>
 
             <div class="actions-row">
@@ -1430,7 +1433,7 @@ body.light select option:checked {
             ${item.hall || "Зала 1"}<br>
             Формат: ${item.is_3d ? "3D" : "2D"} • ${showtimeLanguageLabel(item.language_type, item.is_dubbed)}<br>
 Стандартен билет: €${formatMoney(item.price_standard_eur)}<br>
-Намален билет: €${formatMoney(item.price_reduced_eur)}
+Намален билет: €${formatMoney(item.price_reduced_eur)}${Number(item.price_fan_eur || 0) > 0 ? `<br>Фен билет: €${formatMoney(item.price_fan_eur)}` : ""}
           </div>
           <div class="actions-row">
             <button class="btn-info btn-small" onclick="editShowtime(${item.id})">Редактирай</button>
@@ -1448,6 +1451,7 @@ body.light select option:checked {
       document.getElementById("showtime-hall").value = "Зала 1";
 	  document.getElementById("showtime-price-standard").value = "";
 document.getElementById("showtime-price-reduced").value = "";
+document.getElementById("showtime-price-fan").value = "";
       document.getElementById("showtime-format").value = "2D";
       document.getElementById("showtime-language").value = "subtitled";
     }
@@ -1463,6 +1467,7 @@ document.getElementById("showtime-price-reduced").value = "";
       document.getElementById("showtime-hall").value = item.hall || "Зала 1";
 	  document.getElementById("showtime-price-standard").value = item.price_standard_eur || "";
 document.getElementById("showtime-price-reduced").value = item.price_reduced_eur || "";
+document.getElementById("showtime-price-fan").value = item.price_fan_eur || "";
       document.getElementById("showtime-format").value = item.is_3d ? "3D" : "2D";
       document.getElementById("showtime-language").value =
         item.language_type || (item.is_dubbed ? "dubbed" : "subtitled");
@@ -1483,7 +1488,8 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
   language_type: document.getElementById("showtime-language").value,
   is_dubbed: document.getElementById("showtime-language").value === "dubbed" ? 1 : 0,
   price_standard_eur: Number(document.getElementById("showtime-price-standard").value || 0),
-  price_reduced_eur: Number(document.getElementById("showtime-price-reduced").value || 0)
+  price_reduced_eur: Number(document.getElementById("showtime-price-reduced").value || 0),
+  price_fan_eur: Number(document.getElementById("showtime-price-fan").value || 0)
 };
 
         if (!payload.movie_id || !payload.date || !payload.scheduled_time) {
@@ -1547,7 +1553,8 @@ document.getElementById("showtime-price-reduced").value = item.price_reduced_eur
   language_type: normalizeLanguageInput(parts[4]),
   is_dubbed: normalizeLanguageInput(parts[4]) === "dubbed" ? 1 : 0,
   price_standard_eur: Number(parts[5] || 0),
-  price_reduced_eur: Number(parts[6] || 0)
+  price_reduced_eur: Number(parts[6] || 0),
+  price_fan_eur: Number(parts[7] || 0)
 };
 
           await api("/api/showtimes-v2", {
