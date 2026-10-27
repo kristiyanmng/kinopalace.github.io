@@ -9,10 +9,6 @@
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* =========================
-       GENRE DROPDOWN FILTER
-       ========================= */
-
     .genre-filter-section{
       margin:0 0 22px;
       max-width:320px;
@@ -62,7 +58,6 @@
       color:#111827;
     }
 
-    /* SHOWTIME FORMAT */
     .showtime-format{
       display:block;
       font-size:10px;
@@ -88,8 +83,6 @@
 </head>
 
 <body>
-
-
   <!-- AVENGERS: DOOMSDAY COUNTDOWN -->
   <div class="doomsday-banner" id="doomsday-countdown">
     <div class="doomsday-content">
@@ -104,90 +97,52 @@
     </div>
   </div>
 
-<header>
+  <header>
     <div class="container topbar">
-
       <a href="index.html" class="logo">
         <img src="Blue White Business ID Card.png" alt="Palace Кино" />
       </a>
 
       <div class="nav-wrap">
-
         <button id="theme-toggle" class="theme-toggle" type="button">🌙</button>
-
         <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
-
-        <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">
-          ☰
-        </label>
+        <label for="menu-toggle" class="menu-toggle" aria-label="Отвори меню">☰</label>
 
         <nav>
           <a href="index.html">Програма</a>
           <a href="premieres.html">Премиери в България</a>
           <a href="prices.html">Цени</a>
         </nav>
-
       </div>
     </div>
   </header>
 
-
   <main class="container">
-
     <section class="hero">
       <h1 id="week-title">Програма</h1>
     </section>
 
-
     <div class="days-nav">
-
-      <button class="days-arrow" id="days-prev" aria-label="Предишни дни">
-        ‹
-      </button>
-
+      <button class="days-arrow" id="days-prev" aria-label="Предишни дни">‹</button>
       <section class="days-strip" id="days-strip"></section>
-
-      <button class="days-arrow" id="days-next" aria-label="Следващи дни">
-        ›
-      </button>
-
+      <button class="days-arrow" id="days-next" aria-label="Следващи дни">›</button>
     </div>
 
-
-    <!-- ФИЛТЪР ПО ЖАНР -->
     <section class="genre-filter-section" id="genre-filter-section">
-
-      <label for="genre-filter-select" class="genre-filter-title">
-        Филтър по жанр
-      </label>
-
+      <label for="genre-filter-select" class="genre-filter-title">Филтър по жанр</label>
       <select id="genre-filter-select" class="genre-filter-select">
         <option value="all">Всички жанрове</option>
       </select>
-
     </section>
 
-
-    <section class="grid" id="movies-container">
-      Зареждане...
-    </section>
-
+    <section class="grid" id="movies-container">Зареждане...</section>
   </main>
 
-
   <footer>
-
     <div class="container footer-content">
-
       <div>
         Официалният сайт на кино Palace:
-        <a
-          href="https://kinopalace.bg/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          НАЧАЛО
-        </a>
+        <a href="https://kinopalace.bg/" target="_blank" rel="noopener noreferrer">НАЧАЛО</a>
       </div>
 
       <div class="copyright">
@@ -195,24 +150,12 @@
         <span id="year"></span>
         · Powered and designed by Kristiyan Markov.
       </div>
-
     </div>
-
   </footer>
 
-
   <div id="trailerModal" class="modal" onclick="outsideClose(event)">
-
     <div class="modal-content">
-
-      <button
-        class="close"
-        onclick="closeTrailer()"
-        aria-label="Затвори трейлъра"
-      >
-        ×
-      </button>
-
+      <button class="close" onclick="closeTrailer()" aria-label="Затвори трейлъра">×</button>
       <iframe
         id="trailerFrame"
         src=""
@@ -220,537 +163,314 @@
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen
-      >
-      </iframe>
-
+      ></iframe>
     </div>
-
   </div>
 
-
   <script>
-
-    const API_BASE =
-      "https://kinopalace-api.kristiyanmarkov44.workers.dev";
-
+    const API_BASE = "https://kinopalace-api.kristiyanmarkov44.workers.dev";
 
     let scheduleData = null;
-
     let activeDayIndex = 0;
-
     let activeGenreFilter = "all";
-
     let lastDate = null;
-
     let daysNavigationInitialized = false;
-
     let lastVersion = null;
-
     let isLoadingSchedule = false;
 
-
     let serverNowBase = null;
-
     let clientNowBase = null;
-
     let serverToday = null;
-
 
     loadSchedule(true);
 
-
     function getServerNow() {
-
       if (!serverNowBase || clientNowBase === null) {
         return new Date();
       }
 
       const elapsed = Date.now() - clientNowBase;
-
-      return new Date(
-        serverNowBase.getTime() + elapsed
-      );
+      return new Date(serverNowBase.getTime() + elapsed);
     }
 
+    // Използваме часовата зона на България за всяка дата.
+    const SOFIA_TIME_ZONE = "Europe/Sofia";
 
-    function getServerOffsetString() {
+    function getSofiaDateParts(date) {
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: SOFIA_TIME_ZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(date);
 
-      const source =
-        serverNowBase || new Date();
+      const result = {};
 
-      const offsetMinutes =
-        -source.getTimezoneOffset();
-
-      const sign =
-        offsetMinutes >= 0 ? "+" : "-";
-
-      const abs =
-        Math.abs(offsetMinutes);
-
-      const hours =
-        String(
-          Math.floor(abs / 60)
-        ).padStart(2, "0");
-
-      const minutes =
-        String(
-          abs % 60
-        ).padStart(2, "0");
-
-      return `${sign}${hours}:${minutes}`;
-    }
-
-
-    function getServerTodayISO() {
-
-      if (
-        serverToday &&
-        /^\d{4}-\d{2}-\d{2}$/.test(serverToday)
-      ) {
-        return serverToday;
+      for (const part of parts) {
+        if (part.type !== "literal") {
+          result[part.type] = part.value;
+        }
       }
 
-      const now =
-        getServerNow();
-
-      const y =
-        now.getFullYear();
-
-      const m =
-        String(
-          now.getMonth() + 1
-        ).padStart(2, "0");
-
-      const d =
-        String(
-          now.getDate()
-        ).padStart(2, "0");
-
-      return `${y}-${m}-${d}`;
+      return result;
     }
 
+    function getSofiaDateISO(date = getServerNow()) {
+      const p = getSofiaDateParts(date);
+      return `${p.year}-${p.month}-${p.day}`;
+    }
+
+    function getServerTodayISO() {
+      return getSofiaDateISO(getServerNow());
+    }
+
+    function sofiaLocalDateTimeToDate(isoDate, timeString = "00:00") {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(isoDate || "")) {
+        return new Date(NaN);
+      }
+
+      const match = String(timeString).match(
+        /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/
+      );
+
+      if (!match) {
+        return new Date(NaN);
+      }
+
+      const [, hh, mm, ss = "0"] = match;
+      const [year, month, day] = isoDate.split("-").map(Number);
+
+      const targetAsUTC = Date.UTC(
+        year,
+        month - 1,
+        day,
+        Number(hh),
+        Number(mm),
+        Number(ss)
+      );
+
+      let guess = targetAsUTC;
+
+      for (let i = 0; i < 5; i++) {
+        const p = getSofiaDateParts(new Date(guess));
+
+        const observedAsUTC = Date.UTC(
+          Number(p.year),
+          Number(p.month) - 1,
+          Number(p.day),
+          Number(p.hour),
+          Number(p.minute),
+          Number(p.second)
+        );
+
+        const difference = targetAsUTC - observedAsUTC;
+
+        if (difference === 0) break;
+
+        guess += difference;
+      }
+
+      return new Date(guess);
+    }
 
     async function loadSchedule(initial = false) {
-
       if (isLoadingSchedule) return;
 
       isLoadingSchedule = true;
 
       try {
-
-        const previousVisibleDays =
-          getVisibleDays();
-
+        const previousVisibleDays = getVisibleDays();
         const previousSelectedIsoDate =
           previousVisibleDays[activeDayIndex]?.iso_date || null;
 
-
-        const response =
-          await fetch(
-            `${API_BASE}/api/export-schedule`,
-            {
-              cache: "no-store"
-            }
-          );
-
+        const response = await fetch(
+          `${API_BASE}/api/export-schedule`,
+          { cache: "no-store" }
+        );
 
         if (!response.ok) {
-          throw new Error(
-            "Не може да се зареди програмата от API"
-          );
+          throw new Error("Не може да се зареди програмата от API");
         }
 
-
-        const data =
-          await response.json();
-
+        const data = await response.json();
 
         if (data.server_now) {
+          const parsedServerNow = new Date(data.server_now);
 
-          const parsedServerNow =
-            new Date(data.server_now);
-
-          if (
-            !isNaN(parsedServerNow.getTime())
-          ) {
-
-            serverNowBase =
-              parsedServerNow;
-
-            clientNowBase =
-              Date.now();
+          if (!isNaN(parsedServerNow.getTime())) {
+            serverNowBase = parsedServerNow;
+            clientNowBase = Date.now();
           }
         }
 
+        serverToday = data.server_today || null;
+        scheduleData = normalizeScheduleData(data);
+        lastDate = getSofiaDateISO(getServerNow());
 
-        serverToday =
-          data.server_today || null;
-
-
-        scheduleData =
-          normalizeScheduleData(data);
-
-
-        lastDate =
-          getServerNow().getDate();
-
-
-        document
-          .getElementById("week-title")
-          .textContent =
-            scheduleData.weekTitle ||
-            "Програма";
-
+        document.getElementById("week-title").textContent =
+          scheduleData.weekTitle || "Програма";
 
         if (initial) {
-
           setTodayAsActive();
-
         } else {
+          const newVisibleDays = getVisibleDays();
 
-          const newVisibleDays =
-            getVisibleDays();
-
-          const preservedIndex =
-            newVisibleDays.findIndex(
-              day =>
-                day.iso_date === previousSelectedIsoDate
-            );
-
+          const preservedIndex = newVisibleDays.findIndex(
+            day => day.iso_date === previousSelectedIsoDate
+          );
 
           if (preservedIndex !== -1) {
-
-            activeDayIndex =
-              preservedIndex;
-
+            activeDayIndex = preservedIndex;
           } else {
+            const todayIndex = newVisibleDays.findIndex(
+              day => isTodayISO(day.iso_date)
+            );
 
-            const todayIndex =
-              newVisibleDays.findIndex(
-                day =>
-                  isTodayISO(day.iso_date)
-              );
-
-            activeDayIndex =
-              todayIndex !== -1
-                ? todayIndex
-                : 0;
+            activeDayIndex = todayIndex !== -1 ? todayIndex : 0;
           }
         }
 
-
         renderDays();
-
         renderGenreFilters();
-
         renderMovies();
-
         setupDaysNavigation();
-
 
         if (initial) {
           await primeVersion();
         }
-
       } catch (error) {
-
         console.error(error);
 
-        document
-          .getElementById("movies-container")
-          .innerHTML = `
-
-            <div class="maintenance-box">
-
-              <div class="maintenance-icon">
-                🎬
-              </div>
-
-              <h2>
-                В момента се прави подобрение по страницата
-              </h2>
-
-              <p>
-                Надяваме се възможно най-скоро
-                да възстановим достъпа до програмата.
-              </p>
-
-            </div>
-
-          `;
-
+        document.getElementById("movies-container").innerHTML = `
+          <div class="maintenance-box">
+            <div class="maintenance-icon">🎬</div>
+            <h2>В момента се прави подобрение по страницата</h2>
+            <p>Надяваме се възможно най-скоро да възстановим достъпа до програмата.</p>
+          </div>
+        `;
       } finally {
-
         isLoadingSchedule = false;
-
       }
     }
-
 
     async function primeVersion() {
-
       try {
-
-        const res =
-          await fetch(
-            `${API_BASE}/api/public-version`,
-            {
-              cache: "no-store"
-            }
-          );
+        const res = await fetch(
+          `${API_BASE}/api/public-version`,
+          { cache: "no-store" }
+        );
 
         if (!res.ok) return;
 
-        const data =
-          await res.json();
-
-        lastVersion =
-          data.version || "0";
-
+        const data = await res.json();
+        lastVersion = data.version || "0";
       } catch (e) {
-
         console.error(e);
-
       }
     }
 
-
     async function checkVersion() {
-
       try {
-
-        const res =
-          await fetch(
-            `${API_BASE}/api/public-version`,
-            {
-              cache: "no-store"
-            }
-          );
+        const res = await fetch(
+          `${API_BASE}/api/public-version`,
+          { cache: "no-store" }
+        );
 
         if (!res.ok) return;
 
-        const data =
-          await res.json();
-
-        const currentVersion =
-          data.version || "0";
-
+        const data = await res.json();
+        const currentVersion = data.version || "0";
 
         if (!lastVersion) {
-
-          lastVersion =
-            currentVersion;
-
+          lastVersion = currentVersion;
           return;
         }
 
-
-        if (
-          currentVersion !== lastVersion
-        ) {
-
-          lastVersion =
-            currentVersion;
-
+        if (currentVersion !== lastVersion) {
+          lastVersion = currentVersion;
           await loadSchedule();
         }
-
       } catch (e) {
-
         console.error(e);
-
       }
     }
 
-
     function normalizeScheduleData(data) {
-
       return {
-
         ...data,
-
-        days:
-          (data.days || []).map(
-            day => ({
-
-              ...day,
-
-              iso_date:
-                day.iso_date ||
-                bgToISO(day.date),
-
-              movies:
-                (day.movies || []).map(
-                  movie => ({
-
-                    ...movie,
-
-                    times:
-                      normalizeMovieTimes(
-                        movie.times,
-                        day.iso_date ||
-                        bgToISO(day.date)
-                      )
-
-                  })
-                )
-
-            })
-          )
-
+        days: (data.days || []).map(day => ({
+          ...day,
+          iso_date: day.iso_date || bgToISO(day.date),
+          movies: (day.movies || []).map(movie => ({
+            ...movie,
+            times: normalizeMovieTimes(
+              movie.times,
+              day.iso_date || bgToISO(day.date)
+            )
+          }))
+        }))
       };
     }
 
-
-    function normalizeMovieTimes(
-      times,
-      fallbackIsoDate
-    ) {
-
-      if (!Array.isArray(times)) {
-        return [];
-      }
-
+    function normalizeMovieTimes(times, fallbackIsoDate) {
+      if (!Array.isArray(times)) return [];
 
       return times
         .map(item => {
-
           if (typeof item === "string") {
-
             return {
-
               id: null,
-
               time: item,
-
               scheduled_time: item,
-
               hall: "Зала 1",
-
               type: "standard",
-
-              iso_date:
-                fallbackIsoDate || "",
-
+              iso_date: fallbackIsoDate || "",
               is_3d: false,
-
               is_dubbed: false,
-
-              language_type:
-                "subtitled",
-
+              language_type: "subtitled",
               price_standard_eur: 0,
-
               price_reduced_eur: 0,
-
               price_fan_eur: 0
-
             };
           }
 
-
-          const hall =
-            item.hall || "Зала 1";
-
+          const hall = item.hall || "Зала 1";
 
           return {
-
-            id:
-              item.id ?? null,
-
-            time:
-              item.time ||
-              item.scheduled_time ||
-              "",
-
-            scheduled_time:
-              item.scheduled_time ||
-              item.time ||
-              "",
-
+            id: item.id ?? null,
+            time: item.time || item.scheduled_time || "",
+            scheduled_time: item.scheduled_time || item.time || "",
             hall,
-
-            type:
-              item.type ||
-              (
-                /vip/i.test(hall)
-                  ? "vip"
-                  : "standard"
-              ),
-
-            iso_date:
-              item.iso_date ||
-              fallbackIsoDate ||
-              "",
-
-            is_3d:
-              !!item.is_3d,
-
-            is_dubbed:
-              !!item.is_dubbed,
-
-            language_type:
-              item.language_type ||
-              (
-                item.is_dubbed
-                  ? "dubbed"
-                  : "subtitled"
-              ),
-
-            price_standard_eur:
-              Number(
-                item.price_standard_eur || 0
-              ),
-
-            price_reduced_eur:
-              Number(
-                item.price_reduced_eur || 0
-              ),
-
-            price_fan_eur:
-              Number(
-                item.price_fan_eur || 0
-              )
-
+            type: item.type || (/vip/i.test(hall) ? "vip" : "standard"),
+            iso_date: item.iso_date || fallbackIsoDate || "",
+            is_3d: !!item.is_3d,
+            is_dubbed: !!item.is_dubbed,
+            language_type: item.language_type || (
+              item.is_dubbed ? "dubbed" : "subtitled"
+            ),
+            price_standard_eur: Number(item.price_standard_eur || 0),
+            price_reduced_eur: Number(item.price_reduced_eur || 0),
+            price_fan_eur: Number(item.price_fan_eur || 0)
           };
-
         })
-        .filter(
-          item => item.time
-        );
+        .filter(item => item.time);
     }
 
-
     function bgToISO(dayDate) {
-
       if (!dayDate) return "";
 
-      if (
-        /^\d{4}-\d{2}-\d{2}$/.test(dayDate)
-      ) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dayDate)) {
         return dayDate;
       }
 
+      const [day, month, yearMaybe] = String(dayDate).split(".");
+      const year = yearMaybe || String(getServerNow().getFullYear());
 
-      const [
-        day,
-        month,
-        yearMaybe
-      ] =
-        String(dayDate).split(".");
-
-
-      const year =
-        yearMaybe ||
-        String(
-          getServerNow().getFullYear()
-        );
-
-
-      if (!day || !month) {
-        return "";
-      }
-
+      if (!day || !month) return "";
 
       return (
         `${year}-` +
@@ -759,1098 +479,428 @@
       );
     }
 
-
     function parseISODate(isoDate) {
-
-      return new Date(
-        `${isoDate}T00:00:00` +
-        getServerOffsetString()
-      );
+      return sofiaLocalDateTimeToDate(isoDate, "00:00");
     }
 
-
-    function parseTimeToDate(
-      isoDate,
-      timeString
-    ) {
-
-      return new Date(
-        `${isoDate}T${timeString}:00` +
-        getServerOffsetString()
-      );
+    function parseTimeToDate(isoDate, timeString) {
+      return sofiaLocalDateTimeToDate(isoDate, timeString);
     }
-
 
     function isFutureOrToday(isoDate) {
-
-      const today =
-        parseISODate(
-          getServerTodayISO()
-        );
-
-      today.setHours(
-        0, 0, 0, 0
-      );
-
-
-      const dateObj =
-        parseISODate(isoDate);
-
-      dateObj.setHours(
-        0, 0, 0, 0
-      );
-
-
-      return (
-        dateObj >= today
-      );
+      return Boolean(isoDate) && isoDate >= getServerTodayISO();
     }
-
 
     function isTodayISO(isoDate) {
-
-      return (
-        isoDate ===
-        getServerTodayISO()
+      return isoDate === getServerTodayISO();
+    }
+        function getVisibleDays() {
+      return (scheduleData?.days || []).filter(
+        day => isFutureOrToday(day.iso_date)
       );
     }
-
-
-    function getVisibleDays() {
-
-      return (
-        scheduleData?.days || []
-      ).filter(
-        day =>
-          isFutureOrToday(day.iso_date)
-      );
-    }
-
 
     function setTodayAsActive() {
+      const visibleDays = getVisibleDays();
 
-      const visibleDays =
-        getVisibleDays();
-
-
-      const todayIndex =
-        visibleDays.findIndex(
-          day =>
-            isTodayISO(day.iso_date)
-        );
-
+      const todayIndex = visibleDays.findIndex(
+        day => isTodayISO(day.iso_date)
+      );
 
       if (todayIndex !== -1) {
-
-        activeDayIndex =
-          todayIndex;
-
+        activeDayIndex = todayIndex;
         return;
       }
 
-
-      const firstDayWithMovies =
-        visibleDays.findIndex(
-          day =>
-
-            Array.isArray(day.movies)
-
-            &&
-
-            day.movies.some(
-              movie =>
-
-                Array.isArray(movie.times)
-
-                &&
-
-                movie.times.length > 0
-            )
-        );
-
+      const firstDayWithMovies = visibleDays.findIndex(
+        day =>
+          Array.isArray(day.movies) &&
+          day.movies.some(
+            movie =>
+              Array.isArray(movie.times) &&
+              movie.times.length > 0
+          )
+      );
 
       activeDayIndex =
-        firstDayWithMovies !== -1
-          ? firstDayWithMovies
-          : 0;
+        firstDayWithMovies !== -1 ? firstDayWithMovies : 0;
     }
 
-
     function renderDays() {
-
-      const strip =
-        document.getElementById(
-          "days-strip"
-        );
-
-
-      const visibleDays =
-        getVisibleDays();
-
+      const strip = document.getElementById("days-strip");
+      const visibleDays = getVisibleDays();
 
       strip.innerHTML = "";
 
-
       const shortDays = {
-
         "Понеделник": "Пон",
-
         "Вторник": "Вт",
-
         "Сряда": "Ср",
-
         "Четвъртък": "Чет",
-
         "Петък": "Пет",
-
         "Събота": "Съб",
-
         "Неделя": "Нед"
-
       };
 
+      visibleDays.forEach((day, index) => {
+        const hasMovies =
+          !day.disabled &&
+          Array.isArray(day.movies) &&
+          day.movies.some(
+            movie =>
+              Array.isArray(movie.times) &&
+              movie.times.length > 0
+          );
 
-      visibleDays.forEach(
-        (day, index) => {
+        const mobileLabel =
+          window.innerWidth <= 760
+            ? (shortDays[day.label] || day.label)
+            : day.label;
 
-          const hasMovies =
+        const btn = document.createElement("button");
 
-            !day.disabled
+        btn.className =
+          "day-tab" +
+          (index === activeDayIndex ? " active" : "") +
+          (!hasMovies ? " empty-day" : "");
 
-            &&
+        btn.innerHTML = `
+          <span class="day-label">${mobileLabel}</span>
+          <span class="day-date">${day.date}</span>
+        `;
 
-            Array.isArray(day.movies)
-
-            &&
-
-            day.movies.some(
-              movie =>
-                Array.isArray(movie.times)
-                &&
-                movie.times.length > 0
-            );
-
-
-          const mobileLabel =
-
-            window.innerWidth <= 760
-
-              ? (
-                  shortDays[day.label]
-                  ||
-                  day.label
-                )
-
-              : day.label;
-
-
-          const btn =
-            document.createElement(
-              "button"
-            );
-
-
-          btn.className =
-
-            "day-tab"
-
-            +
-
-            (
-              index === activeDayIndex
-                ? " active"
-                : ""
-            )
-
-            +
-
-            (
-              !hasMovies
-                ? " empty-day"
-                : ""
-            );
-
-
-          btn.innerHTML = `
-
-            <span class="day-label">
-              ${mobileLabel}
-            </span>
-
-            <span class="day-date">
-              ${day.date}
-            </span>
-
-          `;
-
-
-          if (!hasMovies) {
-
-            btn.disabled = true;
-
-            btn.title =
-              "Няма прожекции за тази дата";
-
-          } else {
-
-            btn.addEventListener(
-              "click",
-              () => {
-
-                activeDayIndex =
-                  index;
-
-                activeGenreFilter =
-                  "all";
-
-                renderDays();
-
-                renderGenreFilters();
-
-                renderMovies();
-              }
-            );
-          }
-
-
-          strip.appendChild(btn);
-
+        if (!hasMovies) {
+          btn.disabled = true;
+          btn.title = "Няма прожекции за тази дата";
+        } else {
+          btn.addEventListener("click", () => {
+            activeDayIndex = index;
+            activeGenreFilter = "all";
+            renderDays();
+            renderGenreFilters();
+            renderMovies();
+          });
         }
-      );
 
+        strip.appendChild(btn);
+      });
 
       updateDaysArrows();
     }
 
-
     function splitGenres(rawGenre) {
-
-      return String(
-        rawGenre || ""
-      )
-
-        .split(
-          /[,/|;]+/
-        )
-
-        .map(
-          x => x.trim()
-        )
-
+      return String(rawGenre || "")
+        .split(/[,/|;]+/)
+        .map(x => x.trim())
         .filter(Boolean);
     }
 
-
     function normalizeGenreKey(value) {
-
-      return String(
-        value || ""
-      )
-
+      return String(value || "")
         .trim()
-
-        .toLocaleLowerCase(
-          "bg-BG"
-        );
+        .toLocaleLowerCase("bg-BG");
     }
-
 
     function getGenresForActiveDay() {
+      const visibleDays = getVisibleDays();
+      const day = visibleDays[activeDayIndex];
 
-      const visibleDays =
-        getVisibleDays();
+      if (!day) return [];
 
-      const day =
-        visibleDays[activeDayIndex];
+      const map = new Map();
 
+      (day.movies || []).forEach(movie => {
+        splitGenres(movie.genre).forEach(genre => {
+          const key = normalizeGenreKey(genre);
 
-      if (!day) {
-        return [];
-      }
+          if (!key) return;
 
-
-      const map =
-        new Map();
-
-
-      (day.movies || [])
-        .forEach(
-          movie => {
-
-            splitGenres(
-              movie.genre
-            )
-              .forEach(
-                genre => {
-
-                  const key =
-                    normalizeGenreKey(
-                      genre
-                    );
-
-                  if (!key) {
-                    return;
-                  }
-
-
-                  if (!map.has(key)) {
-
-                    map.set(
-                      key,
-                      genre
-                    );
-                  }
-                }
-              );
+          if (!map.has(key)) {
+            map.set(key, genre);
           }
-        );
+        });
+      });
 
-
-      return [
-        ...map.entries()
-      ]
-        .sort(
-          (a, b) =>
-            a[1].localeCompare(
-              b[1],
-              "bg"
-            )
-        );
+      return [...map.entries()].sort(
+        (a, b) => a[1].localeCompare(b[1], "bg")
+      );
     }
 
-
     function renderGenreFilters() {
+      const select = document.getElementById("genre-filter-select");
+      const section = document.getElementById("genre-filter-section");
 
-      const select =
-        document.getElementById(
-          "genre-filter-select"
-        );
+      if (!select || !section) return;
 
-      const section =
-        document.getElementById(
-          "genre-filter-section"
-        );
-
-
-      if (!select || !section) {
-        return;
-      }
-
-
-      const genres =
-        getGenresForActiveDay();
-
+      const genres = getGenresForActiveDay();
 
       select.innerHTML =
         '<option value="all">Всички жанрове</option>';
 
-
-      genres.forEach(
-        ([key, label]) => {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-          option.value =
-            key;
-
-          option.textContent =
-            label;
-
-          select.appendChild(
-            option
-          );
-        }
-      );
-
+      genres.forEach(([key, label]) => {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = label;
+        select.appendChild(option);
+      });
 
       if (
-        activeGenreFilter !== "all"
-        &&
-        !genres.some(
-          ([key]) =>
-            key === activeGenreFilter
-        )
+        activeGenreFilter !== "all" &&
+        !genres.some(([key]) => key === activeGenreFilter)
       ) {
-
-        activeGenreFilter =
-          "all";
+        activeGenreFilter = "all";
       }
 
-
-      select.value =
-        activeGenreFilter;
-
-
-      section.style.display =
-        genres.length
-          ? ""
-          : "none";
+      select.value = activeGenreFilter;
+      section.style.display = genres.length ? "" : "none";
     }
-
 
     function movieMatchesGenre(movie) {
+      if (activeGenreFilter === "all") return true;
 
-      if (
-        activeGenreFilter === "all"
-      ) {
-        return true;
-      }
-
-
-      return splitGenres(
-        movie.genre
-      )
-        .some(
-          genre =>
-            normalizeGenreKey(genre)
-            ===
-            activeGenreFilter
-        );
+      return splitGenres(movie.genre).some(
+        genre => normalizeGenreKey(genre) === activeGenreFilter
+      );
     }
-
 
     function updateDaysArrows() {
+      const strip = document.getElementById("days-strip");
+      const prev = document.getElementById("days-prev");
+      const next = document.getElementById("days-next");
 
-      const strip =
-        document.getElementById(
-          "days-strip"
-        );
+      if (!strip || !prev || !next) return;
 
-      const prev =
-        document.getElementById(
-          "days-prev"
-        );
-
-      const next =
-        document.getElementById(
-          "days-next"
-        );
-
-
-      if (!strip || !prev || !next) {
-        return;
-      }
-
-
-      prev.disabled =
-        strip.scrollLeft <= 0;
-
+      prev.disabled = strip.scrollLeft <= 0;
 
       next.disabled =
-
-        strip.scrollLeft +
-        strip.clientWidth
-
-        >=
-
-        strip.scrollWidth - 2;
+        strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 2;
     }
 
-
     function setupDaysNavigation() {
+      if (daysNavigationInitialized) return;
 
-      if (
-        daysNavigationInitialized
-      ) {
-        return;
-      }
+      daysNavigationInitialized = true;
 
+      const strip = document.getElementById("days-strip");
+      const prev = document.getElementById("days-prev");
+      const next = document.getElementById("days-next");
 
-      daysNavigationInitialized =
-        true;
+      if (!strip || !prev || !next) return;
 
+      prev.addEventListener("click", () => {
+        strip.scrollBy({ left: -320, behavior: "smooth" });
+      });
 
-      const strip =
-        document.getElementById(
-          "days-strip"
-        );
+      next.addEventListener("click", () => {
+        strip.scrollBy({ left: 320, behavior: "smooth" });
+      });
 
-      const prev =
-        document.getElementById(
-          "days-prev"
-        );
+      strip.addEventListener("scroll", updateDaysArrows);
 
-      const next =
-        document.getElementById(
-          "days-next"
-        );
-
-
-      if (!strip || !prev || !next) {
-        return;
-      }
-
-
-      prev.addEventListener(
-        "click",
-        () => {
-
-          strip.scrollBy({
-            left: -320,
-            behavior: "smooth"
-          });
-        }
-      );
-
-
-      next.addEventListener(
-        "click",
-        () => {
-
-          strip.scrollBy({
-            left: 320,
-            behavior: "smooth"
-          });
-        }
-      );
-
-
-      strip.addEventListener(
-        "scroll",
-        updateDaysArrows
-      );
-
-
-      window.addEventListener(
-        "resize",
-        () => {
-
-          renderDays();
-
-          renderGenreFilters();
-
-          updateDaysArrows();
-        }
-      );
-
+      window.addEventListener("resize", () => {
+        renderDays();
+        renderGenreFilters();
+        updateDaysArrows();
+      });
 
       updateDaysArrows();
     }
 
-
     function getShowtimeFormatLabel(item) {
-
-      const format =
-        item.is_3d
-          ? "3D"
-          : "2D";
-
+      const format = item.is_3d ? "3D" : "2D";
 
       const languageType =
+        item.language_type ||
+        (item.is_dubbed ? "dubbed" : "subtitled");
 
-        item.language_type
+      let language = "СУБТ.";
 
-        ||
-
-        (
-          item.is_dubbed
-            ? "dubbed"
-            : "subtitled"
-        );
-
-
-      let language =
-        "СУБТ.";
-
-
-      if (
-        languageType === "dubbed"
-      ) {
-
-        language =
-          "ДУБЛ.";
-
-      } else if (
-        languageType === "original"
-      ) {
-
-        language =
-          "ОРИГ.";
+      if (languageType === "dubbed") {
+        language = "ДУБЛ.";
+      } else if (languageType === "original") {
+        language = "ОРИГ.";
       }
-
 
       return `${format} ${language}`;
     }
 
-
     function renderMovies() {
-
-      const container =
-        document.getElementById(
-          "movies-container"
-        );
-
-
-      const visibleDays =
-        getVisibleDays();
-
-
-      const day =
-        visibleDays[activeDayIndex];
-
+      const container = document.getElementById("movies-container");
+      const visibleDays = getVisibleDays();
+      const day = visibleDays[activeDayIndex];
 
       container.innerHTML = "";
 
-
       if (!day) {
-
         container.innerHTML = `
-
-          <p
-            style="
-              color:#fde68a;
-              font-weight:700;
-            "
-          >
+          <p style="color:#fde68a;font-weight:700;">
             Няма налична програма за показване.
           </p>
-
         `;
-
         return;
       }
 
+      const now = getServerNow();
+      const isSelectedDayToday = isTodayISO(day.iso_date);
 
-      const now =
-        getServerNow();
-
-
-      const isSelectedDayToday =
-        isTodayISO(
-          day.iso_date
-        );
-
-
-      const preparedMovies =
-
-        (day.movies || [])
-
-        .filter(
-          movie =>
-            movieMatchesGenre(movie)
-        )
-
-        .map(
-          (movie, index) => {
-
-            const visibleTimes =
-
-              (movie.times || [])
-
-              .map(
-                item => ({
-
-                  ...item,
-
-                  dateObj:
-                    parseTimeToDate(
-                      day.iso_date,
-                      item.scheduled_time ||
-                      item.time
-                    )
-
-                })
+      const preparedMovies = (day.movies || [])
+        .filter(movie => movieMatchesGenre(movie))
+        .map((movie, index) => {
+          const visibleTimes = (movie.times || [])
+            .map(item => ({
+              ...item,
+              dateObj: parseTimeToDate(
+                day.iso_date,
+                item.scheduled_time || item.time
               )
+            }))
+            .filter(item => {
+              if (!isSelectedDayToday) return true;
+              return item.dateObj > now;
+            })
+            .sort((a, b) => a.dateObj - b.dateObj);
 
-              .filter(
-                item => {
+          if (visibleTimes.length === 0) return null;
 
-                  if (!isSelectedDayToday) {
-                    return true;
-                  }
+          const nextTime = visibleTimes[0];
+          const diffMs = nextTime.dateObj - now;
 
-                  return (
-                    item.dateObj > now
-                  );
-                }
-              )
-
-              .sort(
-                (a, b) =>
-                  a.dateObj - b.dateObj
-              );
-
-
-            if (
-              visibleTimes.length === 0
-            ) {
-              return null;
-            }
-
-
-            const nextTime =
-              visibleTimes[0];
-
-
-            const diffMs =
-              nextTime.dateObj - now;
-
-
-            const totalSeconds =
-              Math.max(
-                0,
-                Math.floor(
-                  diffMs / 1000
-                )
-              );
-
-
-            const hours =
-              Math.floor(
-                totalSeconds / 3600
-              );
-
-
-            const minutes =
-              Math.floor(
-                (
-                  totalSeconds % 3600
-                )
-                / 60
-              );
-
-
-            const seconds =
-              totalSeconds % 60;
-
-
-            let text = "";
-
-
-            if (hours > 0) {
-
-              text =
-                `${hours}ч ${minutes}м ${seconds}с`;
-
-            } else if (
-              minutes > 0
-            ) {
-
-              text =
-                `${minutes}м ${seconds}с`;
-
-            } else {
-
-              text =
-                `${seconds}с`;
-            }
-
-
-            return {
-
-              ...movie,
-
-              _id:
-                index,
-
-              visibleTimes,
-
-              sortTime:
-                nextTime.dateObj,
-
-              nextCountdown: {
-
-                time:
-                  nextTime.scheduled_time ||
-                  nextTime.time,
-
-                hall:
-                  nextTime.hall,
-
-                text,
-
-                dateObj:
-                  nextTime.dateObj
-
-              },
-
-              showNextCountdown:
-                false
-            };
-          }
-        )
-
-        .filter(Boolean)
-
-        .sort(
-          (a, b) =>
-            a.sortTime - b.sortTime
-        );
-
-
-      if (
-        preparedMovies.length === 0
-      ) {
-
-        const genreSelect =
-          document.getElementById(
-            "genre-filter-select"
+          const totalSeconds = Math.max(
+            0,
+            Math.floor(diffMs / 1000)
           );
 
+          const hours = Math.floor(totalSeconds / 3600);
+          const minutes = Math.floor((totalSeconds % 3600) / 60);
+          const seconds = totalSeconds % 60;
+
+          let text = "";
+
+          if (hours > 0) {
+            text = `${hours}ч ${minutes}м ${seconds}с`;
+          } else if (minutes > 0) {
+            text = `${minutes}м ${seconds}с`;
+          } else {
+            text = `${seconds}с`;
+          }
+
+          return {
+            ...movie,
+            _id: index,
+            visibleTimes,
+            sortTime: nextTime.dateObj,
+            nextCountdown: {
+              time: nextTime.scheduled_time || nextTime.time,
+              hall: nextTime.hall,
+              text,
+              dateObj: nextTime.dateObj
+            },
+            showNextCountdown: false
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.sortTime - b.sortTime);
+
+      if (preparedMovies.length === 0) {
+        const genreSelect = document.getElementById("genre-filter-select");
 
         const genreName =
+          genreSelect?.options[genreSelect.selectedIndex]?.textContent || "";
 
-          genreSelect?.options[
-            genreSelect.selectedIndex
-          ]?.textContent || "";
-
-
-        if (
-          activeGenreFilter !== "all"
-        ) {
-
+        if (activeGenreFilter !== "all") {
           container.innerHTML = `
-
-            <p
-              style="
-                color:#fde68a;
-                font-weight:700;
-              "
-            >
-              Няма прожекции от жанр
-              „${genreName}“
-              за този ден.
+            <p style="color:#fde68a;font-weight:700;">
+              Няма прожекции от жанр „${genreName}“ за този ден.
             </p>
-
           `;
-
         } else {
-
           container.innerHTML = `
-
-            <p
-              style="
-                color:#fde68a;
-                font-weight:700;
-              "
-            >
-              Все още няма налични прожекции
-              за този ден.
+            <p style="color:#fde68a;font-weight:700;">
+              Все още няма налични прожекции за този ден.
             </p>
-
           `;
         }
-
 
         return;
       }
 
+      if (isSelectedDayToday) {
+        const globalNextMovieIndex = preparedMovies.findIndex(
+          movie => movie.nextCountdown
+        );
 
-      if (
-        isSelectedDayToday
-      ) {
-
-        const globalNextMovieIndex =
-
-          preparedMovies.findIndex(
-            movie =>
-              movie.nextCountdown
-          );
-
-
-        if (
-          globalNextMovieIndex !== -1
-        ) {
-
-          preparedMovies[
-            globalNextMovieIndex
-          ]
-          .showNextCountdown =
-            true;
+        if (globalNextMovieIndex !== -1) {
+          preparedMovies[globalNextMovieIndex].showNextCountdown = true;
         }
       }
 
+      preparedMovies.forEach(movie => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.setAttribute("data-movie-index", movie._id);
 
-      preparedMovies.forEach(
-        movie => {
+        const timesHtml = movie.visibleTimes
+          .map(item => `
+            <span class="time ${item.type === "vip" ? "vip-time" : "standard-time"}">
+              <span class="showtime-format">
+                ${getShowtimeFormatLabel(item)}
+              </span>
+              <span class="time-value">
+                ${item.scheduled_time || item.time}
+              </span>
+              <small class="hall-label">${item.hall || ""}</small>
+            </span>
+          `)
+          .join("");
 
-          const card =
-            document.createElement(
-              "article"
-            );
+        const firstPricedTime = movie.visibleTimes.find(
+          item =>
+            Number(item.price_standard_eur || 0) > 0 ||
+            Number(item.price_reduced_eur || 0) > 0 ||
+            Number(item.price_fan_eur || 0) > 0
+        );
 
+        const hasStandardPrice =
+          Number(firstPricedTime?.price_standard_eur || 0) > 0;
 
-          card.className =
-            "card";
+        const hasReducedPrice =
+          Number(firstPricedTime?.price_reduced_eur || 0) > 0;
 
+        const hasFanPrice =
+          Number(firstPricedTime?.price_fan_eur || 0) > 0;
 
-          card.setAttribute(
-            "data-movie-index",
-            movie._id
-          );
-
-
-          const timesHtml =
-
-            movie.visibleTimes
-            .map(
-              item => `
-
-                <span
-                  class="
-                    time
-                    ${
-                      item.type === "vip"
-                        ? "vip-time"
-                        : "standard-time"
-                    }
-                  "
-                >
-
-                  <span class="showtime-format">
-                    ${getShowtimeFormatLabel(item)}
-                  </span>
-
-                  <span class="time-value">
-                    ${
-                      item.scheduled_time ||
-                      item.time
-                    }
-                  </span>
-
-                  <small class="hall-label">
-                    ${item.hall || ""}
-                  </small>
-
-                </span>
-
-              `
-            )
-            .join("");
-
-
-          const firstPricedTime =
-
-            movie.visibleTimes.find(
-              item =>
-
-                Number(
-                  item.price_standard_eur || 0
-                ) > 0
-
-                ||
-
-                Number(
-                  item.price_reduced_eur || 0
-                ) > 0
-                ||
-                Number(
-                  item.price_fan_eur || 0
-                ) > 0
-            );
-
-
-          const hasStandardPrice =
-
-            Number(
-              firstPricedTime
-                ?.price_standard_eur || 0
-            ) > 0;
-
-
-          const hasReducedPrice =
-
-            Number(
-              firstPricedTime
-                ?.price_reduced_eur || 0
-            ) > 0;
-
-
-          const hasFanPrice =
-            Number(
-              firstPricedTime?.price_fan_eur || 0
-            ) > 0;
-
-          const priceHtml =
-
-            (
-              hasStandardPrice ||
-              hasReducedPrice ||
-              hasFanPrice
-            )
-
-            ?
-
-            `
-
+        const priceHtml =
+          hasStandardPrice || hasReducedPrice || hasFanPrice
+            ? `
               <div class="ticket-prices">
-
-                <div class="ticket-prices-title">
-                  Билети:
-                </div>
-
+                <div class="ticket-prices-title">Билети:</div>
 
                 ${
                   hasStandardPrice
-                    ?
-
-                    `
-
+                    ? `
                       <div class="ticket-price-line">
-
-                        <span class="ticket-price-label">
-                          Стандартен
-                        </span>
-
+                        <span class="ticket-price-label">Стандартен</span>
                         <span class="ticket-price-value">
-
-                          €${
-                            Number(
-                              firstPricedTime
-                                .price_standard_eur
-                            )
-                            .toFixed(2)
-                          }
-
+                          €${Number(firstPricedTime.price_standard_eur).toFixed(2)}
                         </span>
-
                       </div>
-
                     `
-
-                    :
-
-                    ""
+                    : ""
                 }
-
 
                 ${
                   hasReducedPrice
-                    ?
-
-                    `
-
+                    ? `
                       <div class="ticket-price-line">
-
-                        <span class="ticket-price-label">
-                          Намален
-                        </span>
-
+                        <span class="ticket-price-label">Намален</span>
                         <span class="ticket-price-value">
-
-                          €${
-                            Number(
-                              firstPricedTime
-                                .price_reduced_eur
-                            )
-                            .toFixed(2)
-                          }
-
+                          €${Number(firstPricedTime.price_reduced_eur).toFixed(2)}
                         </span>
-
                       </div>
-
                     `
-
-                    :
-
-                    ""
+                    : ""
                 }
 
-              
                 ${
                   hasFanPrice
                     ? `
@@ -1863,482 +913,234 @@
                     `
                     : ""
                 }
-
-</div>
-
-            `
-
-            :
-
-            "";
-
-
-          const countdownHtml =
-
-            movie.showNextCountdown
-
-            &&
-
-            movie.nextCountdown
-
-            ?
-
-            `
-
-              <div class="next-countdown">
-
-                <div class="next-countdown-header">
-
-                  <span class="next-badge">
-                    Следваща прожекция
-                  </span>
-
-
-                  <span class="next-time">
-
-                    ${movie.nextCountdown.time}
-
-                    ${
-                      movie.nextCountdown.hall
-                        ? ` • ${movie.nextCountdown.hall}`
-                        : ""
-                    }
-
-                  </span>
-
-                </div>
-
-
-                <div class="next-countdown-text">
-                  Започва след
-                  ${movie.nextCountdown.text}
-                </div>
-
               </div>
-
             `
-
-            :
-
-            "";
-
-
-          const safeTrailer =
-
-            String(
-              movie.trailer || ""
-            )
-
-            .replace(
-              /'/g,
-              "\\'"
-            );
-
-
-          const trailerButton =
-
-            movie.trailer
-
-            ?
-
-            `
-
-              <button
-                class="trailer-btn"
-                onclick="
-                  openTrailer(
-                    '${safeTrailer}'
-                  )
-                "
-              >
-                ▶ Трейлър
-              </button>
-
-            `
-
-            :
-
-            "";
-
-
-          card.innerHTML = `
-
-            <img
-              class="poster"
-              src="${movie.poster || ""}"
-              alt="${movie.title || ""}"
-            >
-
-
-            <div class="card-body">
-
-
-              <h3>
-                ${movie.title || "Без заглавие"}
-              </h3>
-
-
-              <!--
-                ЖАНРЪТ НЕ СЕ ПОКАЗВА В КАРТАТА.
-                ИЗПОЛЗВА СЕ САМО ЗА ФИЛТЪРА.
-              -->
-
-
-              <div class="meta">
-
-                <div>
-
-                  <strong>
-                    Продължителност:
-                  </strong>
-
+            : "";
+                  const countdownHtml =
+        movie.showNextCountdown && movie.nextCountdown
+          ? `
+            <div class="next-countdown">
+              <div class="next-countdown-header">
+                <span class="next-badge">Следваща прожекция</span>
+                <span class="next-time">
+                  ${movie.nextCountdown.time}
                   ${
-                    movie.duration ||
-                    "Няма информация"
+                    movie.nextCountdown.hall
+                      ? ` • ${movie.nextCountdown.hall}`
+                      : ""
                   }
-
-                </div>
-
-
-                <div>
-
-                  <strong>
-                    Разпространител:
-                  </strong>
-
-                  ${
-                    movie.distributor ||
-                    "Няма информация"
-                  }
-
-                </div>
-
+                </span>
               </div>
 
-
-              <div class="actions">
-                ${trailerButton}
+              <div class="next-countdown-text">
+                Започва след ${movie.nextCountdown.text}
               </div>
+            </div>
+          `
+          : "";
 
+      const safeTrailer = String(movie.trailer || "").replace(/'/g, "\\'");
 
-              <div class="times">
+      const trailerButton = movie.trailer
+        ? `
+          <button class="trailer-btn" onclick="openTrailer('${safeTrailer}')">
+            ▶ Трейлър
+          </button>
+        `
+        : "";
 
-                <div class="schedule-group">
+      card.innerHTML = `
+        <img
+          class="poster"
+          src="${movie.poster || ""}"
+          alt="${movie.title || ""}"
+        >
 
-                  <div class="schedule-hours">
-                    ${timesHtml}
-                  </div>
+        <div class="card-body">
+          <h3>${movie.title || "Без заглавие"}</h3>
 
-                </div>
-
-              </div>
-
-
-              ${priceHtml}
-
-
-              ${countdownHtml}
-
-
-              <span class="badge">
-
-                Категория:
-
-                ${
-                  movie.category ||
-                  "Няма информация"
-                }
-
-              </span>
-
-
+          <div class="meta">
+            <div>
+              <strong>Продължителност:</strong>
+              ${movie.duration || "Няма информация"}
             </div>
 
-          `;
+            <div>
+              <strong>Разпространител:</strong>
+              ${movie.distributor || "Няма информация"}
+            </div>
+          </div>
 
+          <div class="actions">${trailerButton}</div>
 
-          container.appendChild(
-            card
-          );
+          <div class="times">
+            <div class="schedule-group">
+              <div class="schedule-hours">${timesHtml}</div>
+            </div>
+          </div>
 
-        }
-      );
+          ${priceHtml}
+          ${countdownHtml}
+
+          <span class="badge">
+            Категория: ${movie.category || "Няма информация"}
+          </span>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function openTrailer(url) {
+    if (!url) return;
+
+    const modal = document.getElementById("trailerModal");
+    const frame = document.getElementById("trailerFrame");
+    const separator = url.includes("?") ? "&" : "?";
+
+    frame.src = url + separator + "autoplay=1";
+    modal.classList.add("active");
+  }
+
+  function closeTrailer() {
+    const modal = document.getElementById("trailerModal");
+    const frame = document.getElementById("trailerFrame");
+
+    frame.src = "";
+    modal.classList.remove("active");
+  }
+
+  function outsideClose(event) {
+    const content = document.querySelector(".modal-content");
+
+    if (content && !content.contains(event.target)) {
+      closeTrailer();
+    }
+  }
+
+  function refreshUI() {
+    if (!scheduleData) return;
+
+    const now = getServerNow();
+    const currentSofiaDate = getSofiaDateISO(now);
+
+    if (currentSofiaDate !== lastDate) {
+      lastDate = currentSofiaDate;
+      loadSchedule();
+      return;
     }
 
+    renderMovies();
+  }
 
-    function openTrailer(url) {
+  setInterval(() => {
+    refreshUI();
+  }, 1000);
 
-      if (!url) return;
+  setInterval(() => {
+    checkVersion();
+  }, 30000);
 
+  setInterval(() => {
+    loadSchedule();
+  }, 600000);
 
-      const modal =
-        document.getElementById(
-          "trailerModal"
-        );
-
-
-      const frame =
-        document.getElementById(
-          "trailerFrame"
-        );
-
-
-      const separator =
-        url.includes("?")
-          ? "&"
-          : "?";
-
-
-      frame.src =
-        url +
-        separator +
-        "autoplay=1";
-
-
-      modal.classList.add(
-        "active"
-      );
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      checkVersion();
     }
+  });
 
+  window.addEventListener("focus", () => {
+    checkVersion();
+  });
 
-    function closeTrailer() {
-
-      const modal =
-        document.getElementById(
-          "trailerModal"
-        );
-
-
-      const frame =
-        document.getElementById(
-          "trailerFrame"
-        );
-
-
-      frame.src = "";
-
-
-      modal.classList.remove(
-        "active"
-      );
-    }
-
-
-    function outsideClose(event) {
-
-      const content =
-        document.querySelector(
-          ".modal-content"
-        );
-
-
-      if (
-        content &&
-        !content.contains(
-          event.target
-        )
-      ) {
-        closeTrailer();
-      }
-    }
-
-
-    function refreshUI() {
-
-      if (!scheduleData) {
-        return;
-      }
-
-
-      const now =
-        getServerNow();
-
-
-      if (
-        now.getDate() !== lastDate
-      ) {
-
-        lastDate =
-          now.getDate();
-
-        loadSchedule();
-
-        return;
-      }
-
-
+  document
+    .getElementById("genre-filter-select")
+    .addEventListener("change", function () {
+      activeGenreFilter = this.value;
       renderMovies();
-    }
+    });
 
+  const toggleBtn = document.getElementById("theme-toggle");
 
-    setInterval(
-      () => {
-        refreshUI();
-      },
-      1000
-    );
+  const savedTheme = localStorage.getItem("theme") || "dark";
 
+  if (savedTheme === "light") {
+    document.body.classList.add("light");
+    toggleBtn.textContent = "☀️";
+  } else {
+    document.body.classList.remove("light");
+    toggleBtn.textContent = "🌙";
+  }
 
-    setInterval(
-      () => {
-        checkVersion();
-      },
-      30000
-    );
+  toggleBtn.addEventListener("click", () => {
+    const isLight = document.body.classList.toggle("light");
 
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+    toggleBtn.textContent = isLight ? "☀️" : "🌙";
+  });
 
-    setInterval(
-      () => {
-        loadSchedule();
-      },
-      600000
-    );
-
-
-    document.addEventListener(
-      "visibilitychange",
-      () => {
-
-        if (!document.hidden) {
-          checkVersion();
-        }
-      }
-    );
-
-
-    window.addEventListener(
-      "focus",
-      () => {
-        checkVersion();
-      }
-    );
-
-
-    document
-      .getElementById(
-        "genre-filter-select"
-      )
-      .addEventListener(
-        "change",
-        function() {
-
-          activeGenreFilter =
-            this.value;
-
-          renderMovies();
-        }
-      );
-
-
-    const toggleBtn =
-      document.getElementById(
-        "theme-toggle"
-      );
-
-
-    const savedTheme =
-      localStorage.getItem(
-        "theme"
-      ) || "dark";
-
-
-    if (
-      savedTheme === "light"
-    ) {
-
-      document.body
-        .classList
-        .add("light");
-
-      toggleBtn.textContent =
-        "☀️";
-
-    } else {
-
-      document.body
-        .classList
-        .remove("light");
-
-      toggleBtn.textContent =
-        "🌙";
-    }
-
-
-    toggleBtn.addEventListener(
-      "click",
-      () => {
-
-        const isLight =
-
-          document.body
-            .classList
-            .toggle("light");
-
-
-        localStorage.setItem(
-          "theme",
-          isLight
-            ? "light"
-            : "dark"
-        );
-
-
-        toggleBtn.textContent =
-
-          isLight
-            ? "☀️"
-            : "🌙";
-      }
-    );
-
-
-    document
-      .getElementById("year")
-      .textContent =
-        new Date().getFullYear();
-
-  </script>
-
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+</script>
 
 <script>
 (function () {
-  const M=document.getElementById("dd-months"),D=document.getElementById("dd-days"),
-        H=document.getElementById("dd-hours"),N=document.getElementById("dd-minutes"),
-        S=document.getElementById("dd-seconds");
-  if(!M||!D||!H||!N||!S)return;
+  const M = document.getElementById("dd-months");
+  const D = document.getElementById("dd-days");
+  const H = document.getElementById("dd-hours");
+  const N = document.getElementById("dd-minutes");
+  const S = document.getElementById("dd-seconds");
 
-  const releaseTime=Date.parse("2026-12-18T05:00:00Z");
+  if (!M || !D || !H || !N || !S) return;
 
-  function addMonths(date,n){
-    const d=new Date(date.getTime());
-    d.setUTCMonth(d.getUTCMonth()+n);
+  const releaseTime = Date.parse("2026-12-18T05:00:00Z");
+
+  function addMonths(date, n) {
+    const d = new Date(date.getTime());
+    d.setUTCMonth(d.getUTCMonth() + n);
     return d;
   }
 
-  function render(){
-    const now=new Date();
-    if(now.getTime()>=releaseTime){
-      M.textContent=D.textContent=H.textContent=N.textContent=S.textContent="00";
+  function render() {
+    const now = new Date();
+
+    if (now.getTime() >= releaseTime) {
+      M.textContent = D.textContent = H.textContent =
+        N.textContent = S.textContent = "00";
       return;
     }
-    const end=new Date(releaseTime);
-    let months=(end.getUTCFullYear()-now.getUTCFullYear())*12+
-               (end.getUTCMonth()-now.getUTCMonth());
-    let anchor=addMonths(now,months);
-    if(anchor.getTime()>releaseTime){months--;anchor=addMonths(now,months);}
-    const total=Math.floor((releaseTime-anchor.getTime())/1000);
-    const days=Math.floor(total/86400);
-    const hours=Math.floor((total%86400)/3600);
-    const minutes=Math.floor((total%3600)/60);
-    const seconds=total%60;
-    M.textContent=String(months).padStart(2,"0");
-    D.textContent=String(days).padStart(2,"0");
-    H.textContent=String(hours).padStart(2,"0");
-    N.textContent=String(minutes).padStart(2,"0");
-    S.textContent=String(seconds).padStart(2,"0");
+
+    const end = new Date(releaseTime);
+
+    let months =
+      (end.getUTCFullYear() - now.getUTCFullYear()) * 12 +
+      (end.getUTCMonth() - now.getUTCMonth());
+
+    let anchor = addMonths(now, months);
+
+    if (anchor.getTime() > releaseTime) {
+      months--;
+      anchor = addMonths(now, months);
+    }
+
+    const total = Math.floor((releaseTime - anchor.getTime()) / 1000);
+    const days = Math.floor(total / 86400);
+    const hours = Math.floor((total % 86400) / 3600);
+    const minutes = Math.floor((total % 3600) / 60);
+    const seconds = total % 60;
+
+    M.textContent = String(months).padStart(2, "0");
+    D.textContent = String(days).padStart(2, "0");
+    H.textContent = String(hours).padStart(2, "0");
+    N.textContent = String(minutes).padStart(2, "0");
+    S.textContent = String(seconds).padStart(2, "0");
   }
+
   render();
-  setInterval(render,1000);
+  setInterval(render, 1000);
 })();
 </script>
 
